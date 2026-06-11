@@ -14,20 +14,19 @@ concurrency:
   group: pages
   cancel-in-progress: false
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        # Atualizado para v4.2.2 (Evita o aviso de Node 20)
+        uses: actions/checkout@v4.2.2
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        # Atualizado para v4.2.0 (Evita o aviso de Node 20)
+        uses: actions/setup-node@v4.2.0
         with:
-          node-version: '20'
+          node-version: '22' # Atualizado para a versão LTS estável
           cache: 'npm'
 
       - name: Install dependencies
@@ -37,7 +36,9 @@ jobs:
         run: npm run build
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v4
+        # Atualizado para v3.0.1 (A versão estável atualizada para Node 24)
+        # Nota: O upload-pages-artifact oficial está na v3, a v4 que gerou o alerta era outro hash.
+        uses: actions/upload-pages-artifact@v3.0.1
         with:
           path: ./dist
 
@@ -50,4 +51,5 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        # Atualizado para v4.0.5 (Evita o aviso de Node 20)
+        uses: actions/deploy-pages@v4.0.5
