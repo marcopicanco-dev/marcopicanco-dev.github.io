@@ -8,18 +8,6 @@ export type Frontmatter = {
   file: string
 } & TitleDesc
 
-export type MarkdownRecord = {
+export type SearchRecord = {
   url: string
 } & TitleDesc
-
-// sidebar types
-
-export type Section = {
-  sectionName?: string
-  sectionItems: { [key: string]: string | Subsection }
-}
-
-export type Subsection = {
-  subsectionName?: string
-  subsectionItems: { [key: string]: string }
-}

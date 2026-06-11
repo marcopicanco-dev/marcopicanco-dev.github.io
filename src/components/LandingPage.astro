@@ -2,15 +2,11 @@
 import Base from '@/layouts/Base.astro'
 import {
   GITHUB_REPO_URL,
-  GET_STARTED_LINK,
   PROJECT_NAME,
-  DEFAULT_LANGUAGE_CODE,
 } from '@/config'
 import { type LandingPageObj } from '@/i18n/ui'
 
 const { t } = Astro.props as { t: LandingPageObj }
-
-const lang = Astro.url.pathname.split('/')[1] || DEFAULT_LANGUAGE_CODE
 ---
 
 <Base>
@@ -29,7 +25,7 @@ const lang = Astro.url.pathname.split('/')[1] || DEFAULT_LANGUAGE_CODE
         </p>
         <div class="mt-12 flex items-center w600:mt-9">
           <a
-            href={`/${lang}${GET_STARTED_LINK}`}
+            href="/blog/"
             class="mr-5 flex h-12 items-center justify-center rounded-base bg-darkModeBg px-6 text-center text-lg text-darkModeText transition-all hover:bg-darkModeBgHover dark:bg-lightModeBg dark:text-lightModeText dark:hover:bg-lightModeBgHover w600:text-base w400:mr-3 w400:h-10 w400:px-3"
             >{t.getStartedBtnText}
           </a>

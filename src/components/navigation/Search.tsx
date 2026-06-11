@@ -1,19 +1,19 @@
 import { useState, useRef, type ChangeEvent } from 'react'
 import Fuse, { type FuseResult } from 'fuse.js'
 import clsx from 'clsx'
-import { type MarkdownRecord } from '@/types'
+import { type SearchRecord } from '@/types'
 import SearchResults from '@/components/navigation/SearchResults'
 import { type LanguageKeys, SEARCH } from '@/i18n/ui'
 
 export default function Search({
-  docs,
+  items,
   lang,
 }: {
-  docs: MarkdownRecord[]
+  items: SearchRecord[]
   lang: LanguageKeys
 }) {
   const [isOverlayActive, setIsOverlayActive] = useState(false)
-  const [matchedItems, setMatchedItems] = useState<MarkdownRecord[]>([])
+  const [matchedItems, setMatchedItems] = useState<SearchRecord[]>([])
   const [message, setMessage] = useState<string | null>('')
 
   const overlayRef = useRef(null)
@@ -23,7 +23,7 @@ export default function Search({
     isCaseSensitive: false,
   }
 
-  const fuse = new Fuse(docs, options)
+  const fuse = new Fuse(items, options)
 
   const closeOverlay = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (e.target === overlayRef.current) {
@@ -40,11 +40,11 @@ export default function Search({
     } else if (inputValue.length > 0 && inputValue.length < 3) {
       setMessage(SEARCH[lang].keepTyping)
     } else {
-      const searchResult: FuseResult<MarkdownRecord>[] = fuse.search(inputValue)
-      const items: MarkdownRecord[] = searchResult.map((result) => result.item)
-      setMatchedItems(items)
+      const searchResult: FuseResult<SearchRecord>[] = fuse.search(inputValue)
+      const results: SearchRecord[] = searchResult.map((result) => result.item)
+      setMatchedItems(results)
 
-      if (items.length === 0) {
+      if (results.length === 0) {
         setMessage(SEARCH[lang].noResults)
       } else {
         setMessage(null)

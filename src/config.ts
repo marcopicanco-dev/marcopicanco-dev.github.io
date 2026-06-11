@@ -20,16 +20,6 @@ export const TWITTER_USERNAME = null
 export const GITHUB_REPO_URL = 'https://github.com/marcopicanco-dev'
 export const LINKEDIN_URL = 'https://www.linkedin.com/in/marcopicanco/'
 
-export const GITHUB_EDIT_URL = GITHUB_REPO_URL + '/edit/main/src/pages/'
-// used for edit url link at the bottom of each page in docs so users can edit it
-// dont change it unless your branch name is not "main" (/edit/BRANCH_NAME/src/pages/)
-
-export const GET_STARTED_LINK = '/introduction'
-// used for landing page and nav link (just type it without language path)
-
-export const SINGLE_LANGUAGE = false
-// set this to true if you want to use only one language
-
 export const OG_IMAGE = 'og.png'
 // enter name of the og image file you put inside public folder
 // image should be 1200 X 630 pixels

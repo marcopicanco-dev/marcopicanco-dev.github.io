@@ -1,11 +1,11 @@
-import type { MarkdownRecord } from '@/types'
+import type { SearchRecord } from '@/types'
 
 export default function SearchResults({
   message,
   matchedItems,
 }: {
   message: string | null
-  matchedItems: MarkdownRecord[]
+  matchedItems: SearchRecord[]
 }) {
   return (
     <div className="mt-[10px] h-[calc(100%-92px)] w-full shrink rounded-base border border-black/20 p-[10px] dark:border-white/20">
