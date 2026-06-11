@@ -1,0 +1,26 @@
+---
+import Base from '@/layouts/Base.astro'
+
+const title = 'Portifólio'
+const description = 'Veja alguns projetos e experimentos em desenvolvimento.'
+---
+
+<Base frontmatter={{ title, description, file: '' }}>
+  <main class="mx-auto max-w-6xl px-5 py-24">
+    <section class="rounded-3xl border border-draculaBorder/20 bg-white/80 p-10 shadow-xl shadow-black/5 backdrop-blur-sm transition-colors dark:bg-[#111827]/80 dark:border-white/10">
+      <p class="text-sm uppercase tracking-[0.35em] text-lightModeText/60 dark:text-darkModeText/60">Portifólio</p>
+      <h1 class="mt-6 text-4xl font-bold tracking-tight text-draculaText dark:text-white sm:text-5xl">Projetos em desenvolvimento</h1>
+      <p class="mt-6 max-w-3xl text-lg leading-8 text-lightModeText/90 dark:text-darkModeText/80">Aqui em breve será possível apresentar alguns dos meus projetos, demonstrações e estudos de caso. Fique atento para atualizações e novos trabalhos.</p>
+      <div class="mt-12 grid gap-6 sm:grid-cols-2">
+        <article class="rounded-3xl border border-draculaBorder/20 bg-lightModeBg p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md dark:bg-[#0f172a]/90">
+          <h2 class="text-xl font-semibold text-draculaText dark:text-white">Projeto em breve</h2>
+          <p class="mt-4 text-sm leading-6 text-lightModeText/80 dark:text-darkModeText/80">Estou preparando um novo portfolio de projetos com tecnologias modernas, design e implementação real.</p>
+        </article>
+        <article class="rounded-3xl border border-draculaBorder/20 bg-lightModeBg p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md dark:bg-[#0f172a]/90">
+          <h2 class="text-xl font-semibold text-draculaText dark:text-white">Acompanhe as novidades</h2>
+          <p class="mt-4 text-sm leading-6 text-lightModeText/80 dark:text-darkModeText/80">Quando estiver pronto, esta página será o ponto de encontro para projetos, estudos e itens de portfólio.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+</Base>

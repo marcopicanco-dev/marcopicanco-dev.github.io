@@ -24,6 +24,7 @@ const lang: LanguageKeys =
     : DEFAULT_LANGUAGE_CODE
 
 const blogLink = '/'
+const portfolioLink = '/portfolio'
 
 const getSearchItems = async () => {
   const blogPosts = await Astro.glob('@/content/blog/*.mdx')
@@ -60,6 +61,9 @@ const searchItems: SearchRecord[] = await getSearchItems()
     <div class="flex items-center text-lg">
       <a class="mr-10 hover:opacity-70 w800:hidden" href={blogLink}>
         {NAV[lang].blog}
+      </a>
+      <a class="mr-10 hover:opacity-70 w800:hidden" href={portfolioLink}>
+        {NAV[lang].portfolio}
       </a>
       <a
         class="mr-6 hover:opacity-70 w800:hidden"

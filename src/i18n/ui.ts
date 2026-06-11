@@ -36,15 +36,19 @@ export const LANDING_PAGE: LanguageObject<LandingPageObj> = {
 
 export const NAV: LanguageObject<{
   blog: string
+  portfolio: string
 }> = {
   en: {
     blog: 'Blog',
+    portfolio: 'Portfolio',
   },
   fr: {
     blog: 'Blog',
+    portfolio: 'Portfolio',
   },
   pt: {
     blog: 'Blog',
+    portfolio: 'Portifólio',
   },
 } as const
 
