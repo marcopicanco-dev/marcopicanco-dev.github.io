@@ -19,14 +19,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        # Atualizado para @v6 (Roda nativamente em Node 24)
         uses: actions/checkout@v6
 
       - name: Setup Node.js
-        # Atualizado para @v5 (Roda nativamente em Node 24)
         uses: actions/setup-node@v5
         with:
-          node-version: '22' # Mantido o Node 22 estável para compilar o seu projeto
+          node-version: '22'
           cache: 'npm'
 
       - name: Install dependencies
@@ -36,8 +34,8 @@ jobs:
         run: npm run build
 
       - name: Upload artifact
-        # Atualizado para @v4 (Ajustado internamente para Node 24)
-        uses: actions/upload-pages-artifact@v3
+        # Atualizado para v5 (resolve a dependência interna do upload-artifact@v4)
+        uses: actions/upload-pages-artifact@v5
         with:
           path: ./dist
 
@@ -50,5 +48,5 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        # Atualizado para @v4 finalizada ou @v5 dependendo do ecossistema do Pages
-        uses: actions/deploy-pages@v4
+        # Atualizado para v5 (suporte oficial e nativo ao Node 24)
+        uses: actions/deploy-pages@v5
