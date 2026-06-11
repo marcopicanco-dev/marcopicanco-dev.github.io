@@ -1,0 +1,60 @@
+---
+import Base from '@/layouts/Base.astro'
+import '@/styling/blog-fonts.css'
+import { formatBlogDate, type BlogFrontmatter } from '@/utils/blog'
+
+const { frontmatter } = Astro.props as {
+  frontmatter: BlogFrontmatter
+}
+
+const publishedDate = frontmatter.date ? formatBlogDate(frontmatter.date) : null
+---
+
+<Base frontmatter={{ ...frontmatter, file: '' }}>
+  <article class="blog-fonts mx-auto max-w-3xl px-5 py-16">
+    <header id="post-top" class="border-b border-draculaBorder/20 pb-10">
+      {publishedDate && (
+        <p class="blog-ui text-sm font-semibold uppercase tracking-[0.25em] text-lightModeText/60 dark:text-darkModeText/60">
+          {publishedDate}
+        </p>
+      )}
+      <h1 class="mt-4 text-4xl font-bold leading-tight text-lightModeText dark:text-darkModeText">
+        {frontmatter.title}
+      </h1>
+      {frontmatter.heroImage && (
+        <img
+          src={frontmatter.heroImage}
+          alt={frontmatter.heroImageAlt ?? ''}
+          class="mt-8 w-full rounded-lg border border-draculaBorder/20 object-cover"
+          loading="eager"
+          decoding="async"
+        />
+      )}
+      <p class="mt-5 text-xl leading-8 text-lightModeText/75 dark:text-darkModeText/75">
+        {frontmatter.description}
+      </p>
+    </header>
+
+    <div
+      id="markdown"
+      class="prose mt-10 max-w-none break-words text-justify text-lightModeText/90 prose-headings:text-left prose-headings:text-lightModeText prose-a:text-draculaAccent prose-blockquote:text-lightModeText prose-strong:text-lightModeText prose-code:text-left prose-code:text-lightModeText prose-ol:text-left prose-ol:text-lightModeText prose-pre:text-left prose-ul:text-left prose-ul:text-lightModeText dark:text-darkModeText/90 dark:prose-headings:text-darkModeText dark:prose-a:text-draculaAccent dark:prose-blockquote:text-darkModeText dark:prose-strong:text-darkModeText dark:prose-code:text-darkModeText dark:prose-ol:text-darkModeText dark:prose-ul:text-darkModeText"
+    >
+      <slot />
+    </div>
+
+    <footer class="blog-ui mt-14 flex flex-col gap-4 border-t border-draculaBorder/20 pt-8 sm:flex-row sm:items-center sm:justify-between">
+      <a
+        href="/blog/"
+        class="text-sm font-semibold text-draculaAccent2 transition hover:text-draculaAccent"
+      >
+        ← Voltar para o blog
+      </a>
+      <a
+        href="#post-top"
+        class="text-sm font-semibold text-draculaAccent2 transition hover:text-draculaAccent"
+      >
+        ↑ Subir para o início
+      </a>
+    </footer>
+  </article>
+</Base>

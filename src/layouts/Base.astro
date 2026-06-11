@@ -24,7 +24,7 @@ const { frontmatter } = Astro.props as {
   }
 </style>
 
-<html data-theme="github-light">
+<html data-theme="dracula">
   <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -33,10 +33,10 @@ const { frontmatter } = Astro.props as {
     <ViewTransitions />
     <HeadSeo type="website" frontmatter={frontmatter} />
   </head>
-  <body class="text-lightModeText dark:text-darkModeText">
+  <body class="bg-lightModeBg text-lightModeText selection:bg-draculaAccent/30 selection:text-draculaBg dark:bg-darkModeBg dark:text-darkModeText">
     <Nav />
     <div
-      class="fixed left-0 top-0 z-[-2] h-screen w-full bg-lightModeBg bg-lightModeGradient transition-colors duration-[inherit] dark:bg-darkModeBg dark:bg-darkModeGradient"
+      class="fixed left-0 top-0 z-[-2] h-screen w-full bg-lightModeBg bg-[radial-gradient(circle_at_top_right,_rgba(189,147,249,0.2),_transparent_25%),radial-gradient(circle_at_bottom_left,_rgba(139,233,253,0.12),_transparent_30%)] transition-colors duration-[inherit] dark:bg-darkModeBg dark:bg-[radial-gradient(circle_at_top_right,_rgba(189,147,249,0.15),_transparent_25%),radial-gradient(circle_at_bottom_left,_rgba(139,233,253,0.08),_transparent_30%)]"
     >
     </div>
     <div class="pt-20">

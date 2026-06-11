@@ -111,14 +111,14 @@ export default function Search({
       >
         <div
           className={clsx(
-            'mx-auto flex h-full w-[700px] flex-col rounded-base border border-black/50 bg-lightModeBg p-10 transition-all duration-300 dark:border-white/50 dark:bg-darkModeBg w800:w-full w800:p-5',
+            'mx-auto flex h-full w-[700px] flex-col rounded-base border border-draculaBorder/30 bg-lightDraculaPanel/95 p-10 transition-all duration-300 dark:border-draculaBorder/40 dark:bg-draculaPanel/95 w800:w-full w800:p-5',
             isOverlayActive ? 'scale-100' : 'scale-[0.9]',
           )}
         >
           <div className="h-[82px]">
             <input
               onChange={handleInputChange}
-              className="w-full rounded-base bg-transparent p-[10px] px-5 text-xl outline outline-1 outline-black/20 transition-[outline] focus:outline-black/50 dark:outline-white/20 dark:focus:outline-white/50 w600:text-lg"
+              className="w-full rounded-base bg-lightDraculaBg/95 p-[10px] px-5 text-xl outline outline-1 outline-draculaBorder/20 transition-[outline] focus:outline-draculaBorder/50 dark:bg-draculaPanel/95 dark:outline-draculaBorder/30 dark:focus:outline-draculaAccent/40 w600:text-lg"
               placeholder={SEARCH[lang].search}
               type="text"
             />

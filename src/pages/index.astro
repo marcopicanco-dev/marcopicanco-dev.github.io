@@ -1,7 +1,48 @@
 ---
-import { DEFAULT_LANGUAGE_CODE } from '@/config'
-import LandingPage from '@/components/LandingPage.astro'
-import { LANDING_PAGE } from '@/i18n/ui'
+import Base from '@/layouts/Base.astro'
+import { PROJECT_NAME, SITE } from '@/config'
+import {
+  formatBlogDate,
+  getBlogPostUrl,
+  type BlogFrontmatter,
+} from '@/utils/blog'
+
+const posts = await Astro.glob('../content/blog/*.mdx')
+const sortedPosts = posts.sort(
+  (a, b) =>
+    new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime(),
+)
 ---
 
-<LandingPage t={LANDING_PAGE[DEFAULT_LANGUAGE_CODE]} />
+<Base frontmatter={{ title: PROJECT_NAME, description: SITE.description, file: '' }}>
+  <div class="mx-auto max-w-6xl px-5 py-20">
+    <section class="mb-16 text-center">
+      <span class="text-sm uppercase tracking-[0.4em] text-lightModeText/60 dark:text-darkModeText/60">Blog</span>
+      <h1 class="mt-4 text-5xl font-bold text-lightModeText dark:text-darkModeText">
+        Bem-vindo ao blog do {PROJECT_NAME}
+      </h1>
+      <p class="mx-auto mt-6 max-w-3xl text-lg leading-8 text-lightModeText/80 dark:text-darkModeText/80">
+        Conteúdo estático rápido e acessível, construído com Astro e MDX.
+      </p>
+    </section>
+
+    <div class="grid gap-6 md:grid-cols-2">
+      {sortedPosts.map((post) => (
+        <article class="rounded-[2rem] border border-draculaBorder/20 bg-draculaPanel/90 p-8 shadow-[0_24px_40px_-32px_rgba(0,0,0,0.55)] transition hover:-translate-y-1 hover:shadow-[0_24px_48px_-20px_rgba(0,0,0,0.45)]">
+          <a class="text-sm font-semibold text-draculaAccent2 hover:underline" href={getBlogPostUrl(post.frontmatter as BlogFrontmatter)}>
+            {formatBlogDate(post.frontmatter.date)}
+          </a>
+          <h2 class="mt-4 text-2xl font-semibold text-draculaText">
+            <a href={getBlogPostUrl(post.frontmatter as BlogFrontmatter)}>{post.frontmatter.title}</a>
+          </h2>
+          <p class="mt-3 text-base leading-7 text-draculaMuted">
+            {post.frontmatter.description}
+          </p>
+          <a href={getBlogPostUrl(post.frontmatter as BlogFrontmatter)} class="mt-6 inline-flex items-center text-sm font-medium text-draculaAccent2 hover:underline">
+            Ler mais →
+          </a>
+        </article>
+      ))}
+    </div>
+  </div>
+</Base>

@@ -1,12 +1,12 @@
 import { type LanguageKeys } from '@/i18n/ui'
 import type { ThemeObjectOrShikiThemeName } from 'astro-expressive-code'
 
-export const PROJECT_NAME = 'Stellar'
+export const PROJECT_NAME = 'Marco Picanço'
 // used for landing page heading and nav home link
 
 export const SITE = {
-  title: 'Stellar',
-  description: 'Modern type-safe documentation theme for Astro.',
+  title: 'Marco Picanço',
+  description: 'Blog estático construído com Astro.',
   defaultLanguage: 'en_US', // don't mistaken this with DEFAULT_LANGUAGE_CODE below, this is used only for meta tags
 }
 // used for meta tags
@@ -17,7 +17,8 @@ export const DEFAULT_LANGUAGE_CODE: LanguageKeys = 'en'
 export const TWITTER_USERNAME = null
 // enter your twitter username if you have it
 
-export const GITHUB_REPO_URL = 'https://github.com/ekmas/stellar'
+export const GITHUB_REPO_URL = 'https://github.com/marcopicanco-dev'
+export const LINKEDIN_URL = 'https://www.linkedin.com/in/marcopicanco/'
 
 export const GITHUB_EDIT_URL = GITHUB_REPO_URL + '/edit/main/src/pages/'
 // used for edit url link at the bottom of each page in docs so users can edit it
@@ -34,10 +35,10 @@ export const OG_IMAGE = 'og.png'
 // image should be 1200 X 630 pixels
 
 export const LIGHT_MODE_CODE_BLOCK_THEME: ThemeObjectOrShikiThemeName =
-  'github-light'
+  'dracula'
 
 export const DARK_MODE_CODE_BLOCK_THEME: ThemeObjectOrShikiThemeName =
-  'github-dark'
+  'dracula'
 
 // list of all themes you can use: https://expressive-code.com/guides/themes/#available-themes
 // if u change any of those code block theme values make sure to change them as well in astro.config.mjs inside expressiveCode in themes array

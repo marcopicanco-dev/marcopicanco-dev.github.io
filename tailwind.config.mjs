@@ -18,17 +18,36 @@ export default {
         w400: { max: '400px' },
       },
       colors: {
-        lightModeText: '#000',
-        darkModeText: '#fff',
+        lightModeText: '#1f1f2e',
+        darkModeText: '#f8f8f2',
 
-        lightModeBg: colors.neutral[100],
-        darkModeBg: colors.neutral[950],
+        lightModeBg: '#f8f8ff',
+        darkModeBg: '#282a36',
 
-        lightModeIcon: '#000',
-        darkModeIcon: '#fff',
+        lightModeIcon: '#44475a',
+        darkModeIcon: '#f8f8f2',
 
-        lightModeBgHover: colors.neutral[300],
-        darkModeBgHover: colors.neutral[700],
+        lightModeBgHover: '#e4e4ff',
+        darkModeBgHover: '#44475a',
+
+        lightDraculaBg: '#f8f8ff',
+        lightDraculaPanel: '#ececff',
+        lightDraculaBorder: '#d4cfff',
+        lightDraculaText: '#24243d',
+        lightDraculaMuted: '#6d6ea6',
+        lightDraculaAccent: '#8b79f5',
+
+        draculaBg: '#282a36',
+        draculaPanel: '#21222c',
+        draculaBorder: '#6272a4',
+        draculaText: '#f8f8f2',
+        draculaMuted: '#b7b3ff',
+        draculaAccent: '#bd93f9',
+        draculaAccent2: '#ff79c6',
+        draculaGreen: '#50fa7b',
+        draculaYellow: '#f1fa8c',
+        draculaCyan: '#8be9fd',
+        draculaOrange: '#ffb86c',
       },
       backgroundImage: {
         lightModeGradient:

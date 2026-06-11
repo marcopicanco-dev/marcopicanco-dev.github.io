@@ -20,12 +20,20 @@ export const SIDEBAR: SidebarSchema = {
     'styling-config': 'Styling config',
     deploying: 'Deploying',
   },
-  sr: {
-    introduction: 'Uvod',
-    'getting-started': 'Početak',
-    'sidebar-config': 'Sidebar konfiguracija',
-    'writing-docs': 'Pisanje dokumentacije',
-    'styling-config': 'Konfiguracija stilizovanja',
-    deploying: 'Postavljanje sajta',
+  fr: {
+    introduction: 'Introduction',
+    'getting-started': 'Commencer',
+    'sidebar-config': 'Configuration de la sidebar',
+    'writing-docs': 'Ecrire la documentation',
+    'styling-config': 'Configuration du style',
+    deploying: 'Deploiement',
+  },
+  pt: {
+    introduction: 'Introducao',
+    'getting-started': 'Comecando',
+    'sidebar-config': 'Configuracao da sidebar',
+    'writing-docs': 'Escrevendo docs',
+    'styling-config': 'Configuracao de estilo',
+    deploying: 'Deploy',
   },
 }

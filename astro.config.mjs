@@ -6,11 +6,11 @@ import expressiveCode from 'astro-expressive-code'
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://stellar-theme.netlify.app',
+  site: 'https://www.marcopicanco.com',
   integrations: [
     tailwind(),
     expressiveCode({
-      themes: ['github-dark', 'github-light'],
+      themes: ['dracula', 'github-dark', 'github-light'],
       styleOverrides: {
         frames: {
           editorActiveTabIndicatorTopColor: 'transparent',

@@ -1,49 +1,38 @@
 ---
 import {
   GITHUB_REPO_URL,
-  GET_STARTED_LINK,
+  LINKEDIN_URL,
   PROJECT_NAME,
   DEFAULT_LANGUAGE_CODE,
-  SINGLE_LANGUAGE,
 } from '@/config'
 
-import { type LanguageKeys, NAV } from '@/i18n/ui'
-import { type MarkdownInstance } from 'astro'
+import { type LanguageKeys, LANGUAGES, NAV } from '@/i18n/ui'
 import { type MarkdownRecord } from '@/types'
+import {
+  getBlogPostUrl,
+  type BlogFrontmatter,
+} from '@/utils/blog'
 
 import ThemeSwitcher from '@/components/navigation/ThemeSwitcher.astro'
-import SelectLanguage from '@/components/navigation/SelectLanguage.astro'
 import Search from '@/components/navigation/Search'
 import MobileNav from '@/components/navigation/MobileNav.astro'
 
 const langFromURL = Astro.url.pathname.split('/')[1] || DEFAULT_LANGUAGE_CODE
-const lang: LanguageKeys = langFromURL as LanguageKeys
+const lang: LanguageKeys =
+  Object.prototype.hasOwnProperty.call(LANGUAGES, langFromURL)
+    ? (langFromURL as LanguageKeys)
+    : DEFAULT_LANGUAGE_CODE
 
-const isDefaultLandingPage = Astro.url.pathname === '/'
-const isLandingPage = Astro.url.pathname === `/${lang}` || isDefaultLandingPage
-
-const docsLink = isDefaultLandingPage
-  ? `/${DEFAULT_LANGUAGE_CODE}${GET_STARTED_LINK}`
-  : `/${lang}${GET_STARTED_LINK}`
+const blogLink = '/'
 
 const getDocs = async () => {
-  let docs: null | MarkdownInstance<any>[] = null
+  const blogPosts = await Astro.glob('@/content/blog/*.mdx')
 
-  switch (lang) {
-    case 'en':
-      docs = await Astro.glob(`@/pages/en/**`)
-      break
-    case 'sr':
-      docs = await Astro.glob(`@/pages/sr/**`)
-      break
-  }
-  return docs.map((doc: MarkdownInstance<any>) => {
-    return {
-      title: doc.frontmatter.title,
-      description: doc.frontmatter.description,
-      url: doc.url,
-    } as MarkdownRecord
-  })
+  return blogPosts.map((post) => ({
+    title: post.frontmatter.title,
+    description: post.frontmatter.description,
+    url: getBlogPostUrl(post.frontmatter as BlogFrontmatter),
+  }))
 }
 
 const docs: MarkdownRecord[] = await getDocs()
@@ -64,20 +53,16 @@ const docs: MarkdownRecord[] = await getDocs()
       </a>
 
       <div class="z-20 w800:hidden">
-        <Search docs={docs} lang={lang} client:only />
+        <Search docs={docs} lang={lang} client:only="react" />
       </div>
     </div>
 
     <div class="flex items-center text-lg">
-      {
-        isLandingPage && (
-          <a class="mr-10 hover:opacity-70 w800:hidden" href={docsLink}>
-            {NAV[lang].documentation}
-          </a>
-        )
-      }
+      <a class="mr-10 hover:opacity-70 w800:hidden" href={blogLink}>
+        {NAV[lang].blog}
+      </a>
       <a
-        class="mr-10 hover:opacity-70 w500:hidden"
+        class="mr-6 hover:opacity-70 w500:hidden"
         target="_blank"
         href={GITHUB_REPO_URL}
       >
@@ -91,10 +76,23 @@ const docs: MarkdownRecord[] = await getDocs()
             fill-rule="evenodd"></path></svg
         >
       </a>
+      <a
+        class="mr-10 hover:opacity-70 w500:hidden"
+        target="_blank"
+        href={LINKEDIN_URL}
+      >
+        <svg
+          class="h-6 w-6"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+        >
+          <path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1 4.98 2.12 4.98 3.5zM.5 8h4V24h-4V8zm7.5 0h3.7v2.22h.05c.52-.98 1.79-2.02 3.68-2.02 3.94 0 4.67 2.6 4.67 5.98V24h-4V13.5c0-2.42-.04-5.53-3.38-5.53-3.38 0-3.9 2.64-3.9 5.37V24H8V8z" />
+        </svg>
+      </a>
       <div class="w500:hidden">
         <ThemeSwitcher />
       </div>
-      {!SINGLE_LANGUAGE && <SelectLanguage />}
       <MobileNav />
     </div>
   </div>
