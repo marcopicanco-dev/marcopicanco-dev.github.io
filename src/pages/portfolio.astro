@@ -6,11 +6,12 @@ const title = 'Portfólio'
 const description =
   'Projetos, estudos e consultoria em desenvolvimento de software, dados e tecnologia.'
 const email = 'marcopicanco@live.com'
+const profileImage = '/images/perfil.png'
 
 const stats = [
   { value: '+3 anos', label: 'desenvolvendo software' },
   { value: 'Rails', label: 'ecossistema principal' },
-  { value: 'APIs', label: 'REST, testes e documentação' },
+  { value: 'APIs', label: 'REST, Webhooks, testes e documentação' },
   { value: 'Dados', label: 'PostgreSQL, MongoDB e Big Data' },
 ]
 
@@ -217,8 +218,8 @@ const experience = [
             <h1
               class="mt-5 max-w-4xl text-4xl font-bold leading-[1.05] tracking-tight text-[#f8f8f2] sm:text-6xl lg:text-7xl"
             >
-              Desenvolvimento de software com estrutura, testes e visão de
-              produto.
+              Desenvolvimento de software com estrutura sólida, testes e visão
+              de produto.
             </h1>
             <p class="mt-7 max-w-2xl text-lg leading-8 text-[#d7d5ee]">
               Eu crio páginas, ferramentas e materiais técnicos para transformar
@@ -354,6 +355,20 @@ const experience = [
       class="mx-auto grid max-w-6xl scroll-mt-24 gap-10 px-5 py-16 lg:grid-cols-[1fr_0.9fr]"
     >
       <div>
+        <figure
+          class="mb-8 w-full max-w-[280px] overflow-hidden rounded-lg border border-[#6272a4]/20 bg-[#21222c] shadow-[0_28px_90px_-55px_rgba(0,0,0,0.75)] sm:max-w-[320px]"
+        >
+          <img
+            class="aspect-[4/5] h-auto w-full object-cover object-top"
+            src={profileImage}
+            alt="Retrato profissional de Marco Picanço"
+            width="1024"
+            height="1536"
+            loading="lazy"
+            decoding="async"
+            onerror="this.closest('figure')?.remove()"
+          />
+        </figure>
         <p
           class="text-sm font-semibold uppercase tracking-[0.32em] text-[#50fa7b]"
         >
@@ -362,8 +377,7 @@ const experience = [
         <h2
           class="mt-5 text-3xl font-bold tracking-tight text-[#f8f8f2] sm:text-5xl"
         >
-          Desenvolvedor Full Stack com base sólida em engenharia, produto e
-          negócio.
+          Desenvolvedor Full Stack.
         </h2>
         <div class="mt-7 space-y-5 text-base leading-8 text-[#d7d5ee]">
           <p>
@@ -468,9 +482,9 @@ const experience = [
           >
             <h3 class="text-lg font-bold text-[#8be9fd]">Escopo possível</h3>
             <p class="mt-4 text-sm leading-7 text-[#d7d5ee]">
-              Sistemas Ruby on Rails, APIs RESTful, correção de bugs, testes
-              automatizados, evolução de backoffice e integrações com bancos de
-              dados.
+              Sistemas Ruby on Rails, APIs RESTful, Webhooks, correção de bugs,
+              testes automatizados, evolução de backoffice e integrações com
+              bancos de dados.
             </p>
           </article>
           <article
@@ -519,6 +533,13 @@ const experience = [
             target="_blank"
           >
             GitHub
+          </a>
+          <a
+            class="inline-flex items-center justify-center rounded-lg bg-[#bd93f9] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#ff79c6] focus:outline-none focus:ring-2 focus:ring-[#ff79c6] focus:ring-offset-2 focus:ring-offset-[#21222c]"
+            href={`mailto:${email}`}
+            target="_blank"
+          >
+            E-mail
           </a>
         </div>
       </div>
