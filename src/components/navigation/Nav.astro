@@ -22,12 +22,16 @@ const lang: LanguageKeys = Object.prototype.hasOwnProperty.call(
   ? (langFromURL as LanguageKeys)
   : DEFAULT_LANGUAGE_CODE
 
+const isPortfolioPage = Astro.url.pathname.replace(/\/$/, '') === '/portfolio'
+const portfolioSectionHref = (sectionId: string) =>
+  isPortfolioPage ? `#${sectionId}` : `/portfolio/#${sectionId}`
+
 const navLinks = [
   { label: 'Blog', href: '/' },
-  { label: 'Projetos', href: '/portfolio#projetos' },
-  { label: 'Consultoria', href: '/portfolio#consultoria' },
-  { label: 'Sobre', href: '/portfolio#sobre' },
-  { label: 'Contato', href: '/portfolio#contato' },
+  { label: 'Projetos', href: portfolioSectionHref('projetos') },
+  { label: 'Consultoria', href: portfolioSectionHref('consultoria') },
+  { label: 'Sobre', href: portfolioSectionHref('sobre') },
+  { label: 'Contato', href: portfolioSectionHref('contato') },
 ]
 
 const getSearchItems = async () => {
