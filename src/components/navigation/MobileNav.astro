@@ -44,6 +44,7 @@ const portfolioSectionHref = (sectionId: string) =>
   isPortfolioPage ? `#${sectionId}` : `/portfolio/#${sectionId}`
 
 const navLinks = [
+  { label: 'Home', href: portfolioSectionHref('inicio') },
   { label: 'Blog', href: '/' },
   { label: 'Projetos', href: portfolioSectionHref('projetos') },
   { label: 'Consultoria', href: portfolioSectionHref('consultoria') },
