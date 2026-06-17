@@ -107,8 +107,98 @@ const experience = [
 ]
 ---
 
+<style is:global>
+  .portfolio-theme {
+    --portfolio-bg: #f8f8ff;
+    --portfolio-panel: #ffffff;
+    --portfolio-panel-soft: #ececff;
+    --portfolio-text: #24243d;
+    --portfolio-muted: #595b85;
+    --portfolio-border: rgb(98 114 164 / 0.28);
+    --portfolio-purple: #7c5cff;
+    --portfolio-pink: #c43182;
+    --portfolio-cyan: #007d95;
+    --portfolio-green: #12844b;
+    --portfolio-yellow: #7a6200;
+    --portfolio-chip: rgb(212 207 255 / 0.7);
+
+    background-color: var(--portfolio-bg) !important;
+    color: var(--portfolio-text) !important;
+  }
+
+  .dark .portfolio-theme {
+    --portfolio-bg: #282a36;
+    --portfolio-panel: #21222c;
+    --portfolio-panel-soft: #282a36;
+    --portfolio-text: #f8f8f2;
+    --portfolio-muted: #d7d5ee;
+    --portfolio-border: rgb(98 114 164 / 0.28);
+    --portfolio-purple: #bd93f9;
+    --portfolio-pink: #ff79c6;
+    --portfolio-cyan: #8be9fd;
+    --portfolio-green: #50fa7b;
+    --portfolio-yellow: #f1fa8c;
+    --portfolio-chip: rgb(68 71 90 / 0.7);
+  }
+
+  .portfolio-theme [class*='bg-[#282a36]'] {
+    background-color: var(--portfolio-bg) !important;
+  }
+
+  .portfolio-theme [class*='bg-[#21222c]'] {
+    background-color: var(--portfolio-panel) !important;
+  }
+
+  .portfolio-theme [class*='bg-[#44475a]'] {
+    background-color: var(--portfolio-chip) !important;
+  }
+
+  .portfolio-theme [class*='text-[#f8f8f2]'] {
+    color: var(--portfolio-text) !important;
+  }
+
+  .portfolio-theme [class*='text-[#d7d5ee]'] {
+    color: var(--portfolio-muted) !important;
+  }
+
+  .portfolio-theme [class*='text-[#b7b3ff]'],
+  .portfolio-theme [class*='text-[#bd93f9]'] {
+    color: var(--portfolio-purple) !important;
+  }
+
+  .portfolio-theme [class*='text-[#ff79c6]'] {
+    color: var(--portfolio-pink) !important;
+  }
+
+  .portfolio-theme [class*='text-[#8be9fd]'] {
+    color: var(--portfolio-cyan) !important;
+  }
+
+  .portfolio-theme [class*='text-[#50fa7b]'] {
+    color: var(--portfolio-green) !important;
+  }
+
+  .portfolio-theme [class*='text-[#f1fa8c]'] {
+    color: var(--portfolio-yellow) !important;
+  }
+
+  .portfolio-theme [class*='border-[#6272a4]'] {
+    border-color: var(--portfolio-border) !important;
+  }
+
+  .portfolio-theme [class*='shadow-[0_'] {
+    box-shadow: 0 24px 80px -56px rgb(36 36 61 / 0.45) !important;
+  }
+
+  .dark .portfolio-theme [class*='shadow-[0_'] {
+    box-shadow: 0 40px 110px -55px rgb(0 0 0 / 0.9) !important;
+  }
+</style>
+
 <Base frontmatter={{ title, description, file: '' }}>
-  <main class="min-h-screen bg-[#282a36] text-[#f8f8f2]">
+  <main
+    class="portfolio-theme min-h-screen bg-[#282a36] text-[#f8f8f2] transition-colors"
+  >
     <section class="border-b border-[#6272a4]/20">
       <div
         class="mx-auto flex max-w-6xl flex-col gap-14 px-5 pb-20 pt-12 lg:pb-24"
