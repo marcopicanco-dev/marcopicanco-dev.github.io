@@ -1,25 +1,432 @@
 ---
 import Base from '@/layouts/Base.astro'
+import { GITHUB_REPO_URL, LINKEDIN_URL } from '@/config'
 
-const title = 'Portifólio'
-const description = 'Veja alguns projetos e experimentos em desenvolvimento.'
+const title = 'Portfólio'
+const description =
+  'Projetos, estudos e consultoria em desenvolvimento de software, dados e tecnologia.'
+
+const stats = [
+  { value: '+3 anos', label: 'desenvolvendo software' },
+  { value: 'Rails', label: 'ecossistema principal' },
+  { value: 'APIs', label: 'REST, testes e documentação' },
+  { value: 'Dados', label: 'PostgreSQL, MongoDB e Big Data' },
+]
+
+const highlights = [
+  {
+    title: 'Para quem é',
+    text: 'Equipes que precisam evoluir sistemas web, corrigir bugs, criar APIs e manter produtos com qualidade técnica e visão de negócio.',
+  },
+  {
+    title: 'O que você leva',
+    text: 'Implementação cuidadosa com Ruby on Rails, front end, bancos de dados, testes automatizados e documentação clara.',
+  },
+  {
+    title: 'Diferencial',
+    text: 'Vivência prévia em vendas e sucesso do cliente, somada à formação em Engenharia de Software, Big Data e Ciência da Computação.',
+  },
+]
+
+const projects = [
+  {
+    id: '01',
+    title: 'Blog técnico com Astro',
+    text: 'Site estático rápido, organizado para publicar textos sobre programação, matemática, ciência e tecnologia.',
+    tags: ['Astro', 'MDX', 'Tailwind'],
+  },
+  {
+    id: '02',
+    title: 'Estudos de estruturas de dados',
+    text: 'Conteúdos e experimentos voltados a revisão de fundamentos usando Python e exemplos aplicáveis.',
+    tags: ['Python', 'Algoritmos', 'Ensino'],
+  },
+  {
+    id: '03',
+    title: 'Experimentos de interface',
+    text: 'Protótipos de páginas, fluxos e componentes com foco em clareza, hierarquia visual e responsividade.',
+    tags: ['UX/UI', 'Design System', 'Frontend'],
+  },
+  {
+    id: '04',
+    title: 'Automação e análise',
+    text: 'Scripts e pequenas ferramentas para reduzir trabalho repetitivo, validar ideias e organizar informação.',
+    tags: ['Python', 'Dados', 'CLI'],
+  },
+]
+
+const stack = [
+  'Ruby',
+  'Ruby on Rails',
+  'HTML',
+  'CSS',
+  'JavaScript',
+  'PostgreSQL',
+  'MongoDB',
+  'APIs RESTful',
+  'RSpec',
+  'Minitest',
+  'TDD/BDD',
+  'Clean Code',
+  'SOLID',
+  'Design Patterns',
+  'Git',
+  'Scrum',
+  'Kanban',
+  'Python',
+  'R',
+]
+
+const education = [
+  {
+    title: 'Pós-graduação em Engenharia de Software',
+    school: 'PUC Minas',
+    period: 'mar de 2023 - abr de 2024',
+  },
+  {
+    title: 'MBA em Big Data',
+    school: 'Descomplica Faculdade Digital',
+    period: '2020 - 2021',
+  },
+  {
+    title: 'Ciência da Computação',
+    school: 'Anhanguera Educacional',
+    period: '2017 - 2021',
+  },
+  {
+    title: 'Bacharelado em Administração',
+    school: 'Estácio',
+    period: '2002 - 2006',
+  },
+]
+
+const experience = [
+  'Desenvolvedor Full Stack na OrçaFascio, atuando com sustentação, evolução e novas funcionalidades no sistema interno Backoffice.',
+  'Experiência com resolução de bugs, testes manuais e automatizados, criação, integração, documentação e testes de APIs RESTful.',
+  'Atuação anterior em sucesso do cliente, vendas consultivas, implantação e ensino, trazendo visão prática sobre negócio e usuário final.',
+]
 ---
 
 <Base frontmatter={{ title, description, file: '' }}>
-  <main class="mx-auto max-w-6xl px-5 py-24">
-    <section class="rounded-3xl border border-draculaBorder/20 bg-white/80 p-10 shadow-xl shadow-black/5 backdrop-blur-sm transition-colors dark:bg-[#111827]/80 dark:border-white/10">
-      <p class="text-sm uppercase tracking-[0.35em] text-lightModeText/60 dark:text-darkModeText/60">Portifólio</p>
-      <h1 class="mt-6 text-4xl font-bold tracking-tight text-draculaText dark:text-white sm:text-5xl">Projetos em desenvolvimento</h1>
-      <p class="mt-6 max-w-3xl text-lg leading-8 text-lightModeText/90 dark:text-darkModeText/80">Aqui em breve será possível apresentar alguns dos meus projetos, demonstrações e estudos de caso. Fique atento para atualizações e novos trabalhos.</p>
-      <div class="mt-12 grid gap-6 sm:grid-cols-2">
-        <article class="rounded-3xl border border-draculaBorder/20 bg-lightModeBg p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md dark:bg-[#0f172a]/90">
-          <h2 class="text-xl font-semibold text-draculaText dark:text-white">Projeto em breve</h2>
-          <p class="mt-4 text-sm leading-6 text-lightModeText/80 dark:text-darkModeText/80">Estou preparando um novo portfolio de projetos com tecnologias modernas, design e implementação real.</p>
-        </article>
-        <article class="rounded-3xl border border-draculaBorder/20 bg-lightModeBg p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md dark:bg-[#0f172a]/90">
-          <h2 class="text-xl font-semibold text-draculaText dark:text-white">Acompanhe as novidades</h2>
-          <p class="mt-4 text-sm leading-6 text-lightModeText/80 dark:text-darkModeText/80">Quando estiver pronto, esta página será o ponto de encontro para projetos, estudos e itens de portfólio.</p>
-        </article>
+  <main class="min-h-screen bg-[#282a36] text-[#f8f8f2]">
+    <section class="border-b border-[#6272a4]/20">
+      <div
+        class="mx-auto flex max-w-6xl flex-col gap-14 px-5 pb-20 pt-12 lg:pb-24"
+      >
+        <div
+          id="inicio"
+          class="grid items-center gap-10 lg:grid-cols-[1.08fr_0.92fr]"
+        >
+          <div>
+            <p
+              class="text-sm font-semibold uppercase tracking-[0.32em] text-[#8be9fd]"
+            >
+              Ruby on Rails · Full Stack · Qualidade de Software
+            </p>
+            <h1
+              class="mt-5 max-w-4xl text-4xl font-bold leading-[1.05] tracking-tight text-[#f8f8f2] sm:text-6xl lg:text-7xl"
+            >
+              Desenvolvimento de software com estrutura, testes e visão de
+              produto.
+            </h1>
+            <p class="mt-7 max-w-2xl text-lg leading-8 text-[#d7d5ee]">
+              Eu crio páginas, ferramentas e materiais técnicos para transformar
+              problemas reais em soluções web bem organizadas, fáceis de manter
+              e conectadas às necessidades do negócio.
+            </p>
+            <div class="mt-9 flex flex-wrap gap-3">
+              <a
+                class="inline-flex items-center justify-center rounded-lg bg-[#bd93f9] px-5 py-3 text-sm font-bold text-[#282a36] transition hover:bg-[#ff79c6] focus:outline-none focus:ring-2 focus:ring-[#8be9fd] focus:ring-offset-2 focus:ring-offset-[#282a36]"
+                href="#projetos"
+              >
+                Ver projetos
+              </a>
+              <a
+                class="inline-flex items-center justify-center rounded-lg border border-[#6272a4]/60 px-5 py-3 text-sm font-bold text-[#f8f8f2] transition hover:border-[#8be9fd] hover:text-[#8be9fd] focus:outline-none focus:ring-2 focus:ring-[#8be9fd] focus:ring-offset-2 focus:ring-offset-[#282a36]"
+                href="#contato"
+              >
+                Falar comigo
+              </a>
+            </div>
+          </div>
+
+          <aside
+            class="rounded-lg border border-[#6272a4]/25 bg-[#21222c] p-5 shadow-[0_40px_110px_-55px_rgba(0,0,0,0.9)]"
+          >
+            <div
+              class="flex items-center gap-2 border-b border-[#6272a4]/20 pb-4"
+            >
+              <span class="h-3 w-3 rounded-full bg-[#ff5555]"></span>
+              <span class="h-3 w-3 rounded-full bg-[#f1fa8c]"></span>
+              <span class="h-3 w-3 rounded-full bg-[#50fa7b]"></span>
+              <span class="ml-auto text-xs text-[#b7b3ff]">portfolio.rb</span>
+            </div>
+            <div
+              class="space-y-5 pt-5 font-mono text-sm leading-7 text-[#d7d5ee]"
+            >
+              <p>
+                foco = <span class="text-[#f1fa8c]"
+                  >"resolver problemas reais"</span
+                >
+              </p>
+              <p>
+                software<br /><span class="pl-6 text-[#50fa7b]">.testado</span
+                ><br /><span class="pl-6 text-[#50fa7b]">.bem_escrito</span><br
+                /><span class="pl-6 text-[#50fa7b]">.facil_de_manter</span>
+              </p>
+            </div>
+          </aside>
+        </div>
+
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {
+            stats.map((item) => (
+              <div class="rounded-lg border border-[#6272a4]/20 bg-[#21222c]/75 p-5">
+                <p class="text-2xl font-bold text-[#8be9fd]">{item.value}</p>
+                <p class="mt-2 text-sm text-[#d7d5ee]">{item.label}</p>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="mx-auto grid max-w-6xl gap-4 px-5 py-14 md:grid-cols-3">
+      {
+        highlights.map((item) => (
+          <article class="rounded-lg border border-[#6272a4]/20 bg-[#21222c]/80 p-6">
+            <h2 class="text-lg font-bold text-[#f8f8f2]">{item.title}</h2>
+            <p class="mt-4 text-sm leading-7 text-[#d7d5ee]">{item.text}</p>
+          </article>
+        ))
+      }
+    </section>
+
+    <section id="projetos" class="border-y border-[#6272a4]/20 bg-[#21222c]/45">
+      <div class="mx-auto max-w-6xl px-5 py-16">
+        <p
+          class="text-sm font-semibold uppercase tracking-[0.32em] text-[#ff79c6]"
+        >
+          Projetos e estudos
+        </p>
+        <div class="mt-5 grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
+          <div>
+            <h2
+              class="text-3xl font-bold tracking-tight text-[#f8f8f2] sm:text-5xl"
+            >
+              Uma trilha pensada para mostrar prática, repertório e evolução.
+            </h2>
+            <p class="mt-5 text-base leading-8 text-[#d7d5ee]">
+              O portfólio reúne o que está em produção, estudos publicados e
+              frentes de experimentação. A ideia é deixar claro como penso,
+              projeto e implemento.
+            </p>
+          </div>
+
+          <div class="space-y-4">
+            {
+              projects.map((project) => (
+                <article class="rounded-lg border border-[#6272a4]/20 bg-[#282a36] p-5 transition hover:-translate-y-1 hover:border-[#8be9fd]/70">
+                  <div class="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <p class="text-sm font-bold text-[#bd93f9]">
+                        {project.id}
+                      </p>
+                      <h3 class="mt-1 text-xl font-bold text-[#f8f8f2]">
+                        {project.title}
+                      </h3>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                      {project.tags.map((tag) => (
+                        <span class="rounded-md border border-[#6272a4]/30 px-2.5 py-1 text-xs font-medium text-[#8be9fd]">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <p class="mt-4 text-sm leading-7 text-[#d7d5ee]">
+                    {project.text}
+                  </p>
+                </article>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section
+      id="sobre"
+      class="mx-auto grid max-w-6xl gap-10 px-5 py-16 lg:grid-cols-[1fr_0.9fr]"
+    >
+      <div>
+        <p
+          class="text-sm font-semibold uppercase tracking-[0.32em] text-[#50fa7b]"
+        >
+          Sobre
+        </p>
+        <h2
+          class="mt-5 text-3xl font-bold tracking-tight text-[#f8f8f2] sm:text-5xl"
+        >
+          Desenvolvedor Full Stack com base sólida em engenharia, produto e
+          negócio.
+        </h2>
+        <div class="mt-7 space-y-5 text-base leading-8 text-[#d7d5ee]">
+          <p>
+            Desenvolvedor Full Stack apaixonado por tecnologia, arquitetura de
+            software e resolução de problemas. Com mais de 3 anos de
+            experiência, atuo no ecossistema Ruby on Rails desenvolvendo
+            soluções escaláveis, APIs RESTful, integrações, testes automatizados
+            e aplicações apoiadas em boas práticas de engenharia de software.
+          </p>
+          <p>
+            Atualmente, faço parte da equipe da OrçaFascio, onde evoluí da
+            correção de bugs e implementação de testes para a criação de APIs,
+            documentação técnica e sustentação do Backoffice da plataforma.
+          </p>
+          <p>
+            Minha formação reúne Engenharia de Software, Big Data, Ciência da
+            Computação e Administração, proporcionando uma visão que conecta
+            tecnologia, negócios e experiência do usuário. Antes de migrar para
+            o desenvolvimento, atuei nas áreas de vendas e sucesso do cliente, o
+            que fortaleceu minha capacidade de compreender necessidades reais e
+            transformar desafios em soluções de valor.
+          </p>
+          <p>
+            Fora da tecnologia, gosto de praticar esportes como xadrez, corrida,
+            natação e sou praticante de jiu-jitsu, atualmente faixa roxa. A
+            disciplina, a constância e a estratégia aprendidas nos tatames
+            acompanham minha forma de trabalhar: evoluir continuamente, manter a
+            calma sob pressão e buscar sempre a melhor solução para cada
+            desafio.
+          </p>
+        </div>
+      </div>
+
+      <aside class="space-y-4">
+        <div class="rounded-lg border border-[#6272a4]/20 bg-[#21222c] p-6">
+          <h3 class="text-xl font-bold text-[#f8f8f2]">Experiência atual</h3>
+          <div class="mt-5 space-y-4">
+            {
+              experience.map((item) => (
+                <p class="border-l-2 border-[#bd93f9] pl-4 text-sm leading-7 text-[#d7d5ee]">
+                  {item}
+                </p>
+              ))
+            }
+          </div>
+        </div>
+
+        <div class="rounded-lg border border-[#6272a4]/20 bg-[#21222c] p-6">
+          <h3 class="text-xl font-bold text-[#f8f8f2]">Formação acadêmica</h3>
+          <div class="mt-5 space-y-4">
+            {
+              education.map((item) => (
+                <div class="rounded-md bg-[#282a36] p-4">
+                  <p class="text-sm font-bold text-[#8be9fd]">{item.title}</p>
+                  <p class="mt-1 text-sm text-[#f8f8f2]">{item.school}</p>
+                  <p class="mt-1 text-xs font-medium text-[#b7b3ff]">
+                    {item.period}
+                  </p>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+
+        <div class="rounded-lg border border-[#6272a4]/20 bg-[#21222c] p-6">
+          <h3 class="text-xl font-bold text-[#f8f8f2]">Stack e repertório</h3>
+          <div class="mt-6 flex flex-wrap gap-2">
+            {
+              stack.map((item) => (
+                <span class="rounded-md bg-[#44475a]/70 px-3 py-2 text-sm font-medium text-[#f8f8f2]">
+                  {item}
+                </span>
+              ))
+            }
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section
+      id="consultoria"
+      class="border-y border-[#6272a4]/20 bg-[#21222c]/45"
+    >
+      <div
+        class="mx-auto grid max-w-6xl gap-8 px-5 py-16 lg:grid-cols-[0.9fr_1.1fr]"
+      >
+        <div>
+          <p
+            class="text-sm font-semibold uppercase tracking-[0.32em] text-[#f1fa8c]"
+          >
+            Consultoria técnica
+          </p>
+          <h2
+            class="mt-5 text-3xl font-bold tracking-tight text-[#f8f8f2] sm:text-5xl"
+          >
+            Apoio para projetos que precisam sair do rascunho e ganhar forma.
+          </h2>
+        </div>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <article
+            class="rounded-lg border border-[#6272a4]/20 bg-[#282a36] p-6"
+          >
+            <h3 class="text-lg font-bold text-[#8be9fd]">Escopo possível</h3>
+            <p class="mt-4 text-sm leading-7 text-[#d7d5ee]">
+              Sistemas Ruby on Rails, APIs RESTful, correção de bugs, testes
+              automatizados, evolução de backoffice e integrações com bancos de
+              dados.
+            </p>
+          </article>
+          <article
+            class="rounded-lg border border-[#6272a4]/20 bg-[#282a36] p-6"
+          >
+            <h3 class="text-lg font-bold text-[#ff79c6]">Forma de trabalho</h3>
+            <p class="mt-4 text-sm leading-7 text-[#d7d5ee]">
+              Diagnóstico curto, definição de prioridades, implementação com
+              qualidade, documentação objetiva e entrega incremental usando
+              práticas ágeis.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="contato" class="mx-auto max-w-6xl px-5 py-16">
+      <div
+        class="grid gap-8 rounded-lg border border-[#6272a4]/25 bg-[#21222c] p-6 md:grid-cols-[1fr_auto] md:items-center md:p-8"
+      >
+        <div>
+          <p
+            class="text-sm font-semibold uppercase tracking-[0.32em] text-[#bd93f9]"
+          >
+            Contato direto
+          </p>
+          <h2 class="mt-4 text-3xl font-bold text-[#f8f8f2]">
+            Vamos conversar sobre o próximo projeto.
+          </h2>
+          <p class="mt-4 max-w-2xl text-base leading-8 text-[#d7d5ee]">
+            Envie uma mensagem para alinhar contexto, objetivo e o melhor
+            caminho de implementação
+          </p>
+        </div>
+        <div class="flex flex-wrap gap-3 md:justify-end">
+          <a
+            class="inline-flex items-center justify-center rounded-lg bg-[#50fa7b] px-5 py-3 text-sm font-bold text-[#282a36] transition hover:bg-[#8be9fd] focus:outline-none focus:ring-2 focus:ring-[#ff79c6] focus:ring-offset-2 focus:ring-offset-[#21222c]"
+            href={LINKEDIN_URL}
+            target="_blank"
+          >
+            LinkedIn
+          </a>
+          <a
+            class="inline-flex items-center justify-center rounded-lg border border-[#6272a4]/60 px-5 py-3 text-sm font-bold text-[#f8f8f2] transition hover:border-[#bd93f9] hover:text-[#bd93f9] focus:outline-none focus:ring-2 focus:ring-[#ff79c6] focus:ring-offset-2 focus:ring-offset-[#21222c]"
+            href={GITHUB_REPO_URL}
+            target="_blank"
+          >
+            GitHub
+          </a>
+        </div>
       </div>
     </section>
   </main>

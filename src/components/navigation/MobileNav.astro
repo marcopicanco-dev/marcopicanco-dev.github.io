@@ -6,10 +6,12 @@ import { DEFAULT_LANGUAGE_CODE } from '@/config'
 import { getBlogPostUrl, type BlogFrontmatter } from '@/utils/blog'
 
 const langFromURL = Astro.url.pathname.split('/')[1] || DEFAULT_LANGUAGE_CODE
-const lang: LanguageKeys =
-  Object.prototype.hasOwnProperty.call(LANGUAGES, langFromURL)
-    ? (langFromURL as LanguageKeys)
-    : DEFAULT_LANGUAGE_CODE
+const lang: LanguageKeys = Object.prototype.hasOwnProperty.call(
+  LANGUAGES,
+  langFromURL,
+)
+  ? (langFromURL as LanguageKeys)
+  : DEFAULT_LANGUAGE_CODE
 
 const getPosts = async () => {
   const blogPosts = await Astro.glob('@/content/blog/*.mdx')
@@ -29,11 +31,21 @@ const getPosts = async () => {
 }
 
 const posts = await getPosts()
-const searchItems: SearchRecord[] = posts.map(({ title, description, url }) => ({
-  title,
-  description,
-  url,
-}))
+const searchItems: SearchRecord[] = posts.map(
+  ({ title, description, url }) => ({
+    title,
+    description,
+    url,
+  }),
+)
+
+const navLinks = [
+  { label: 'Blog', href: '/' },
+  { label: 'Projetos', href: '/portfolio#projetos' },
+  { label: 'Consultoria', href: '/portfolio#consultoria' },
+  { label: 'Sobre', href: '/portfolio#sobre' },
+  { label: 'Contato', href: '/portfolio#contato' },
+]
 ---
 
 <button data-active="false" id="hamburger-btn" class="ml-6 hidden w800:inline">
@@ -88,6 +100,18 @@ const searchItems: SearchRecord[] = posts.map(({ title, description, url }) => (
   class="fixed left-0 top-20 z-50 hidden h-[calc(100dvh-80px)] w-full bg-lightDraculaBg bg-opacity-95 py-8 transition-colors duration-[inherit] dark:bg-darkModeBg"
 >
   <div class="w-full px-8 w500:px-5">
+    <nav class="mb-8 grid gap-4 text-xl font-semibold">
+      {
+        navLinks.map((link) => (
+          <a
+            class="text-lightModeText hover:opacity-70 dark:text-darkModeText"
+            href={link.href}
+          >
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
     <div class="w-full">
       <Search items={searchItems} lang={lang} client:only="react" />
     </div>
