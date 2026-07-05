@@ -1,0 +1,624 @@
+---
+import Base from '@/layouts/Base.astro'
+import { GITHUB_REPO_URL, LINKEDIN_URL } from '@/config'
+
+const title = 'Portfólio'
+const description =
+  'Projetos, estudos e consultoria em desenvolvimento de software, dados e tecnologia.'
+const email = 'marcopicanco@live.com'
+const profileImage = '/images/perfil.png'
+
+const stats = [
+  { value: '+3 anos', label: 'desenvolvendo software' },
+  { value: 'Rails', label: 'ecossistema principal' },
+  { value: 'APIs', label: 'REST, Webhooks, testes e documentação' },
+  { value: 'Dados', label: 'PostgreSQL, MongoDB e Big Data' },
+]
+
+const highlights = [
+  {
+    title: 'Para quem é',
+    text: 'Equipes que precisam evoluir sistemas web, corrigir bugs, criar APIs e manter produtos com qualidade técnica e visão de negócio.',
+  },
+  {
+    title: 'O que você leva',
+    text: 'Implementação cuidadosa com Ruby on Rails, front end, bancos de dados, testes automatizados e documentação clara.',
+  },
+  {
+    title: 'Diferencial',
+    text: 'Vivência prévia em vendas e sucesso do cliente, somada à formação em Engenharia de Software, Big Data e Ciência da Computação.',
+  },
+]
+
+const projects = [
+  {
+    id: '01',
+    title: 'Blog técnico com Astro',
+    text: 'Site estático rápido, organizado para publicar textos sobre programação, matemática, ciência e tecnologia.',
+    tags: ['Astro', 'MDX', 'Tailwind'],
+  },
+  {
+    id: '02',
+    title: 'Estudos de estruturas de dados',
+    text: 'Conteúdos e experimentos voltados a revisão de fundamentos usando Python e exemplos aplicáveis.',
+    tags: ['Python', 'Algoritmos', 'Ensino'],
+  },
+  {
+    id: '03',
+    title: 'Experimentos de interface',
+    text: 'Protótipos de páginas, fluxos e componentes com foco em clareza, hierarquia visual e responsividade.',
+    tags: ['UX/UI', 'Design System', 'Frontend'],
+  },
+  {
+    id: '04',
+    title: 'Automação e análise',
+    text: 'Scripts e pequenas ferramentas para reduzir trabalho repetitivo, validar ideias e organizar informação.',
+    tags: ['Python', 'Dados', 'CLI'],
+  },
+]
+
+const stack = [
+  'Ruby',
+  'Ruby on Rails',
+  'HTML',
+  'CSS',
+  'JavaScript',
+  'PostgreSQL',
+  'MongoDB',
+  'APIs RESTful',
+  'RSpec',
+  'Minitest',
+  'TDD/BDD',
+  'Clean Code',
+  'SOLID',
+  'Design Patterns',
+  'Git',
+  'Scrum',
+  'Kanban',
+  'Python',
+  'R',
+]
+
+const education = [
+  {
+    title: 'Pós-graduação em Engenharia de Software',
+    school: 'PUC Minas',
+    period: 'mar de 2023 - abr de 2024',
+  },
+  {
+    title: 'MBA em Big Data',
+    school: 'Descomplica Faculdade Digital',
+    period: '2020 - 2021',
+  },
+  {
+    title: 'Ciência da Computação',
+    school: 'Anhanguera Educacional',
+    period: '2017 - 2021',
+  },
+  {
+    title: 'Bacharelado em Administração',
+    school: 'Estácio',
+    period: '2002 - 2006',
+  },
+]
+
+const experience = [
+  'Desenvolvedor Full Stack na OrçaFascio, atuando com sustentação, evolução e novas funcionalidades no sistema interno Backoffice.',
+  'Experiência com resolução de bugs, testes manuais e automatizados, criação, integração, documentação e testes de APIs RESTful.',
+  'Atuação anterior em sucesso do cliente, vendas consultivas, implantação e ensino, trazendo visão prática sobre negócio e usuário final.',
+]
+---
+
+<style is:global>
+  .portfolio-theme {
+    --portfolio-bg: #f8f8ff;
+    --portfolio-panel: #ffffff;
+    --portfolio-panel-soft: #ececff;
+    --portfolio-text: #24243d;
+    --portfolio-muted: #595b85;
+    --portfolio-border: rgb(98 114 164 / 0.28);
+    --portfolio-purple: #7c5cff;
+    --portfolio-pink: #c43182;
+    --portfolio-cyan: #007d95;
+    --portfolio-green: #12844b;
+    --portfolio-yellow: #7a6200;
+    --portfolio-chip: rgb(212 207 255 / 0.7);
+
+    background-color: var(--portfolio-bg) !important;
+    color: var(--portfolio-text) !important;
+  }
+
+  .dark .portfolio-theme {
+    --portfolio-bg: #282a36;
+    --portfolio-panel: #21222c;
+    --portfolio-panel-soft: #282a36;
+    --portfolio-text: #f8f8f2;
+    --portfolio-muted: #d7d5ee;
+    --portfolio-border: rgb(98 114 164 / 0.28);
+    --portfolio-purple: #bd93f9;
+    --portfolio-pink: #ff79c6;
+    --portfolio-cyan: #8be9fd;
+    --portfolio-green: #50fa7b;
+    --portfolio-yellow: #f1fa8c;
+    --portfolio-chip: rgb(68 71 90 / 0.7);
+  }
+
+  .portfolio-theme [class*='bg-[#282a36]'] {
+    background-color: var(--portfolio-bg) !important;
+  }
+
+  .portfolio-theme [class*='bg-[#21222c]'] {
+    background-color: var(--portfolio-panel) !important;
+  }
+
+  .portfolio-theme [class*='bg-[#44475a]'] {
+    background-color: var(--portfolio-chip) !important;
+  }
+
+  .portfolio-theme [class*='text-[#f8f8f2]'] {
+    color: var(--portfolio-text) !important;
+  }
+
+  .portfolio-theme [class*='text-[#d7d5ee]'] {
+    color: var(--portfolio-muted) !important;
+  }
+
+  .portfolio-theme [class*='text-[#b7b3ff]'],
+  .portfolio-theme [class*='text-[#bd93f9]'] {
+    color: var(--portfolio-purple) !important;
+  }
+
+  .portfolio-theme [class*='text-[#ff79c6]'] {
+    color: var(--portfolio-pink) !important;
+  }
+
+  .portfolio-theme [class*='text-[#8be9fd]'] {
+    color: var(--portfolio-cyan) !important;
+  }
+
+  .portfolio-theme [class*='text-[#50fa7b]'] {
+    color: var(--portfolio-green) !important;
+  }
+
+  .portfolio-theme [class*='text-[#f1fa8c]'] {
+    color: var(--portfolio-yellow) !important;
+  }
+
+  .portfolio-theme [class*='border-[#6272a4]'] {
+    border-color: var(--portfolio-border) !important;
+  }
+
+  .portfolio-theme [class*='shadow-[0_'] {
+    box-shadow: 0 24px 80px -56px rgb(36 36 61 / 0.45) !important;
+  }
+
+  .dark .portfolio-theme [class*='shadow-[0_'] {
+    box-shadow: 0 40px 110px -55px rgb(0 0 0 / 0.9) !important;
+  }
+</style>
+
+<Base frontmatter={{ title, description, file: '' }}>
+<main
+  class="portfolio-theme min-h-screen bg-[#282a36] text-[#f8f8f2] transition-colors"
+>
+<section class="border-b border-[#6272a4]/20">
+  <div
+    class="mx-auto flex max-w-6xl flex-col gap-14 px-5 pb-20 pt-12 lg:pb-24"
+  >
+    <div
+      id="inicio"
+      class="grid scroll-mt-24 items-center gap-10 lg:grid-cols-[1.08fr_0.92fr]"
+    >
+      <div>
+        <p
+          class="text-sm font-semibold uppercase tracking-[0.32em] text-[#8be9fd]"
+        >
+          Ruby on Rails · Full Stack · Qualidade de Software
+        </p>
+        <h1
+          class="mt-5 max-w-4xl text-4xl font-bold leading-[1.05] tracking-tight text-[#f8f8f2] sm:text-6xl lg:text-7xl"
+        >
+          Desenvolvimento de software com estrutura sólida, testes e visão
+          de produto.
+        </h1>
+        <p class="mt-7 max-w-2xl text-lg leading-8 text-[#d7d5ee]">
+          Eu crio páginas, ferramentas e materiais técnicos para transformar
+          problemas reais em soluções web bem organizadas, fáceis de manter
+          e conectadas às necessidades do negócio.
+        </p>
+        <div class="mt-9 flex flex-wrap gap-3">
+          <a
+            class="inline-flex items-center justify-center rounded-lg bg-[#bd93f9] px-5 py-3 text-sm font-bold text-[#282a36] transition hover:bg-[#ff79c6] focus:outline-none focus:ring-2 focus:ring-[#8be9fd] focus:ring-offset-2 focus:ring-offset-[#282a36]"
+            href="#projetos"
+          >
+            Ver projetos
+          </a>
+          <a
+            class="inline-flex items-center justify-center rounded-lg border border-[#6272a4]/60 px-5 py-3 text-sm font-bold text-[#f8f8f2] transition hover:border-[#8be9fd] hover:text-[#8be9fd] focus:outline-none focus:ring-2 focus:ring-[#8be9fd] focus:ring-offset-2 focus:ring-offset-[#282a36]"
+            href="#contato"
+          >
+            Falar comigo
+          </a>
+        </div>
+      </div>
+
+      <aside
+        class="rounded-lg border border-[#6272a4]/25 bg-[#21222c] p-5 shadow-[0_40px_110px_-55px_rgba(0,0,0,0.9)]"
+      >
+        <div
+          class="flex items-center gap-2 border-b border-[#6272a4]/20 pb-4"
+        >
+          <span class="h-3 w-3 rounded-full bg-[#ff5555]"></span>
+          <span class="h-3 w-3 rounded-full bg-[#f1fa8c]"></span>
+          <span class="h-3 w-3 rounded-full bg-[#50fa7b]"></span>
+          <span class="ml-auto text-xs text-[#b7b3ff]">portfolio.rb</span>
+        </div>
+        <div
+          class="space-y-5 pt-5 font-mono text-sm leading-7 text-[#d7d5ee]"
+        >
+          <p>
+            foco = <span class="text-[#f1fa8c]"
+              >"resolver problemas reais"</span
+            >
+          </p>
+          <p>
+            software<br /><span class="pl-6 text-[#50fa7b]">.testado</span
+            ><br /><span class="pl-6 text-[#50fa7b]">.bem_escrito</span><br
+            /><span class="pl-6 text-[#50fa7b]">.facil_de_manter</span>
+          </p>
+        </div>
+      </aside>
+    </div>
+
+    <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        stats.map((item) => (
+          <div class="rounded-lg border border-[#6272a4]/20 bg-[#21222c]/75 p-5">
+            <p class="text-2xl font-bold text-[#8be9fd]">{item.value}</p>
+            <p class="mt-2 text-sm text-[#d7d5ee]">{item.label}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<section class="mx-auto grid max-w-6xl gap-4 px-5 py-14 md:grid-cols-3">
+  {
+    highlights.map((item) => (
+      <article class="rounded-lg border border-[#6272a4]/20 bg-[#21222c]/80 p-6">
+        <h2 class="text-lg font-bold text-[#f8f8f2]">{item.title}</h2>
+        <p class="mt-4 text-sm leading-7 text-[#d7d5ee]">{item.text}</p>
+      </article>
+    ))
+  }
+</section>
+
+<section
+  id="projetos"
+  class="scroll-mt-24 border-y border-[#6272a4]/20 bg-[#21222c]/45"
+>
+  <div class="mx-auto max-w-6xl px-5 py-16">
+    <p
+      class="text-sm font-semibold uppercase tracking-[0.32em] text-[#ff79c6]"
+    >
+      Projetos e estudos
+    </p>
+    <div class="mt-5 grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
+      <div>
+        <h2
+          class="text-3xl font-bold tracking-tight text-[#f8f8f2] sm:text-5xl"
+        >
+          Uma trilha pensada para mostrar prática, repertório e evolução.
+        </h2>
+        <p class="mt-5 text-base leading-8 text-[#d7d5ee]">
+          O portfólio reúne o que está em produção, estudos publicados e
+          frentes de experimentação. A ideia é deixar claro como penso,
+          projeto e implemento.
+        </p>
+      </div>
+
+      <div class="space-y-4">
+        {
+          projects.map((project) => (
+            <article class="rounded-lg border border-[#6272a4]/20 bg-[#282a36] p-5 transition hover:-translate-y-1 hover:border-[#8be9fd]/70">
+              <div class="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <p class="text-sm font-bold text-[#bd93f9]">
+                    {project.id}
+                  </p>
+                  <h3 class="mt-1 text-xl font-bold text-[#f8f8f2]">
+                    {project.title}
+                  </h3>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                  {project.tags.map((tag) => (
+                    <span class="rounded-md border border-[#6272a4]/30 px-2.5 py-1 text-xs font-medium text-[#8be9fd]">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <p class="mt-4 text-sm leading-7 text-[#d7d5ee]">
+                {project.text}
+              </p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<section
+  id="sobre"
+  class="mx-auto grid max-w-6xl scroll-mt-24 gap-10 px-5 py-16 lg:grid-cols-[1fr_0.9fr]"
+>
+  <div>
+    <figure
+      class="mb-8 w-full max-w-[280px] overflow-hidden rounded-lg border border-[#6272a4]/20 bg-[#21222c] shadow-[0_28px_90px_-55px_rgba(0,0,0,0.75)] sm:max-w-[320px]"
+    >
+      <img
+        class="aspect-[4/5] h-auto w-full object-cover object-top"
+        src={profileImage}
+        alt="Retrato profissional de Marco Picanço"
+        width="1024"
+        height="1536"
+        loading="lazy"
+        decoding="async"
+        onerror="this.closest('figure')?.remove()"
+      />
+    </figure>
+    <p
+      class="text-sm font-semibold uppercase tracking-[0.32em] text-[#50fa7b]"
+    >
+      Sobre
+    </p>
+    <h2
+      class="mt-5 text-3xl font-bold tracking-tight text-[#f8f8f2] sm:text-5xl"
+    >
+      Desenvolvedor Full Stack.
+    </h2>
+    <div class="mt-7 space-y-5 text-base leading-8 text-[#d7d5ee]">
+      <p>
+        Desenvolvedor Full Stack apaixonado por tecnologia, arquitetura de
+        software e resolução de problemas. Com mais de 3 anos de
+        experiência, atuo no ecossistema Ruby on Rails desenvolvendo
+        soluções escaláveis, APIs RESTful, integrações, testes automatizados
+        e aplicações apoiadas em boas práticas de engenharia de software.
+      </p>
+      <p>
+        Atualmente, faço parte da equipe da OrçaFascio, onde evoluí da
+        correção de bugs e implementação de testes para a criação de APIs,
+        documentação técnica e sustentação do Backoffice da plataforma.
+      </p>
+      <p>
+        Minha formação reúne Engenharia de Software, Big Data, Ciência da
+        Computação e Administração, proporcionando uma visão que conecta
+        tecnologia, negócios e experiência do usuário. Antes de migrar para
+        o desenvolvimento, atuei nas áreas de vendas e sucesso do cliente, o
+        que fortaleceu minha capacidade de compreender necessidades reais e
+        transformar desafios em soluções de valor.
+      </p>
+      <p>
+        Fora da tecnologia, gosto de praticar esportes como xadrez, corrida,
+        natação e sou praticante de jiu-jitsu, atualmente faixa roxa. A
+        disciplina, a constância e a estratégia aprendidas nos tatames
+        acompanham minha forma de trabalhar: evoluir continuamente, manter a
+        calma sob pressão e buscar sempre a melhor solução para cada
+        desafio.
+      </p>
+    </div>
+  </div>
+
+  <aside class="space-y-4">
+    <div class="rounded-lg border border-[#6272a4]/20 bg-[#21222c] p-6">
+      <h3 class="text-xl font-bold text-[#f8f8f2]">Experiência atual</h3>
+      <div class="mt-5 space-y-4">
+        {
+          experience.map((item) => (
+            <p class="border-l-2 border-[#bd93f9] pl-4 text-sm leading-7 text-[#d7d5ee]">
+              {item}
+            </p>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="rounded-lg border border-[#6272a4]/20 bg-[#21222c] p-6">
+      <h3 class="text-xl font-bold text-[#f8f8f2]">Formação acadêmica</h3>
+      <div class="mt-5 space-y-4">
+        {
+          education.map((item) => (
+            <div class="rounded-md bg-[#282a36] p-4">
+              <p class="text-sm font-bold text-[#8be9fd]">{item.title}</p>
+              <p class="mt-1 text-sm text-[#f8f8f2]">{item.school}</p>
+              <p class="mt-1 text-xs font-medium text-[#b7b3ff]">
+                {item.period}
+              </p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="rounded-lg border border-[#6272a4]/20 bg-[#21222c] p-6">
+      <h3 class="text-xl font-bold text-[#f8f8f2]">Stack e repertório</h3>
+      <div class="mt-6 flex flex-wrap gap-2">
+        {
+          stack.map((item) => (
+            <span class="rounded-md bg-[#44475a]/70 px-3 py-2 text-sm font-medium text-[#f8f8f2]">
+              {item}
+            </span>
+          ))
+        }
+      </div>
+    </div>
+  </aside>
+</section>
+
+<section
+  id="consultoria"
+  class="scroll-mt-24 border-y border-[#6272a4]/20 bg-[#21222c]/45"
+>
+  <div
+    class="mx-auto grid max-w-6xl gap-8 px-5 py-16 lg:grid-cols-[0.9fr_1.1fr]"
+  >
+    <div>
+      <p
+        class="text-sm font-semibold uppercase tracking-[0.32em] text-[#f1fa8c]"
+      >
+        Consultoria técnica
+      </p>
+      <h2
+        class="mt-5 text-3xl font-bold tracking-tight text-[#f8f8f2] sm:text-5xl"
+      >
+        Apoio para projetos que precisam sair do rascunho e ganhar forma.
+      </h2>
+    </div>
+    <div class="grid gap-4 sm:grid-cols-2">
+      <article
+        class="rounded-lg border border-[#6272a4]/20 bg-[#282a36] p-6"
+      >
+        <h3 class="text-lg font-bold text-[#8be9fd]">Escopo possível</h3>
+        <p class="mt-4 text-sm leading-7 text-[#d7d5ee]">
+          Sistemas Ruby on Rails, APIs RESTful, Webhooks, correção de bugs,
+          testes automatizados, evolução de backoffice e integrações com
+          bancos de dados.
+        </p>
+      </article>
+      <article
+        class="rounded-lg border border-[#6272a4]/20 bg-[#282a36] p-6"
+      >
+        <h3 class="text-lg font-bold text-[#ff79c6]">Forma de trabalho</h3>
+        <p class="mt-4 text-sm leading-7 text-[#d7d5ee]">
+          Diagnóstico curto, definição de prioridades, implementação com
+          qualidade, documentação objetiva e entrega incremental usando
+          práticas ágeis.
+        </p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="contato" class="mx-auto max-w-6xl scroll-mt-24 px-5 py-16">
+  <div
+    class="grid gap-8 rounded-lg border border-[#6272a4]/25 bg-[#21222c] p-6 md:grid-cols-[1fr_auto] md:items-center md:p-8"
+  >
+    <div>
+      <p
+        class="text-sm font-semibold uppercase tracking-[0.32em] text-[#bd93f9]"
+      >
+        Contato direto
+      </p>
+      <h2 class="mt-4 text-3xl font-bold text-[#f8f8f2]">
+        Vamos conversar sobre o próximo projeto.
+      </h2>
+      <p class="mt-4 max-w-2xl text-base leading-8 text-[#d7d5ee]">
+        Envie uma mensagem para alinhar contexto, objetivo e o melhor
+        caminho de implementação.
+      </p>
+    </div>
+    <div class="flex flex-wrap gap-3 md:justify-end">
+      <a
+        class="inline-flex items-center justify-center rounded-lg bg-[#50fa7b] px-5 py-3 text-sm font-bold text-[#282a36] transition hover:bg-[#8be9fd] focus:outline-none focus:ring-2 focus:ring-[#ff79c6] focus:ring-offset-2 focus:ring-offset-[#21222c]"
+        href={LINKEDIN_URL}
+        target="_blank"
+      >
+        LinkedIn
+      </a>
+      <a
+        class="inline-flex items-center justify-center rounded-lg border border-[#6272a4]/60 px-5 py-3 text-sm font-bold text-[#f8f8f2] transition hover:border-[#bd93f9] hover:text-[#bd93f9] focus:outline-none focus:ring-2 focus:ring-[#ff79c6] focus:ring-offset-2 focus:ring-offset-[#21222c]"
+        href={GITHUB_REPO_URL}
+        target="_blank"
+      >
+        GitHub
+      </a>
+      <a
+        class="inline-flex items-center justify-center rounded-lg bg-[#bd93f9] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#ff79c6] focus:outline-none focus:ring-2 focus:ring-[#ff79c6] focus:ring-offset-2 focus:ring-offset-[#21222c]"
+        href={`mailto:${email}`}
+        target="_blank"
+      >
+        E-mail
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer
+  class="border-t border-[#6272a4]/20 px-5 py-8 text-sm text-[#d7d5ee]"
+>
+  <div
+    class="mx-auto grid max-w-6xl items-center gap-5 md:grid-cols-[1fr_auto_1fr]"
+  >
+    <div class="hidden md:block"></div>
+    <p class="text-center">© 2026 Marco Picanço. All rights reserved.</p>
+    <div class="flex items-center justify-center gap-3 md:justify-end">
+      <a
+        class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[#6272a4]/30 bg-[#21222c] text-[#f8f8f2] transition hover:border-[#bd93f9] hover:text-[#bd93f9] focus:outline-none focus:ring-2 focus:ring-[#ff79c6] focus:ring-offset-2 focus:ring-offset-[#282a36]"
+        href={`mailto:${email}`}
+        aria-label="Enviar email para Marco Picanço"
+      >
+        <svg
+          class="h-5 w-5"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          aria-hidden="true"
+        >
+          <path
+            d="M4 6h16v12H4V6Z"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linejoin="round"></path>
+          <path
+            d="m4 7 8 6 8-6"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"></path>
+        </svg>
+      </a>
+      <a
+        class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[#6272a4]/30 bg-[#21222c] text-[#f8f8f2] transition hover:border-[#bd93f9] hover:text-[#bd93f9] focus:outline-none focus:ring-2 focus:ring-[#ff79c6] focus:ring-offset-2 focus:ring-offset-[#282a36]"
+        href={GITHUB_REPO_URL}
+        target="_blank"
+        aria-label="Abrir GitHub de Marco Picanço"
+      >
+        <svg
+          class="h-5 w-5"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          aria-hidden="true"
+        >
+          <path
+            d="M12 2C6.48 2 2 6.58 2 12.25c0 4.52 2.86 8.35 6.84 9.71.5.09.68-.22.68-.49 0-.24-.01-.88-.01-1.73-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.11-1.5-1.11-1.5-.91-.64.07-.63.07-.63 1 .07 1.53 1.06 1.53 1.06.9 1.57 2.36 1.12 2.93.86.09-.67.35-1.12.64-1.38-2.22-.26-4.56-1.14-4.56-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.31.1-2.71 0 0 .84-.28 2.75 1.05A9.3 9.3 0 0 1 12 6.97c.85 0 1.7.12 2.5.35 1.9-1.33 2.74-1.05 2.74-1.05.55 1.4.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.79-4.57 5.05.36.32.68.95.68 1.91 0 1.38-.01 2.49-.01 2.83 0 .27.18.59.69.49A10.08 10.08 0 0 0 22 12.25C22 6.58 17.52 2 12 2Z"
+          >
+          </path>
+        </svg>
+      </a>
+      <a
+        class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[#6272a4]/30 bg-[#21222c] text-[#f8f8f2] transition hover:border-[#bd93f9] hover:text-[#bd93f9] focus:outline-none focus:ring-2 focus:ring-[#ff79c6] focus:ring-offset-2 focus:ring-offset-[#282a36]"
+        href={LINKEDIN_URL}
+        target="_blank"
+        aria-label="Abrir LinkedIn de Marco Picanço"
+      >
+        <svg
+          class="h-5 w-5"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          aria-hidden="true"
+        >
+          <path
+            d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1 4.98 2.12 4.98 3.5ZM.5 8h4v16h-4V8Zm7.5 0h3.7v2.22h.05c.52-.98 1.79-2.02 3.68-2.02 3.94 0 4.67 2.6 4.67 5.98V24h-4V13.5c0-2.42-.04-5.53-3.38-5.53-3.38 0-3.9 2.64-3.9 5.37V24H8V8Z"
+          >
+          </path>
+        </svg>
+      </a>
+    </div>
+  </div>
+</footer>
+</main>
+</Base>
