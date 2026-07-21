@@ -92,7 +92,6 @@ const education = [
     title: 'Pós-graduação em Engenharia de Software',
     field: 'Ciência da Computação',
     period: 'mar de 2023 - abr de 2024',
-    note: 'Fóruns de debates sobre as matérias do curso.',
     summary:
       'Formação voltada a padrões, práticas e processos de Engenharia de Software para projetar, desenvolver, garantir qualidade e gerenciar soluções de software que geram valor ao negócio.',
     skills: ['SQL', 'Resolução de problemas', 'Engenharia de Software'],
@@ -103,7 +102,6 @@ const education = [
     title: 'MBA em Big Data',
     field: 'Tecnologia da Informação',
     period: '2020 - 2021',
-    note: 'Nível de formação: 9,2',
     summary:
       'Estudo conceitual e prático de Big Data e Business Analytics, com foco em análise de problemas empresariais, projetos com grandes volumes de dados, qualidade e governança.',
     skills: ['SQL', 'Resolução de problemas', 'Big Data'],
@@ -114,7 +112,6 @@ const education = [
     title: 'Ciência da Computação',
     field: 'Informática',
     period: '2017 - 2021',
-    note: 'Grupo de Programação, Monitores e Startups. Nível: 10,00.',
     summary:
       'Formação em técnicas, métodos e ferramentas computacionais para automatizar processos e desenvolver sistemas, incluindo modelagem, testes, redes, bancos de dados e inteligência artificial.',
     skills: ['SQL', 'Resolução de problemas', 'Programação'],
@@ -125,7 +122,6 @@ const education = [
     title: 'Bacharelado em Administração',
     field: 'Administração, Negócios e Marketing',
     period: '2002 - 2006',
-    note: 'Grupo de Estudos. Nível de formação: 9,8.',
     summary:
       'Base em Administração de empresas com foco em Marketing, mundo corporativo, estudos, pesquisas e visão prática sobre negócios.',
     skills: ['Planejamento de eventos', 'Gestão de mudanças', 'Marketing'],
@@ -141,7 +137,7 @@ const careerRoadmap = [
     summary:
       'Prospecção ativa de clientes, qualificação de leads estratégicos e alimentação do pipeline comercial.',
     color: 'bg-[#bd93f9]',
-    accent: 'bg-[#8be9fd]',
+    accent: 'border border-[#8be9fd]/30 bg-[#8be9fd]/15',
     bullets: [
       'Prospecção ativa',
       'Qualificação de leads',
@@ -156,7 +152,7 @@ const careerRoadmap = [
     summary:
       'Vendas consultivas, análise de soluções para cada cliente e acompanhamento de Churn, KPIs e NPS.',
     color: 'bg-[#8be9fd]',
-    accent: 'bg-[#50fa7b]',
+    accent: 'border border-[#50fa7b]/30 bg-[#50fa7b]/15',
     bullets: ['Vendas consultivas', 'Análise de soluções', 'Churn, KPIs e NPS'],
   },
   {
@@ -167,7 +163,7 @@ const careerRoadmap = [
     summary:
       'Estratégias personalizadas para adoção do software, experiência do usuário, relacionamento e retenção.',
     color: 'bg-[#ff79c6]',
-    accent: 'bg-[#8be9fd]',
+    accent: 'border border-[#8be9fd]/30 bg-[#8be9fd]/15',
     bullets: ['Adoção do software', 'Experiência do usuário', 'Relacionamento'],
   },
   {
@@ -178,7 +174,7 @@ const careerRoadmap = [
     summary:
       'Ruby on Rails, APIs RESTful, testes unitários, PostgreSQL, MongoDB e evolução do Backoffice.',
     color: 'bg-[#50fa7b]',
-    accent: 'bg-[#50fa7b]',
+    accent: 'border border-[#50fa7b]/30 bg-[#50fa7b]/15',
     bullets: ['Ruby on Rails', 'APIs RESTful', 'Testes e Backoffice'],
   },
 ]
@@ -570,7 +566,7 @@ const careerRoadmap = [
                       {item.period}
                     </p>
 
-                    <div class="relative z-10 mt-4 flex h-14 w-14 items-center justify-center rounded-full border-4 border-[#21222c] bg-[#f8f8f2] text-[#282a36] shadow-[0_16px_42px_-28px_rgba(0,0,0,0.9)]">
+                    <div class="relative z-10 mt-4 flex h-14 w-14 items-center justify-center rounded-full border-[6px] border-[#21222c] bg-[#bd93f9] text-[#282a36] shadow-[0_16px_42px_-28px_rgba(0,0,0,0.9)]">
                       <span class="text-base font-black">{index + 1}</span>
                     </div>
 
@@ -583,7 +579,7 @@ const careerRoadmap = [
                     <div
                       class={`flex h-28 w-full items-center justify-center rounded-b-[48px] rounded-t-lg px-4 text-center ${item.accent}`}
                     >
-                      <h4 class="text-base font-black leading-5 text-[#282a36]">
+                      <h4 class="text-base font-black leading-5 text-[#f8f8f2]">
                         {item.role}
                       </h4>
                     </div>
@@ -646,10 +642,7 @@ const careerRoadmap = [
                       </p>
                     </div>
                   </div>
-                  <p class="mt-4 text-sm font-semibold leading-6 text-[#50fa7b]">
-                    {item.note}
-                  </p>
-                  <p class="mt-3 max-w-4xl text-sm leading-6 text-[#d7d5ee]">
+                  <p class="mt-4 max-w-4xl text-sm leading-6 text-[#d7d5ee]">
                     {item.summary}
                   </p>
                   <p class="mt-4 text-sm leading-6 text-[#d7d5ee]">
