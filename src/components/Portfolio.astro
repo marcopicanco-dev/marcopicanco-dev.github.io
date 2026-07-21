@@ -92,7 +92,7 @@ const education = [
     title: 'Pós-graduação em Engenharia de Software',
     field: 'Ciência da Computação',
     period: 'mar de 2023 - abr de 2024',
-    // note: 'Fóruns de debates sobre as matérias do curso.',
+    note: 'Fóruns de debates sobre as matérias do curso.',
     summary:
       'Formação voltada a padrões, práticas e processos de Engenharia de Software para projetar, desenvolver, garantir qualidade e gerenciar soluções de software que geram valor ao negócio.',
     skills: ['SQL', 'Resolução de problemas', 'Engenharia de Software'],
@@ -103,7 +103,7 @@ const education = [
     title: 'MBA em Big Data',
     field: 'Tecnologia da Informação',
     period: '2020 - 2021',
-    // note: 'Nível de formação: 9,2',
+    note: 'Nível de formação: 9,2',
     summary:
       'Estudo conceitual e prático de Big Data e Business Analytics, com foco em análise de problemas empresariais, projetos com grandes volumes de dados, qualidade e governança.',
     skills: ['SQL', 'Resolução de problemas', 'Big Data'],
@@ -114,7 +114,7 @@ const education = [
     title: 'Ciência da Computação',
     field: 'Informática',
     period: '2017 - 2021',
-    // note: 'Grupo de Programação, Monitores e Startups. Nível: 10,00.',
+    note: 'Grupo de Programação, Monitores e Startups. Nível: 10,00.',
     summary:
       'Formação em técnicas, métodos e ferramentas computacionais para automatizar processos e desenvolver sistemas, incluindo modelagem, testes, redes, bancos de dados e inteligência artificial.',
     skills: ['SQL', 'Resolução de problemas', 'Programação'],
@@ -125,7 +125,7 @@ const education = [
     title: 'Bacharelado em Administração',
     field: 'Administração, Negócios e Marketing',
     period: '2002 - 2006',
-    // note: 'Grupo de Estudos. Nível de formação: 9,8.',
+    note: 'Grupo de Estudos. Nível de formação: 9,8.',
     summary:
       'Base em Administração de empresas com foco em Marketing, mundo corporativo, estudos, pesquisas e visão prática sobre negócios.',
     skills: ['Planejamento de eventos', 'Gestão de mudanças', 'Marketing'],
@@ -382,10 +382,12 @@ const careerRoadmap = [
             <h2
               class="mt-4 max-w-4xl text-3xl font-bold tracking-tight text-[#f8f8f2] sm:text-5xl"
             >
-              Soluções técnicas para produto, operação e manutenção.
+              Projetos orientados a problemas reais de empresa.
             </h2>
             <p class="mt-5 max-w-3xl text-base leading-8 text-[#d7d5ee]">
-              <!-- Prática -->
+              Uma vitrine das frentes em que consigo atuar para reduzir atrito
+              operacional, integrar sistemas, estabilizar produtos e acelerar
+              entregas com Ruby on Rails.
             </p>
           </div>
           <a
@@ -396,6 +398,7 @@ const careerRoadmap = [
           </a>
         </div>
 
+        <p class="mt-12 text-sm font-bold text-[#b7b3ff]">Lista de soluções</p>
         <div class="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
           {
             businessProblems.map((item) => (
