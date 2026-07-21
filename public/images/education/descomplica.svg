@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title">
+  <title id="title">Descomplica</title>
+  <rect width="128" height="128" rx="12" fill="#f8f8f2"/>
+  <path d="M14 43c0-7 5-13 12-14l37-6c9-1 17 6 17 15v52c0 9-8 16-17 15l-37-6c-7-1-12-7-12-14V43Z" fill="#00e58d"/>
+  <text x="29" y="80" fill="#111111" font-family="Arial, sans-serif" font-size="40" font-weight="900">des</text>
+  <text x="75" y="80" fill="#111111" font-family="Arial, sans-serif" font-size="19" font-weight="900">complica</text>
+</svg>
