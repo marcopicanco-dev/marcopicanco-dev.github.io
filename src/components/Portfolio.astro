@@ -30,82 +30,157 @@ const highlights = [
   },
 ]
 
-const projects = [
+const businessProblems = [
   {
     id: '01',
-    title: 'Blog técnico com Astro',
-    text: 'Site estático rápido, organizado para publicar textos sobre programação, matemática, ciência e tecnologia.',
-    tags: ['Astro', 'MDX', 'Tailwind'],
+    title: 'Backoffice e regras de negócio',
+    problem:
+      'Fluxos internos lentos, telas difíceis de manter e regras críticas espalhadas pelo sistema.',
+    solution:
+      'Evoluo backoffices Rails com atenção a permissões, regras complexas e rotinas operacionais que precisam funcionar sem atrito.',
+    area: 'Operação interna',
+    kind: 'Backoffice',
+    metric: 'Rails',
+    accent: 'bg-[#bd93f9]',
+    tags: ['Rails', 'PostgreSQL', 'Regras de negócio'],
   },
   {
     id: '02',
-    title: 'Estudos de estruturas de dados',
-    text: 'Conteúdos e experimentos voltados a revisão de fundamentos usando Python e exemplos aplicáveis.',
-    tags: ['Python', 'Algoritmos', 'Ensino'],
+    title: 'APIs e integrações',
+    problem:
+      'Sistemas que não conversam bem, processos manuais e integrações sem previsibilidade.',
+    solution:
+      'Crio, mantenho e documento APIs RESTful para conectar serviços, reduzir retrabalho e tornar integrações mais confiáveis.',
+    area: 'Integrações',
+    kind: 'APIs RESTful',
+    metric: 'JSON',
+    accent: 'bg-[#ff79c6]',
+    tags: ['REST', 'JSON', 'Documentação'],
   },
   {
     id: '03',
-    title: 'Experimentos de interface',
-    text: 'Protótipos de páginas, fluxos e componentes com foco em clareza, hierarquia visual e responsividade.',
-    tags: ['UX/UI', 'Design System', 'Frontend'],
+    title: 'Bugs e sustentação',
+    problem:
+      'Falhas recorrentes, comportamento inesperado em produção e código legado difícil de mexer.',
+    solution:
+      'Investigo problemas, leio contexto de negócio e faço correções seguras sem quebrar fluxos existentes.',
+    area: 'Sustentação',
+    kind: 'Correção segura',
+    metric: 'Debug',
+    accent: 'bg-[#8be9fd]',
+    tags: ['Debug', 'Legado', 'Qualidade'],
   },
   {
     id: '04',
-    title: 'Automação e análise',
-    text: 'Scripts e pequenas ferramentas para reduzir trabalho repetitivo, validar ideias e organizar informação.',
-    tags: ['Python', 'Dados', 'CLI'],
+    title: 'Testes e confiabilidade',
+    problem:
+      'Medo de alterar código crítico, regressões frequentes e pouca confiança para evoluir o produto.',
+    solution:
+      'Escrevo testes automatizados para proteger regras importantes e dar mais segurança às entregas.',
+    area: 'Qualidade',
+    kind: 'Testes automatizados',
+    metric: 'RSpec',
+    accent: 'bg-[#50fa7b]',
+    tags: ['RSpec', 'Minitest', 'TDD'],
   },
-]
-
-const stack = [
-  'Ruby',
-  'Ruby on Rails',
-  'HTML',
-  'CSS',
-  'JavaScript',
-  'PostgreSQL',
-  'MongoDB',
-  'APIs RESTful',
-  'RSpec',
-  'Minitest',
-  'TDD/BDD',
-  'Clean Code',
-  'SOLID',
-  'Design Patterns',
-  'Git',
-  'Scrum',
-  'Kanban',
-  'Python',
-  'R',
 ]
 
 const education = [
   {
-    title: 'Pós-graduação em Engenharia de Software',
     school: 'PUC Minas',
+    logo: '/images/education/puc-minas.png',
+    title: 'Pós-graduação em Engenharia de Software',
+    field: 'Ciência da Computação',
     period: 'mar de 2023 - abr de 2024',
+    // note: 'Fóruns de debates sobre as matérias do curso.',
+    summary:
+      'Formação voltada a padrões, práticas e processos de Engenharia de Software para projetar, desenvolver, garantir qualidade e gerenciar soluções de software que geram valor ao negócio.',
+    skills: ['SQL', 'Resolução de problemas', 'Engenharia de Software'],
   },
   {
-    title: 'MBA em Big Data',
     school: 'Descomplica Faculdade Digital',
+    logo: '/images/education/descomplica.png',
+    title: 'MBA em Big Data',
+    field: 'Tecnologia da Informação',
     period: '2020 - 2021',
+    // note: 'Nível de formação: 9,2',
+    summary:
+      'Estudo conceitual e prático de Big Data e Business Analytics, com foco em análise de problemas empresariais, projetos com grandes volumes de dados, qualidade e governança.',
+    skills: ['SQL', 'Resolução de problemas', 'Big Data'],
   },
   {
-    title: 'Ciência da Computação',
     school: 'Anhanguera Educacional',
+    logo: '/images/education/anhanguera.png',
+    title: 'Ciência da Computação',
+    field: 'Informática',
     period: '2017 - 2021',
+    // note: 'Grupo de Programação, Monitores e Startups. Nível: 10,00.',
+    summary:
+      'Formação em técnicas, métodos e ferramentas computacionais para automatizar processos e desenvolver sistemas, incluindo modelagem, testes, redes, bancos de dados e inteligência artificial.',
+    skills: ['SQL', 'Resolução de problemas', 'Programação'],
   },
   {
-    title: 'Bacharelado em Administração',
     school: 'Estácio',
+    logo: '/images/education/estacio.png',
+    title: 'Bacharelado em Administração',
+    field: 'Administração, Negócios e Marketing',
     period: '2002 - 2006',
+    // note: 'Grupo de Estudos. Nível de formação: 9,8.',
+    summary:
+      'Base em Administração de empresas com foco em Marketing, mundo corporativo, estudos, pesquisas e visão prática sobre negócios.',
+    skills: ['Planejamento de eventos', 'Gestão de mudanças', 'Marketing'],
   },
 ]
 
-const experience = [
-  'Desenvolvedor Full Stack na OrçaFascio, atuando com sustentação, evolução e novas funcionalidades no sistema interno Backoffice.',
-  'Experiência com resolução de bugs, testes manuais e automatizados, criação, integração, documentação e testes de APIs RESTful.',
-  'Atuação anterior em sucesso do cliente, vendas consultivas, implantação e ensino, trazendo visão prática sobre negócio e usuário final.',
+const careerRoadmap = [
+  {
+    company: 'OrçaFascio',
+    role: 'Assistente de vendas',
+    period: 'jan de 2019 - mai de 2019',
+    place: 'Macapá e Região, Brasil',
+    summary:
+      'Prospecção ativa de clientes, qualificação de leads estratégicos e alimentação do pipeline comercial.',
+    color: 'bg-[#bd93f9]',
+    accent: 'bg-[#8be9fd]',
+    bullets: [
+      'Prospecção ativa',
+      'Qualificação de leads',
+      'Pipeline comercial',
+    ],
+  },
+  {
+    company: 'OrçaFascio',
+    role: 'Consultor de vendas',
+    period: 'mai de 2019 - mai de 2020',
+    place: 'Macapá e Região, Brasil',
+    summary:
+      'Vendas consultivas, análise de soluções para cada cliente e acompanhamento de Churn, KPIs e NPS.',
+    color: 'bg-[#8be9fd]',
+    accent: 'bg-[#50fa7b]',
+    bullets: ['Vendas consultivas', 'Análise de soluções', 'Churn, KPIs e NPS'],
+  },
+  {
+    company: 'OrçaFascio',
+    role: 'Analista de sucesso do cliente',
+    period: 'mai de 2020 - mai de 2022',
+    place: 'Macapá, AP · Híbrido',
+    summary:
+      'Estratégias personalizadas para adoção do software, experiência do usuário, relacionamento e retenção.',
+    color: 'bg-[#ff79c6]',
+    accent: 'bg-[#8be9fd]',
+    bullets: ['Adoção do software', 'Experiência do usuário', 'Relacionamento'],
+  },
+  {
+    company: 'OrçaFascio',
+    role: 'Desenvolvedor Full Stack',
+    period: 'jun de 2022 - atual',
+    place: 'Santo André, SP',
+    summary:
+      'Ruby on Rails, APIs RESTful, testes unitários, PostgreSQL, MongoDB e evolução do Backoffice.',
+    color: 'bg-[#50fa7b]',
+    accent: 'bg-[#50fa7b]',
+    bullets: ['Ruby on Rails', 'APIs RESTful', 'Testes e Backoffice'],
+  },
 ]
 ---
 
@@ -198,427 +273,514 @@ const experience = [
 </style>
 
 <Base frontmatter={{ title, description, file: '' }}>
-<main
-  class="portfolio-theme min-h-screen bg-[#282a36] text-[#f8f8f2] transition-colors"
->
-<section class="border-b border-[#6272a4]/20">
-  <div
-    class="mx-auto flex max-w-6xl flex-col gap-14 px-5 pb-20 pt-12 lg:pb-24"
+  <main
+    class="portfolio-theme min-h-screen bg-[#282a36] text-[#f8f8f2] transition-colors"
   >
-    <div
-      id="inicio"
-      class="grid scroll-mt-24 items-center gap-10 lg:grid-cols-[1.08fr_0.92fr]"
-    >
-      <div>
-        <p
-          class="text-sm font-semibold uppercase tracking-[0.32em] text-[#8be9fd]"
-        >
-          Ruby on Rails · Full Stack · Qualidade de Software
-        </p>
-        <h1
-          class="mt-5 max-w-4xl text-4xl font-bold leading-[1.05] tracking-tight text-[#f8f8f2] sm:text-6xl lg:text-7xl"
-        >
-          Desenvolvimento de software com estrutura sólida, testes e visão
-          de produto.
-        </h1>
-        <p class="mt-7 max-w-2xl text-lg leading-8 text-[#d7d5ee]">
-          Eu crio páginas, ferramentas e materiais técnicos para transformar
-          problemas reais em soluções web bem organizadas, fáceis de manter
-          e conectadas às necessidades do negócio.
-        </p>
-        <div class="mt-9 flex flex-wrap gap-3">
-          <a
-            class="inline-flex items-center justify-center rounded-lg bg-[#bd93f9] px-5 py-3 text-sm font-bold text-[#282a36] transition hover:bg-[#ff79c6] focus:outline-none focus:ring-2 focus:ring-[#8be9fd] focus:ring-offset-2 focus:ring-offset-[#282a36]"
-            href="#projetos"
-          >
-            Ver projetos
-          </a>
-          <a
-            class="inline-flex items-center justify-center rounded-lg border border-[#6272a4]/60 px-5 py-3 text-sm font-bold text-[#f8f8f2] transition hover:border-[#8be9fd] hover:text-[#8be9fd] focus:outline-none focus:ring-2 focus:ring-[#8be9fd] focus:ring-offset-2 focus:ring-offset-[#282a36]"
-            href="#contato"
-          >
-            Falar comigo
-          </a>
-        </div>
-      </div>
-
-      <aside
-        class="rounded-lg border border-[#6272a4]/25 bg-[#21222c] p-5 shadow-[0_40px_110px_-55px_rgba(0,0,0,0.9)]"
+    <section class="border-b border-[#6272a4]/20">
+      <div
+        class="mx-auto flex max-w-6xl flex-col gap-14 px-5 pb-20 pt-12 lg:pb-24"
       >
         <div
-          class="flex items-center gap-2 border-b border-[#6272a4]/20 pb-4"
+          id="inicio"
+          class="grid scroll-mt-24 items-center gap-10 lg:grid-cols-[1.08fr_0.92fr]"
         >
-          <span class="h-3 w-3 rounded-full bg-[#ff5555]"></span>
-          <span class="h-3 w-3 rounded-full bg-[#f1fa8c]"></span>
-          <span class="h-3 w-3 rounded-full bg-[#50fa7b]"></span>
-          <span class="ml-auto text-xs text-[#b7b3ff]">portfolio.rb</span>
-        </div>
-        <div
-          class="space-y-5 pt-5 font-mono text-sm leading-7 text-[#d7d5ee]"
-        >
-          <p>
-            foco = <span class="text-[#f1fa8c]"
-              >"resolver problemas reais"</span
+          <div>
+            <p
+              class="text-sm font-semibold uppercase tracking-[0.32em] text-[#8be9fd]"
             >
-          </p>
-          <p>
-            software<br /><span class="pl-6 text-[#50fa7b]">.testado</span
-            ><br /><span class="pl-6 text-[#50fa7b]">.bem_escrito</span><br
-            /><span class="pl-6 text-[#50fa7b]">.facil_de_manter</span>
-          </p>
-        </div>
-      </aside>
-    </div>
-
-    <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-      {
-        stats.map((item) => (
-          <div class="rounded-lg border border-[#6272a4]/20 bg-[#21222c]/75 p-5">
-            <p class="text-2xl font-bold text-[#8be9fd]">{item.value}</p>
-            <p class="mt-2 text-sm text-[#d7d5ee]">{item.label}</p>
-          </div>
-        ))
-      }
-    </div>
-  </div>
-</section>
-
-<section class="mx-auto grid max-w-6xl gap-4 px-5 py-14 md:grid-cols-3">
-  {
-    highlights.map((item) => (
-      <article class="rounded-lg border border-[#6272a4]/20 bg-[#21222c]/80 p-6">
-        <h2 class="text-lg font-bold text-[#f8f8f2]">{item.title}</h2>
-        <p class="mt-4 text-sm leading-7 text-[#d7d5ee]">{item.text}</p>
-      </article>
-    ))
-  }
-</section>
-
-<section
-  id="projetos"
-  class="scroll-mt-24 border-y border-[#6272a4]/20 bg-[#21222c]/45"
->
-  <div class="mx-auto max-w-6xl px-5 py-16">
-    <p
-      class="text-sm font-semibold uppercase tracking-[0.32em] text-[#ff79c6]"
-    >
-      Projetos e estudos
-    </p>
-    <div class="mt-5 grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
-      <div>
-        <h2
-          class="text-3xl font-bold tracking-tight text-[#f8f8f2] sm:text-5xl"
-        >
-          Uma trilha pensada para mostrar prática, repertório e evolução.
-        </h2>
-        <p class="mt-5 text-base leading-8 text-[#d7d5ee]">
-          O portfólio reúne o que está em produção, estudos publicados e
-          frentes de experimentação. A ideia é deixar claro como penso,
-          projeto e implemento.
-        </p>
-      </div>
-
-      <div class="space-y-4">
-        {
-          projects.map((project) => (
-            <article class="rounded-lg border border-[#6272a4]/20 bg-[#282a36] p-5 transition hover:-translate-y-1 hover:border-[#8be9fd]/70">
-              <div class="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <p class="text-sm font-bold text-[#bd93f9]">
-                    {project.id}
-                  </p>
-                  <h3 class="mt-1 text-xl font-bold text-[#f8f8f2]">
-                    {project.title}
-                  </h3>
-                </div>
-                <div class="flex flex-wrap gap-2">
-                  {project.tags.map((tag) => (
-                    <span class="rounded-md border border-[#6272a4]/30 px-2.5 py-1 text-xs font-medium text-[#8be9fd]">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <p class="mt-4 text-sm leading-7 text-[#d7d5ee]">
-                {project.text}
-              </p>
-            </article>
-          ))
-        }
-      </div>
-    </div>
-  </div>
-</section>
-
-<section
-  id="consultoria"
-  class="scroll-mt-24 border-y border-[#6272a4]/20 bg-[#21222c]/45"
->
-  <div
-    class="mx-auto grid max-w-6xl gap-8 px-5 py-16 lg:grid-cols-[0.9fr_1.1fr]"
-  >
-    <div>
-      <p
-        class="text-sm font-semibold uppercase tracking-[0.32em] text-[#f1fa8c]"
-      >
-        Consultoria técnica
-      </p>
-      <h2
-        class="mt-5 text-3xl font-bold tracking-tight text-[#f8f8f2] sm:text-5xl"
-      >
-        Apoio para projetos que precisam sair do rascunho e ganhar forma.
-      </h2>
-    </div>
-    <div class="grid gap-4 sm:grid-cols-2">
-      <article
-        class="rounded-lg border border-[#6272a4]/20 bg-[#282a36] p-6"
-      >
-        <h3 class="text-lg font-bold text-[#8be9fd]">Escopo possível</h3>
-        <p class="mt-4 text-sm leading-7 text-[#d7d5ee]">
-          Sistemas Ruby on Rails, APIs RESTful, Webhooks, correção de bugs,
-          testes automatizados, evolução de backoffice e integrações com
-          bancos de dados.
-        </p>
-      </article>
-      <article
-        class="rounded-lg border border-[#6272a4]/20 bg-[#282a36] p-6"
-      >
-        <h3 class="text-lg font-bold text-[#ff79c6]">Forma de trabalho</h3>
-        <p class="mt-4 text-sm leading-7 text-[#d7d5ee]">
-          Diagnóstico curto, definição de prioridades, implementação com
-          qualidade, documentação objetiva e entrega incremental usando
-          práticas ágeis.
-        </p>
-      </article>
-    </div>
-  </div>
-</section>
-
-<section
-  id="sobre"
-  class="mx-auto grid max-w-6xl scroll-mt-24 gap-10 px-5 py-16 lg:grid-cols-[1fr_0.9fr]"
->
-  <div>
-    <figure
-      class="mb-8 w-full max-w-[280px] overflow-hidden rounded-lg border border-[#6272a4]/20 bg-[#21222c] shadow-[0_28px_90px_-55px_rgba(0,0,0,0.75)] sm:max-w-[320px]"
-    >
-      <img
-        class="aspect-[4/5] h-auto w-full object-cover object-top"
-        src={profileImage}
-        alt="Retrato profissional de Marco Picanço"
-        width="1024"
-        height="1536"
-        loading="lazy"
-        decoding="async"
-        onerror="this.closest('figure')?.remove()"
-      />
-    </figure>
-    <p
-      class="text-sm font-semibold uppercase tracking-[0.32em] text-[#50fa7b]"
-    >
-      Sobre
-    </p>
-    <h2
-      class="mt-5 text-3xl font-bold tracking-tight text-[#f8f8f2] sm:text-5xl"
-    >
-      Desenvolvedor Full Stack.
-    </h2>
-    <div class="mt-7 space-y-5 text-base leading-8 text-[#d7d5ee]">
-      <p>
-        Desenvolvedor Full Stack apaixonado por tecnologia, arquitetura de
-        software e resolução de problemas. Com mais de 3 anos de
-        experiência, atuo no ecossistema Ruby on Rails desenvolvendo
-        soluções escaláveis, APIs RESTful, integrações, testes automatizados
-        e aplicações apoiadas em boas práticas de engenharia de software.
-      </p>
-      <p>
-        Atualmente, faço parte da equipe da OrçaFascio, onde evoluí da
-        correção de bugs e implementação de testes para a criação de APIs,
-        documentação técnica e sustentação do Backoffice da plataforma.
-      </p>
-      <p>
-        Minha formação reúne Engenharia de Software, Big Data, Ciência da
-        Computação e Administração, proporcionando uma visão que conecta
-        tecnologia, negócios e experiência do usuário. Antes de migrar para
-        o desenvolvimento, atuei nas áreas de vendas e sucesso do cliente, o
-        que fortaleceu minha capacidade de compreender necessidades reais e
-        transformar desafios em soluções de valor.
-      </p>
-      <p>
-        Fora da tecnologia, gosto de praticar esportes como xadrez, corrida,
-        natação e sou praticante de jiu-jitsu, atualmente faixa roxa. A
-        disciplina, a constância e a estratégia aprendidas nos tatames
-        acompanham minha forma de trabalhar: evoluir continuamente, manter a
-        calma sob pressão e buscar sempre a melhor solução para cada
-        desafio.
-      </p>
-    </div>
-  </div>
-
-  <aside class="space-y-4">
-    <div class="rounded-lg border border-[#6272a4]/20 bg-[#21222c] p-6">
-      <h3 class="text-xl font-bold text-[#f8f8f2]">Experiência atual</h3>
-      <div class="mt-5 space-y-4">
-        {
-          experience.map((item) => (
-            <p class="border-l-2 border-[#bd93f9] pl-4 text-sm leading-7 text-[#d7d5ee]">
-              {item}
+              Funcionalidade, usabilidade e qualidade técnica. Sempre.
             </p>
-          ))
-        }
-      </div>
-    </div>
+            <h1
+              class="mt-5 max-w-4xl text-4xl font-bold leading-[1.05] tracking-tight text-[#f8f8f2] sm:text-6xl lg:text-7xl"
+            >
+              Desenvolvedor Full Stack Ruby on Rails
+            </h1>
+            <p class="mt-7 max-w-2xl text-lg leading-8 text-[#d7d5ee]">
+              Desenvolvo aplicações web, APIs, backoffices, com foco em testes,
+              manutenção e qualidade.
+            </p>
+            <div class="mt-9 flex flex-wrap gap-3">
+              <a
+                class="inline-flex items-center justify-center rounded-lg bg-[#bd93f9] px-5 py-3 text-sm font-bold text-[#282a36] transition hover:bg-[#ff79c6] focus:outline-none focus:ring-2 focus:ring-[#8be9fd] focus:ring-offset-2 focus:ring-offset-[#282a36]"
+                href="#projetos"
+              >
+                Ver projetos
+              </a>
+              <a
+                class="inline-flex items-center justify-center rounded-lg border border-[#6272a4]/60 px-5 py-3 text-sm font-bold text-[#f8f8f2] transition hover:border-[#8be9fd] hover:text-[#8be9fd] focus:outline-none focus:ring-2 focus:ring-[#8be9fd] focus:ring-offset-2 focus:ring-offset-[#282a36]"
+                href="#contato"
+              >
+                Falar comigo
+              </a>
+            </div>
+          </div>
 
-    <div class="rounded-lg border border-[#6272a4]/20 bg-[#21222c] p-6">
-      <h3 class="text-xl font-bold text-[#f8f8f2]">Formação acadêmica</h3>
-      <div class="mt-5 space-y-4">
-        {
-          education.map((item) => (
-            <div class="rounded-md bg-[#282a36] p-4">
-              <p class="text-sm font-bold text-[#8be9fd]">{item.title}</p>
-              <p class="mt-1 text-sm text-[#f8f8f2]">{item.school}</p>
-              <p class="mt-1 text-xs font-medium text-[#b7b3ff]">
-                {item.period}
+          <aside
+            class="rounded-lg border border-[#6272a4]/25 bg-[#21222c] p-5 shadow-[0_40px_110px_-55px_rgba(0,0,0,0.9)]"
+          >
+            <div
+              class="flex items-center gap-2 border-b border-[#6272a4]/20 pb-4"
+            >
+              <span class="h-3 w-3 rounded-full bg-[#ff5555]"></span>
+              <span class="h-3 w-3 rounded-full bg-[#f1fa8c]"></span>
+              <span class="h-3 w-3 rounded-full bg-[#50fa7b]"></span>
+              <span class="ml-auto text-xs text-[#b7b3ff]">portfolio.rb</span>
+            </div>
+            <div
+              class="space-y-5 pt-5 font-mono text-sm leading-7 text-[#d7d5ee]"
+            >
+              <p>
+                foco = <span class="text-[#f1fa8c]"
+                  >"resolver problemas reais"</span
+                >
+              </p>
+              <p>
+                software<br /><span class="pl-6 text-[#50fa7b]">.testado</span
+                ><br /><span class="pl-6 text-[#50fa7b]">.bem_escrito</span><br
+                /><span class="pl-6 text-[#50fa7b]">.facil_de_manter</span>
               </p>
             </div>
-          ))
-        }
+          </aside>
+        </div>
+
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {
+            stats.map((item) => (
+              <div class="rounded-lg border border-[#6272a4]/20 bg-[#21222c]/75 p-5">
+                <p class="text-2xl font-bold text-[#8be9fd]">{item.value}</p>
+                <p class="mt-2 text-sm text-[#d7d5ee]">{item.label}</p>
+              </div>
+            ))
+          }
+        </div>
       </div>
-    </div>
+    </section>
 
-    <div class="rounded-lg border border-[#6272a4]/20 bg-[#21222c] p-6">
-      <h3 class="text-xl font-bold text-[#f8f8f2]">Stack e repertório</h3>
-      <div class="mt-6 flex flex-wrap gap-2">
-        {
-          stack.map((item) => (
-            <span class="rounded-md bg-[#44475a]/70 px-3 py-2 text-sm font-medium text-[#f8f8f2]">
-              {item}
-            </span>
-          ))
-        }
+    <section class="mx-auto grid max-w-6xl gap-4 px-5 py-14 md:grid-cols-3">
+      {
+        highlights.map((item) => (
+          <article class="rounded-lg border border-[#6272a4]/20 bg-[#21222c]/80 p-6">
+            <h2 class="text-lg font-bold text-[#f8f8f2]">{item.title}</h2>
+            <p class="mt-4 text-sm leading-7 text-[#d7d5ee]">{item.text}</p>
+          </article>
+        ))
+      }
+    </section>
+
+    <section
+      id="projetos"
+      class="scroll-mt-24 border-y border-[#6272a4]/20 bg-[#21222c]/45"
+    >
+      <div class="mx-auto max-w-6xl px-5 py-16">
+        <div class="flex flex-wrap items-end justify-between gap-6">
+          <div>
+            <p
+              class="text-sm font-semibold uppercase tracking-[0.32em] text-[#ff79c6]"
+            >
+              Portifólio de soluções
+            </p>
+            <h2
+              class="mt-4 max-w-4xl text-3xl font-bold tracking-tight text-[#f8f8f2] sm:text-5xl"
+            >
+              Soluções técnicas para produto, operação e manutenção.
+            </h2>
+            <p class="mt-5 max-w-3xl text-base leading-8 text-[#d7d5ee]">
+              <!-- Prática -->
+            </p>
+          </div>
+          <a
+            class="inline-flex items-center justify-center rounded-lg bg-[#50fa7b] px-5 py-3 text-sm font-bold text-[#282a36] transition hover:bg-[#8be9fd] focus:outline-none focus:ring-2 focus:ring-[#ff79c6] focus:ring-offset-2 focus:ring-offset-[#21222c]"
+            href="#contato"
+          >
+            Conversar sobre um problema
+          </a>
+        </div>
+
+        <div class="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+          {
+            businessProblems.map((item) => (
+              <article class="overflow-hidden rounded-lg border border-[#6272a4]/20 bg-[#1b1c27] transition hover:-translate-y-1 hover:border-[#8be9fd]/70">
+                <div class={`relative h-44 overflow-hidden ${item.accent}`}>
+                  <div class="absolute inset-x-8 bottom-0 h-32 rounded-t-lg border border-[#282a36]/70 bg-[#11121a] p-3 shadow-[0_20px_45px_-20px_rgba(0,0,0,0.75)]">
+                    <div class="flex items-center gap-1.5">
+                      <span class="h-2 w-2 rounded-full bg-[#ff79c6]" />
+                      <span class="h-2 w-2 rounded-full bg-[#50fa7b]" />
+                      <span class="h-2 w-2 rounded-full bg-[#8be9fd]" />
+                    </div>
+                    <div class="mt-5 space-y-2">
+                      <div class="h-1.5 w-3/4 rounded-full bg-[#8be9fd]" />
+                      <div class="h-1.5 w-1/2 rounded-full bg-[#bd93f9]" />
+                      <div class="h-1.5 w-2/3 rounded-full bg-[#50fa7b]" />
+                      <div class="h-1.5 w-5/12 rounded-full bg-[#ff79c6]" />
+                    </div>
+                    <div class="mt-5 grid grid-cols-2 gap-2">
+                      <div class="h-8 rounded-md bg-[#282a36]" />
+                      <div class="h-8 rounded-md bg-[#282a36]" />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="p-5">
+                  <div class="flex flex-wrap gap-2">
+                    <span class="rounded-full bg-[#44475a]/80 px-2.5 py-1 text-[0.68rem] font-bold uppercase text-[#f8f8f2]">
+                      {item.area}
+                    </span>
+                    <span class="rounded-full bg-[#44475a]/80 px-2.5 py-1 text-[0.68rem] font-bold uppercase text-[#8be9fd]">
+                      {item.metric}
+                    </span>
+                  </div>
+                  <h3 class="mt-4 text-lg font-bold leading-6 text-[#f8f8f2]">
+                    {item.title}
+                  </h3>
+                  <p class="mt-3 min-h-[5.25rem] text-sm leading-7 text-[#d7d5ee]">
+                    {item.solution}
+                  </p>
+                  <div class="mt-5 border-t border-[#6272a4]/20 pt-4">
+                    <p class="text-xs font-bold uppercase tracking-[0.14em] text-[#b7b3ff]">
+                      {item.kind}
+                    </p>
+                  </div>
+                </div>
+              </article>
+            ))
+          }
+        </div>
       </div>
-    </div>
-  </aside>
-</section>
+    </section>
 
-<section id="contato" class="mx-auto max-w-6xl scroll-mt-24 px-5 py-16">
-  <div
-    class="grid gap-8 rounded-lg border border-[#6272a4]/25 bg-[#21222c] p-6 md:grid-cols-[1fr_auto] md:items-center md:p-8"
-  >
-    <div>
-      <p
-        class="text-sm font-semibold uppercase tracking-[0.32em] text-[#bd93f9]"
+    <section
+      id="consultoria"
+      class="scroll-mt-24 border-y border-[#6272a4]/20 bg-[#21222c]/45"
+    >
+      <div
+        class="mx-auto grid max-w-6xl gap-8 px-5 py-16 lg:grid-cols-[0.9fr_1.1fr]"
       >
-        Contato direto
-      </p>
-      <h2 class="mt-4 text-3xl font-bold text-[#f8f8f2]">
-        Vamos conversar sobre o próximo projeto.
-      </h2>
-      <p class="mt-4 max-w-2xl text-base leading-8 text-[#d7d5ee]">
-        Envie uma mensagem para alinhar contexto, objetivo e o melhor
-        caminho de implementação.
-      </p>
-    </div>
-    <div class="flex flex-wrap gap-3 md:justify-end">
-      <a
-        class="inline-flex items-center justify-center rounded-lg bg-[#50fa7b] px-5 py-3 text-sm font-bold text-[#282a36] transition hover:bg-[#8be9fd] focus:outline-none focus:ring-2 focus:ring-[#ff79c6] focus:ring-offset-2 focus:ring-offset-[#21222c]"
-        href={LINKEDIN_URL}
-        target="_blank"
-      >
-        LinkedIn
-      </a>
-      <a
-        class="inline-flex items-center justify-center rounded-lg border border-[#6272a4]/60 px-5 py-3 text-sm font-bold text-[#f8f8f2] transition hover:border-[#bd93f9] hover:text-[#bd93f9] focus:outline-none focus:ring-2 focus:ring-[#ff79c6] focus:ring-offset-2 focus:ring-offset-[#21222c]"
-        href={GITHUB_REPO_URL}
-        target="_blank"
-      >
-        GitHub
-      </a>
-      <a
-        class="inline-flex items-center justify-center rounded-lg bg-[#bd93f9] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#ff79c6] focus:outline-none focus:ring-2 focus:ring-[#ff79c6] focus:ring-offset-2 focus:ring-offset-[#21222c]"
-        href={`mailto:${email}`}
-        target="_blank"
-      >
-        E-mail
-      </a>
-    </div>
-  </div>
-</section>
+        <div>
+          <p
+            class="text-sm font-semibold uppercase tracking-[0.32em] text-[#f1fa8c]"
+          >
+            Consultoria técnica
+          </p>
+          <h2
+            class="mt-5 text-3xl font-bold tracking-tight text-[#f8f8f2] sm:text-5xl"
+          >
+            Apoio para projetos que precisam sair do rascunho e ganhar forma.
+          </h2>
+        </div>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <article
+            class="rounded-lg border border-[#6272a4]/20 bg-[#282a36] p-6"
+          >
+            <h3 class="text-lg font-bold text-[#8be9fd]">Escopo possível</h3>
+            <p class="mt-4 text-sm leading-7 text-[#d7d5ee]">
+              Sistemas Ruby on Rails, APIs RESTful, Webhooks, correção de bugs,
+              testes automatizados, evolução de backoffice e integrações com
+              bancos de dados.
+            </p>
+          </article>
+          <article
+            class="rounded-lg border border-[#6272a4]/20 bg-[#282a36] p-6"
+          >
+            <h3 class="text-lg font-bold text-[#ff79c6]">Forma de trabalho</h3>
+            <p class="mt-4 text-sm leading-7 text-[#d7d5ee]">
+              Diagnóstico curto, definição de prioridades, implementação com
+              qualidade, documentação objetiva e entrega incremental usando
+              práticas ágeis.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
 
-<footer
-  class="border-t border-[#6272a4]/20 px-5 py-8 text-sm text-[#d7d5ee]"
->
-  <div
-    class="mx-auto grid max-w-6xl items-center gap-5 md:grid-cols-[1fr_auto_1fr]"
-  >
-    <div class="hidden md:block"></div>
-    <p class="text-center">© 2026 Marco Picanço. All rights reserved.</p>
-    <div class="flex items-center justify-center gap-3 md:justify-end">
-      <a
-        class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[#6272a4]/30 bg-[#21222c] text-[#f8f8f2] transition hover:border-[#bd93f9] hover:text-[#bd93f9] focus:outline-none focus:ring-2 focus:ring-[#ff79c6] focus:ring-offset-2 focus:ring-offset-[#282a36]"
-        href={`mailto:${email}`}
-        aria-label="Enviar email para Marco Picanço"
-      >
-        <svg
-          class="h-5 w-5"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          aria-hidden="true"
+    <section id="sobre" class="mx-auto max-w-6xl scroll-mt-24 px-5 py-16">
+      <div class="grid gap-10 lg:grid-cols-[0.86fr_1.14fr] lg:items-start">
+        <figure
+          class="w-full max-w-[280px] overflow-hidden rounded-lg border border-[#6272a4]/20 bg-[#21222c] shadow-[0_28px_90px_-55px_rgba(0,0,0,0.75)] sm:max-w-[320px]"
         >
-          <path
-            d="M4 6h16v12H4V6Z"
-            stroke="currentColor"
-            stroke-width="1.8"
-            stroke-linejoin="round"></path>
-          <path
-            d="m4 7 8 6 8-6"
-            stroke="currentColor"
-            stroke-width="1.8"
-            stroke-linecap="round"
-            stroke-linejoin="round"></path>
-        </svg>
-      </a>
-      <a
-        class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[#6272a4]/30 bg-[#21222c] text-[#f8f8f2] transition hover:border-[#bd93f9] hover:text-[#bd93f9] focus:outline-none focus:ring-2 focus:ring-[#ff79c6] focus:ring-offset-2 focus:ring-offset-[#282a36]"
-        href={GITHUB_REPO_URL}
-        target="_blank"
-        aria-label="Abrir GitHub de Marco Picanço"
-      >
-        <svg
-          class="h-5 w-5"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          aria-hidden="true"
-        >
-          <path
-            d="M12 2C6.48 2 2 6.58 2 12.25c0 4.52 2.86 8.35 6.84 9.71.5.09.68-.22.68-.49 0-.24-.01-.88-.01-1.73-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.11-1.5-1.11-1.5-.91-.64.07-.63.07-.63 1 .07 1.53 1.06 1.53 1.06.9 1.57 2.36 1.12 2.93.86.09-.67.35-1.12.64-1.38-2.22-.26-4.56-1.14-4.56-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.31.1-2.71 0 0 .84-.28 2.75 1.05A9.3 9.3 0 0 1 12 6.97c.85 0 1.7.12 2.5.35 1.9-1.33 2.74-1.05 2.74-1.05.55 1.4.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.79-4.57 5.05.36.32.68.95.68 1.91 0 1.38-.01 2.49-.01 2.83 0 .27.18.59.69.49A10.08 10.08 0 0 0 22 12.25C22 6.58 17.52 2 12 2Z"
+          <img
+            class="aspect-[4/5] h-auto w-full object-cover object-top"
+            src={profileImage}
+            alt="Retrato profissional de Marco Picanço"
+            width="1024"
+            height="1536"
+            loading="lazy"
+            decoding="async"
+            onerror="this.closest('figure')?.remove()"
+          />
+        </figure>
+
+        <div>
+          <p
+            class="text-sm font-semibold uppercase tracking-[0.32em] text-[#50fa7b]"
           >
-          </path>
-        </svg>
-      </a>
-      <a
-        class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[#6272a4]/30 bg-[#21222c] text-[#f8f8f2] transition hover:border-[#bd93f9] hover:text-[#bd93f9] focus:outline-none focus:ring-2 focus:ring-[#ff79c6] focus:ring-offset-2 focus:ring-offset-[#282a36]"
-        href={LINKEDIN_URL}
-        target="_blank"
-        aria-label="Abrir LinkedIn de Marco Picanço"
-      >
-        <svg
-          class="h-5 w-5"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          aria-hidden="true"
-        >
-          <path
-            d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1 4.98 2.12 4.98 3.5ZM.5 8h4v16h-4V8Zm7.5 0h3.7v2.22h.05c.52-.98 1.79-2.02 3.68-2.02 3.94 0 4.67 2.6 4.67 5.98V24h-4V13.5c0-2.42-.04-5.53-3.38-5.53-3.38 0-3.9 2.64-3.9 5.37V24H8V8Z"
+            Sobre
+          </p>
+          <h2
+            class="mt-5 text-3xl font-bold tracking-tight text-[#f8f8f2] sm:text-5xl"
           >
-          </path>
-        </svg>
-      </a>
-    </div>
-  </div>
-</footer>
-</main>
+            Desenvolvedor Full Stack.
+          </h2>
+          <div class="mt-7 space-y-5 text-base leading-8 text-[#d7d5ee]">
+            <p>
+              Sou <strong>Desenvolvedor Full Stack</strong> com mais de 3 anos de
+              experiência no ecossistema <strong>Ruby on Rails</strong>, atuando
+              na
+              <strong>OrçaFascio</strong> com foco no desenvolvimento de APIs, testes
+              automatizados e evolução do Backoffice. Uno bagagem técnica em Engenharia
+              de Software e Big Data a uma visão estratégica de negócios desenvolvida
+              em experiências anteriores em Vendas e Customer Success. Fora do código,
+              trago a disciplina e a calma sob pressão de esportes como o jiu-jitsu
+              para a minha rotina profissional.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="mt-12 overflow-hidden rounded-lg border border-[#6272a4]/20 bg-[#21222c] p-5 shadow-[0_28px_90px_-55px_rgba(0,0,0,0.75)] sm:p-6"
+      >
+        <div class="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p
+              class="text-sm font-semibold uppercase tracking-[0.32em] text-[#ff79c6]"
+            >
+              Experiência
+            </p>
+          </div>
+          <p class="text-sm font-semibold text-[#b7b3ff]">
+            jan de 2019 — atual · 7 anos 7 meses
+          </p>
+        </div>
+
+        <div class="mt-10 overflow-x-auto pb-2">
+          <div class="relative min-w-[880px]">
+            <div
+              class="absolute left-8 right-8 top-[4.6rem] h-px bg-[#6272a4]/50"
+              aria-hidden="true"
+            >
+            </div>
+            <div class="grid grid-cols-4 gap-6">
+              {
+                careerRoadmap.map((item, index) => (
+                  <article class="relative flex min-h-[28rem] flex-col items-center">
+                    <p class="min-h-10 text-center text-xs font-bold leading-5 text-[#f8f8f2]">
+                      {item.period}
+                    </p>
+
+                    <div class="relative z-10 mt-4 flex h-14 w-14 items-center justify-center rounded-full border-4 border-[#21222c] bg-[#f8f8f2] text-[#282a36] shadow-[0_16px_42px_-28px_rgba(0,0,0,0.9)]">
+                      <span class="text-base font-black">{index + 1}</span>
+                    </div>
+
+                    <span class="h-7 w-px bg-[#f8f8f2]/80" aria-hidden="true" />
+                    <span
+                      class="h-2.5 w-2.5 rounded-full bg-[#f8f8f2]"
+                      aria-hidden="true"
+                    />
+
+                    <div
+                      class={`flex h-28 w-full items-center justify-center rounded-b-[48px] rounded-t-lg px-4 text-center ${item.accent}`}
+                    >
+                      <h4 class="text-base font-black leading-5 text-[#282a36]">
+                        {item.role}
+                      </h4>
+                    </div>
+
+                    <span
+                      class="h-3 w-0 border-x-[7px] border-t-[10px] border-x-transparent border-t-[#f8f8f2]"
+                      aria-hidden="true"
+                    />
+
+                    <div class="mt-4 flex min-h-[13rem] w-[84%] flex-col rounded-md border border-[#6272a4]/25 bg-[#282a36] p-4">
+                      <p class="text-xs font-semibold leading-5 text-[#50fa7b]">
+                        {item.place}
+                      </p>
+                      <ul class="mt-4 space-y-2 text-sm leading-5 text-[#d7d5ee]">
+                        {item.bullets.map((bullet) => (
+                          <li class="flex gap-2">
+                            <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#8be9fd]" />
+                            <span>{bullet}</span>
+                          </li>
+                        ))}
+                      </ul>
+                      <p class="mt-6 text-xs font-semibold text-[#8be9fd]">
+                        {item.company}
+                      </p>
+                    </div>
+                  </article>
+                ))
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6 rounded-lg border border-[#6272a4]/20 bg-[#21222c] p-6">
+        <h3 class="text-xl font-bold text-[#f8f8f2]">Formação acadêmica</h3>
+        <div class="mt-6 divide-y divide-[#6272a4]/20">
+          {
+            education.map((item) => (
+              <article class="grid gap-4 py-6 first:pt-0 last:pb-0 sm:grid-cols-[3rem_1fr]">
+                <img
+                  class="h-12 w-12 rounded-md border border-[#6272a4]/30 bg-[#f8f8f2] object-cover"
+                  src={item.logo}
+                  alt={`Logo ${item.school}`}
+                  width="48"
+                  height="48"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <div class="min-w-0">
+                  <div class="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <h4 class="text-base font-bold leading-6 text-[#f8f8f2]">
+                        {item.school}
+                      </h4>
+                      <p class="mt-1 text-sm leading-6 text-[#d7d5ee]">
+                        {item.title}, {item.field}
+                      </p>
+                      <p class="text-sm font-medium text-[#b7b3ff]">
+                        {item.period}
+                      </p>
+                    </div>
+                  </div>
+                  <p class="mt-4 text-sm font-semibold leading-6 text-[#50fa7b]">
+                    {item.note}
+                  </p>
+                  <p class="mt-3 max-w-4xl text-sm leading-6 text-[#d7d5ee]">
+                    {item.summary}
+                  </p>
+                  <p class="mt-4 text-sm leading-6 text-[#d7d5ee]">
+                    <strong class="font-bold text-[#f8f8f2]">
+                      Competências:
+                    </strong>{' '}
+                    {item.skills.join(', ')}
+                  </p>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section id="contato" class="mx-auto max-w-6xl scroll-mt-24 px-5 py-16">
+      <div
+        class="grid gap-8 rounded-lg border border-[#6272a4]/25 bg-[#21222c] p-6 md:grid-cols-[1fr_auto] md:items-center md:p-8"
+      >
+        <div>
+          <p
+            class="text-sm font-semibold uppercase tracking-[0.32em] text-[#bd93f9]"
+          >
+            Contato direto
+          </p>
+          <h2 class="mt-4 text-3xl font-bold text-[#f8f8f2]">
+            Vamos conversar sobre o próximo projeto.
+          </h2>
+          <p class="mt-4 max-w-2xl text-base leading-8 text-[#d7d5ee]">
+            Envie uma mensagem para alinhar contexto, objetivo e o melhor
+            caminho de implementação.
+          </p>
+        </div>
+        <div class="flex flex-wrap gap-3 md:justify-end">
+          <a
+            class="inline-flex items-center justify-center rounded-lg bg-[#50fa7b] px-5 py-3 text-sm font-bold text-[#282a36] transition hover:bg-[#8be9fd] focus:outline-none focus:ring-2 focus:ring-[#ff79c6] focus:ring-offset-2 focus:ring-offset-[#21222c]"
+            href={LINKEDIN_URL}
+            target="_blank"
+          >
+            LinkedIn
+          </a>
+          <a
+            class="inline-flex items-center justify-center rounded-lg border border-[#6272a4]/60 px-5 py-3 text-sm font-bold text-[#f8f8f2] transition hover:border-[#bd93f9] hover:text-[#bd93f9] focus:outline-none focus:ring-2 focus:ring-[#ff79c6] focus:ring-offset-2 focus:ring-offset-[#21222c]"
+            href={GITHUB_REPO_URL}
+            target="_blank"
+          >
+            GitHub
+          </a>
+          <a
+            class="inline-flex items-center justify-center rounded-lg bg-[#bd93f9] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#ff79c6] focus:outline-none focus:ring-2 focus:ring-[#ff79c6] focus:ring-offset-2 focus:ring-offset-[#21222c]"
+            href={`mailto:${email}`}
+            target="_blank"
+          >
+            E-mail
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <footer
+      class="border-t border-[#6272a4]/20 px-5 py-8 text-sm text-[#d7d5ee]"
+    >
+      <div
+        class="mx-auto grid max-w-6xl items-center gap-5 md:grid-cols-[1fr_auto_1fr]"
+      >
+        <div class="hidden md:block"></div>
+        <p class="text-center">© 2026 Marco Picanço. All rights reserved.</p>
+        <div class="flex items-center justify-center gap-3 md:justify-end">
+          <a
+            class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[#6272a4]/30 bg-[#21222c] text-[#f8f8f2] transition hover:border-[#bd93f9] hover:text-[#bd93f9] focus:outline-none focus:ring-2 focus:ring-[#ff79c6] focus:ring-offset-2 focus:ring-offset-[#282a36]"
+            href={`mailto:${email}`}
+            aria-label="Enviar email para Marco Picanço"
+          >
+            <svg
+              class="h-5 w-5"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M4 6h16v12H4V6Z"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linejoin="round"></path>
+              <path
+                d="m4 7 8 6 8-6"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"></path>
+            </svg>
+          </a>
+          <a
+            class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[#6272a4]/30 bg-[#21222c] text-[#f8f8f2] transition hover:border-[#bd93f9] hover:text-[#bd93f9] focus:outline-none focus:ring-2 focus:ring-[#ff79c6] focus:ring-offset-2 focus:ring-offset-[#282a36]"
+            href={GITHUB_REPO_URL}
+            target="_blank"
+            aria-label="Abrir GitHub de Marco Picanço"
+          >
+            <svg
+              class="h-5 w-5"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                d="M12 2C6.48 2 2 6.58 2 12.25c0 4.52 2.86 8.35 6.84 9.71.5.09.68-.22.68-.49 0-.24-.01-.88-.01-1.73-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.11-1.5-1.11-1.5-.91-.64.07-.63.07-.63 1 .07 1.53 1.06 1.53 1.06.9 1.57 2.36 1.12 2.93.86.09-.67.35-1.12.64-1.38-2.22-.26-4.56-1.14-4.56-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.31.1-2.71 0 0 .84-.28 2.75 1.05A9.3 9.3 0 0 1 12 6.97c.85 0 1.7.12 2.5.35 1.9-1.33 2.74-1.05 2.74-1.05.55 1.4.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.79-4.57 5.05.36.32.68.95.68 1.91 0 1.38-.01 2.49-.01 2.83 0 .27.18.59.69.49A10.08 10.08 0 0 0 22 12.25C22 6.58 17.52 2 12 2Z"
+              >
+              </path>
+            </svg>
+          </a>
+          <a
+            class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[#6272a4]/30 bg-[#21222c] text-[#f8f8f2] transition hover:border-[#bd93f9] hover:text-[#bd93f9] focus:outline-none focus:ring-2 focus:ring-[#ff79c6] focus:ring-offset-2 focus:ring-offset-[#282a36]"
+            href={LINKEDIN_URL}
+            target="_blank"
+            aria-label="Abrir LinkedIn de Marco Picanço"
+          >
+            <svg
+              class="h-5 w-5"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1 4.98 2.12 4.98 3.5ZM.5 8h4v16h-4V8Zm7.5 0h3.7v2.22h.05c.52-.98 1.79-2.02 3.68-2.02 3.94 0 4.67 2.6 4.67 5.98V24h-4V13.5c0-2.42-.04-5.53-3.38-5.53-3.38 0-3.9 2.64-3.9 5.37V24H8V8Z"
+              >
+              </path>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </footer>
+  </main>
 </Base>

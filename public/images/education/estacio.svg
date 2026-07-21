@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title">
+  <title id="title">Estacio</title>
+  <rect width="128" height="128" rx="12" fill="#1f56d2"/>
+  <g transform="translate(64 42)">
+    <path d="M0-23 23 0 0 23-23 0Z" fill="#00d4c8" stroke="#f8f8f2" stroke-width="2"/>
+    <path d="M0-23v46M-23 0h46" stroke="#f8f8f2" stroke-width="3"/>
+    <path d="M-16-7 0-23 16-7 0 0Z" fill="#6ee7c8" opacity=".8"/>
+    <path d="M-16 7 0 23 16 7 0 0Z" fill="#00a5b8" opacity=".8"/>
+  </g>
+  <text x="64" y="93" fill="#f8f8f2" font-family="Arial, sans-serif" font-size="26" font-weight="800" text-anchor="middle">Estacio</text>
+</svg>
