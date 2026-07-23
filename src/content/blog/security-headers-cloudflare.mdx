@@ -4,13 +4,13 @@ description: 'Como analisei um relatório de segurança do meu blog, descobri os
 date: '2026-07-23'
 ---
 
-Depois de me deparar enxurrada de notícias sobre `cyber security`, resolvi testar meu site que por sinal é bem simples, é uma aplicação estática hospedada no github pages. Acabei de rodar um scanner de segurança e o resultado veio cheio de alertas: faltavam `Content-Security-Policy`, `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy` e `Permissions-Policy`. Também apareceu um `Access-Control-Allow-Origin: *` bem solto.
+Depois de me deparar enxurrada de notícias sobre `cyber security`, resolvi testar meu site que por sinal é bem simples, é uma aplicação estática hospedada no github pages. Acabei de rodar um scanner de segurança e o resultado veio cheio de alertas: faltavam `Content-Security-Policy`, `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy` e `Permissions-Policy`. Também apareceu um `Access-Control-Allow-Origin: *`.
 
-Antes de sair adicionando headers, precisei entender uma limitação que muita gente esbarra ao hospedar em SSG estático: **o GitHub Pages não permite configurar headers HTTP customizados**. Não existe um `_headers` como na Netlify, nem controle de servidor. O que o GitHub entrega, é o que o visitante recebe. E agora?
+Antes de sair adicionando headers, precisei entender uma limitação que muita gente esbarra ao hospedar em SSG estático: **o GitHub Pages não permite configurar headers HTTP customizados**. Não existe um `_headers` como na Netlify, nem controle de servidor. O quê o GitHub entrega, é o que o visitante recebe. E agora?
 
-Isso divide o problema em duas partes!
+Isso dividiu o problema em duas partes:
 
-## O que dá pra resolver só no código?
+## A primeira: O que dá pra resolver só no código?
 
 Depois de algumas pesquisas vi que o `Content-Security-Policy` e  o `Referrer-Policy` têm equivalente via `<meta>` no `<head>` do HTML, então dá pra aplicar direto no build do site.
 
@@ -27,11 +27,11 @@ Adicionei isso no layout raiz (`Base.astro`):
 Duas ressalvas importantes:
 
 - CSP via `<meta>` **ignora a diretiva `frame-ancestors`**, que é justamente a que protege contra clickjacking. Só funciona como header HTTP real.
-- O runtime de hidratação do Astro injeta um `<script>` e um `<style>` inline na página. Sem servidor, não dá pra gerar um nonce por request, então precisei liberar `'unsafe-inline'` nos dois — senão a busca, o troca-tema e o menu mobile quebram.
+- O compilador do Astro renderiza o HTML injetando estilos, inline, enquanto seu runtime de hidratação injeta o `<style>` para interatividade. Sem servidor, não dá pra gerar um nonce por request, então precisei liberar `'unsafe-inline'` nos dois — senão a busca, o troca-tema e o menu mobile quebram.
 
-Antes de considerar isso pronto, rodei mais testes: subi o build, abri em um Chrome headless via protocolo CDP e chequei o console em várias interações (busca, tema, menu mobile, página de post). Na primeira rodada apareceu um bloqueio real: os posts do blog carregam fontes do Google Fonts via `@import`, e minha CSP inicial não liberava esse domínio. Como peguei esse tema free do Astro e fui fazendo costumizações, nem tinha me tocado desse pequeno detalhe, logo a ajustei `style-src` e `font-src` para incluir `fonts.googleapis.com`/`fonts.gstatic.com` e o erro sumiu.
+Antes de finalizar, executei testes adicionais: gerei o build de produção, inspecionei as interações via protocolo CDP no Chrome Headless e monitorei o console durante fluxos críticos (busca, alternância de tema, menu mobile e navegação de posts). Na primeira rodada apareceu um bloqueio real: os posts do blog carregam fontes do Google Fonts via `@import`, e minha CSP inicial não liberava esse domínio. Como peguei esse tema free do Astro e fui fazendo costumizações, nem tinha me tocado desse pequeno detalhe, logo a ajustei `style-src` e `font-src` para incluir `fonts.googleapis.com`/`fonts.gstatic.com` e o erro sumiu. Mais tarde, eu perceberia que ia ter que atualizar o tema, mas esse assunto fica mais pra frente.
 
-## O que só dá pra resolver com um proxy na frente?
+## A segunda: O que só dá pra resolver com um proxy na frente?
 
 `X-Frame-Options`, `X-Content-Type-Options` e `Permissions-Policy` **só existem como header HTTP** — não há meta tag equivalente que os navegadores respeitem. Como o GitHub Pages não expõe isso, a solução foi colocar o domínio atrás do **Cloudflare** (plano free, é lógico!) e usar uma **Transform Rule → Response Header Transform Rule** pra injetar os headers na resposta antes dela chegar ao visitante:
 
@@ -52,7 +52,7 @@ Com o Cloudflare na frente, também aproveitei pra reforçar TLS: `Always Use HT
 
 Aqui mora um detalhe muito importante. Depois de criar a Transform Rule com todos os headers, testei o site em produção pra confirmar — e os headers de resposta eram **idênticos aos do relatório original**: `server: GitHub.com`, `via: 1.1 varnish`, `x-fastly-request-id`, sem nenhum `cf-ray`, sem nenhum dos headers configurados. Nada tinha mudado, continuava a mesma coisa.
 
-O motivo: eu tinha configurado a regra dentro da minha conta Cloudflare, mas o **domínio nunca foi delegado pro Cloudflare**. Os nameservers ainda eram os padrões do registrador (Google Domains, hoje Squarespace Domains), apontando direto pro GitHub Pages. Ou seja, o tráfego real dos visitantes nunca passava perto do Cloudflare — a regra existia, mas era invisível pra internet. Rodei:
+O motivo: eu tinha configurado a regra dentro da minha conta Cloudflare, mas o **domínio nunca foi delegado pro Cloudflare**. Os nameservers ainda eram os padrões do registrador (Google Domains, hoje Squarespace Domains), apontando direto pro GitHub Pages. Ou seja, o tráfego real dos visitantes nunca passava perto do Cloudflare — a regra existia, mas não tava servindo pra nada. Rodei:
 
 ```bash
 dig +short NS marcopicanco.com
@@ -62,7 +62,7 @@ E confirmei: nameservers do Squarespace, não do Cloudflare. Zero efeito prátic
 
 A correção foi trocar os nameservers no painel do registrador (Squarespace → **Servidores de nomes de domínio**) pelos dois que o Cloudflare atribuiu ao adicionar o domínio (algo como `xxxx.ns.cloudflare.com` e `yyyy.ns.cloudflare.com`). Depois de salvar, o Squarespace avisou que a mudança podia levar até 48h pra propagar — na prática, o `dig +short NS marcopicanco.com` já mostrava os nameservers novos em poucos minutos.
 
-Mesmo com o DNS propagado, ainda teve mais uma etapa: tentar bater direto num IP do Cloudflare pra esse domínio devolvia erro de handshake TLS (`SSL routines::sslv3 alert handshake failure`). O Cloudflare detecta a troca de nameserver de forma periódica, não instantânea, e só depois disso emite o certificado SSL (Universal SSL) pro domínio — até esse certificado ficar pronto, a conexão HTTPS nem completa. Então a sequência real de espera foi: propagação de DNS → detecção da zona pelo Cloudflare → emissão do certificado → só aí os headers passam a valer.
+Mesmo com o DNS propagado, ainda teve mais uma etapa: tentar bater direto num IP do Cloudflare pra esse domínio devolvia erro de handshake TLS (`SSL routines::sslv3 alert handshake failure`). O Cloudflare detecta a troca de nameserver de forma periódica, não instantânea, e só depois disso emite o certificado SSL (Universal SSL) pro domínio — até esse certificado ficar pronto, a conexão HTTPS nem completa. Então, a sequência real de espera foi: propagação de DNS → detecção da zona pelo Cloudflare → emissão do certificado → só aí os headers passaram a valer.
 
 ![Diagrama comparando o fluxo de rede antes e depois: antes, o visitante ia direto pro GitHub Pages porque os nameservers ainda eram do registrador e o Cloudflare ficava fora do caminho; depois, com os nameservers apontando pro Cloudflare, o tráfego passa pela borda e recebe os headers de segurança antes de chegar ao GitHub Pages](/images/security-dns-before-after.svg)
 
@@ -74,14 +74,14 @@ Como o site é pessoal, estou usando pra efeito didático e logo fiz uma varredu
 
 Duas coisas que não existiam e são boa prática de qualquer site, sem relação direta com o relatório original:
 
-- **`robots.txt`**: caía no 404 padrão do GitHub Pages. Adicionei um liberando indexação geral.
-- **`security.txt`** ([RFC 9116](https://www.rfc-editor.org/rfc/rfc9116)): é o arquivo padrão (`/.well-known/security.txt`) pra alguém que encontrar uma vulnerabilidade saber como reportar, sem precisar caçar meu contato em algum lugar. Coloquei apontando pro meu LinkedIn, que já era público no site.
+- **`robots.txt`**: Corrigida a falha de rota (404) no ambiente do GitHub Pages através da inclusão do arquivo, configurado para liberar a indexação global do site.
+- **`security.txt`** ([RFC 9116](https://www.rfc-editor.org/rfc/rfc9116)): é o arquivo padrão (`/.well-known/security.txt`) pra alguém que encontrar uma vulnerabilidade saber como reportar, sem precisar caçar meu contato em algum lugar. Coloquei apontando pro meu LinkedIn.
 
 ## Dependências e automação
 
-Rodei `npm audit` e apareceram vulnerabilidades em pacotes transitivos do Astro (rollup, sharp, prismjs, yaml). Tentei `npm audit fix` — e ele resolveu "corrigindo" isso pulando o Astro de v4 pra v7 de uma vez, o que quebrou o build (`ViewTransitions` não existe mais na API nova). Revertido na hora. Upgrade de maior version não é fix de segurança, é migração, e vou fazer isso com calma, em outro momento, testando cada parte.
+Rodei `npm audit` e apareceram vulnerabilidades em pacotes transitivos do Astro (rollup, sharp, prismjs, yaml). Tentei `npm audit fix` — e ele resolveu "corrigindo" isso pulando o Astro de v4 pra v7 de uma vez, o que quebrou o build (`ViewTransitions` não existe mais na API nova). Revertido na hora. Upgrade de maior versão não é fix de segurança, é migração, e vou fazer isso com calma, em outro momento, testando cada parte. (Sim, ela será feita, na pate 2 desse artigo).
 
-O que fica automatizado pra não esquecer disso de novo: um `.github/dependabot.yml` com checagem semanal de `npm` e `github-actions`, mais os alertas de segurança do Dependabot ativados no repositório — assim, na próxima vulnerabilidade, chega um aviso (ou um PR) em vez de eu descobrir só quando rodar o scanner de novo.
+O que fica automatizado pra não esquecer disso de novo: um `.github/dependabot.yml` com checagem semanal de `npm` e `github-actions`, mais os alertas de segurança do Dependabot ativados no repositório — assim, na próxima vulnerabilidade, chega um aviso (ou um PR) em vez de descobrir só quando rodar o scanner de novo.
 
 ## Resumo
 

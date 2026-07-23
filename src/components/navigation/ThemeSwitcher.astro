@@ -17,14 +17,12 @@
         d="M12 3a9 9 0 1 0 0 18V3Z"
         stroke-width="1.8"
         stroke-linecap="round"
-        stroke-linejoin="round"
-      />
+        stroke-linejoin="round"></path>
       <path
         class="stroke-current"
         d="M12 3a9 9 0 0 1 0 18"
         stroke-width="1.8"
-        stroke-linecap="round"
-      />
+        stroke-linecap="round"></path>
     </svg>
   </button>
 
@@ -56,7 +54,12 @@
     DARK_MODE_CODE_BLOCK_THEME,
   } from '@/config'
 
-  const applyTheme = (theme: 'light' | 'dark') => {
+  type Theme = 'light' | 'dark'
+
+  const themeSwitcherButtonSelector = '.theme-switcher-button'
+  const themeSwitcherMenuSelector = '.theme-switcher-menu'
+
+  const applyTheme = (theme: Theme) => {
     const element = document.documentElement
 
     if (theme === 'dark') {
@@ -71,27 +74,37 @@
     updateThemeChecks(theme)
   }
 
-  const getCurrentTheme = (): 'light' | 'dark' => {
+  const getCurrentTheme = (): Theme => {
     if (localStorage.theme === 'dark' || localStorage.theme === 'light') {
       return localStorage.theme
     }
 
-    return document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+    return document.documentElement.classList.contains('dark')
+      ? 'dark'
+      : 'light'
   }
 
-  const updateThemeChecks = (theme: 'light' | 'dark') => {
-    document.querySelectorAll<HTMLElement>('.theme-option').forEach((option) => {
+  const updateThemeChecks = (theme: Theme) => {
+    const options = document.querySelectorAll<HTMLElement>('.theme-option')
+
+    options.forEach((option) => {
       const isSelected = option.dataset.themeValue === theme
-      option.querySelector('.theme-check')?.classList.toggle('hidden', !isSelected)
+      const check = option.querySelector('.theme-check')
+
+      check?.classList.toggle('hidden', !isSelected)
     })
   }
 
   const closeThemeMenus = () => {
-    document.querySelectorAll<HTMLElement>('.theme-switcher').forEach((root) => {
-      const button = root.querySelector<HTMLButtonElement>(
-        '.theme-switcher-button',
-      )
-      const menu = root.querySelector<HTMLElement>('.theme-switcher-menu')
+    const switchers = document.querySelectorAll<HTMLElement>('.theme-switcher')
+
+    switchers.forEach((root) => {
+      const button = root.querySelector(
+        themeSwitcherButtonSelector,
+      ) as HTMLButtonElement | null
+      const menu = root.querySelector(
+        themeSwitcherMenuSelector,
+      ) as HTMLElement | null
 
       button?.setAttribute('aria-expanded', 'false')
       menu?.classList.add('invisible', 'opacity-0')
@@ -102,14 +115,18 @@
   const setupThemeSwitcher = () => {
     updateThemeChecks(getCurrentTheme())
 
-    document.querySelectorAll<HTMLElement>('.theme-switcher').forEach((root) => {
+    const switchers = document.querySelectorAll<HTMLElement>('.theme-switcher')
+
+    switchers.forEach((root) => {
       if (root.dataset.bound === 'true') return
       root.dataset.bound = 'true'
 
-      const button = root.querySelector<HTMLButtonElement>(
-        '.theme-switcher-button',
-      )
-      const menu = root.querySelector<HTMLElement>('.theme-switcher-menu')
+      const button = root.querySelector(
+        themeSwitcherButtonSelector,
+      ) as HTMLButtonElement | null
+      const menu = root.querySelector(
+        themeSwitcherMenuSelector,
+      ) as HTMLElement | null
 
       button?.addEventListener('click', (event) => {
         event.stopPropagation()
@@ -124,18 +141,18 @@
         }
       })
 
-      root.querySelectorAll<HTMLButtonElement>('.theme-option').forEach(
-        (option) => {
-          option.addEventListener('click', () => {
-            const theme = option.dataset.themeValue
+      const options = root.querySelectorAll<HTMLButtonElement>('.theme-option')
 
-            if (theme === 'light' || theme === 'dark') {
-              applyTheme(theme)
-              closeThemeMenus()
-            }
-          })
-        },
-      )
+      options.forEach((option) => {
+        option.addEventListener('click', () => {
+          const theme = option.dataset.themeValue
+
+          if (theme === 'light' || theme === 'dark') {
+            applyTheme(theme)
+            closeThemeMenus()
+          }
+        })
+      })
     })
   }
 

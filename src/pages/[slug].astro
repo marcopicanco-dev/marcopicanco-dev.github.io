@@ -1,17 +1,14 @@
 ---
 import BlogPost from '@/layouts/BlogPost.astro'
 import {
+  getBlogPosts,
   getBlogPostSlug,
-  type BlogFrontmatter,
+  type BlogPostModule,
 } from '@/utils/blog'
-import { type GetStaticPaths, type MarkdownInstance } from 'astro'
-
-type BlogPostModule = MarkdownInstance<BlogFrontmatter>
+import { type GetStaticPaths } from 'astro'
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const posts = (await Astro.glob(
-    '../content/blog/*.mdx',
-  )) as BlogPostModule[]
+  const posts = getBlogPosts()
 
   return posts.map((post) => ({
     params: {

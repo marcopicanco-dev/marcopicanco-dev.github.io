@@ -1,3 +1,5 @@
+import { type MarkdownInstance } from 'astro'
+
 export type BlogFrontmatter = {
   title: string
   description: string
@@ -5,6 +7,24 @@ export type BlogFrontmatter = {
   heroImage?: string
   heroImageAlt?: string
 }
+
+export type BlogPostModule = MarkdownInstance<BlogFrontmatter>
+
+const blogPostModules = import.meta.glob<BlogPostModule>(
+  '/src/content/blog/*.mdx',
+  {
+    eager: true,
+  },
+)
+
+export const getBlogPosts = () => Object.values(blogPostModules)
+
+export const sortBlogPostsByDateDesc = (posts: BlogPostModule[]) =>
+  [...posts].sort(
+    (a, b) =>
+      new Date(b.frontmatter.date).getTime() -
+      new Date(a.frontmatter.date).getTime(),
+  )
 
 const slugify = (value: string) =>
   value

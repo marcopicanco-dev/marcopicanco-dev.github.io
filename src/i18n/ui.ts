@@ -18,17 +18,20 @@ export type LandingPageObj = {
 
 export const LANDING_PAGE: LanguageObject<LandingPageObj> = {
   en: {
-    description: 'Conteúdo sobre programação, matemática, ciência e tecnologia.',
+    description:
+      'Conteúdo sobre programação, matemática, ciência e tecnologia.',
     getStartedBtnText: 'Ler o blog',
     githubBtnText: 'Source code',
   },
   fr: {
-    description: 'Conteúdo sobre programação, matemática, ciência e tecnologia.',
+    description:
+      'Conteúdo sobre programação, matemática, ciência e tecnologia.',
     getStartedBtnText: 'Ler o blog',
     githubBtnText: 'Code source',
   },
   pt: {
-    description: 'Conteúdo sobre programação, matemática, ciência e tecnologia.',
+    description:
+      'Conteúdo sobre programação, matemática, ciência e tecnologia.',
     getStartedBtnText: 'Ler o blog',
     githubBtnText: 'Código fonte',
   },

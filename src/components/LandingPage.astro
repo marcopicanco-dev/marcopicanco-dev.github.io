@@ -1,9 +1,6 @@
 ---
 import Base from '@/layouts/Base.astro'
-import {
-  GITHUB_REPO_URL,
-  PROJECT_NAME,
-} from '@/config'
+import { GITHUB_REPO_URL, PROJECT_NAME } from '@/config'
 import { type LandingPageObj } from '@/i18n/ui'
 
 const { t } = Astro.props as { t: LandingPageObj }
@@ -31,6 +28,7 @@ const { t } = Astro.props as { t: LandingPageObj }
           </a>
           <a
             target="_blank"
+            rel="noopener noreferrer"
             href={GITHUB_REPO_URL}
             class="group relative inline-flex h-12 items-center justify-center rounded-base bg-lightModeBg px-6 font-medium text-lightModeText outline outline-1 outline-black/50 transition-colors hover:outline-black dark:bg-darkModeBg dark:text-white dark:outline-white/50 dark:hover:outline-white w400:h-10 w400:px-3"
           >

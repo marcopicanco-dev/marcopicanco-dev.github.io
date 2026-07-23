@@ -1,0 +1,428 @@
+---
+title: 'Corrigindo headers de segurança em um site estático no GitHub Pages com Cloudflare - Parte 2'
+description: 'Audit de dependências, migração para Astro 7, ajustes de APIs removidas e testes automatizados de segurança.'
+date: '2026-07-23'
+heroImage: '/images/security-part2-upgrade-map.svg'
+heroImageAlt: 'Mapa da migração segura para Astro 7, passando por diagnóstico, upgrade, ajustes de código e validação'
+---
+
+No primeira primeira parte do artigo, tratei a parte mais visível do problema: headers de segurança em um site estático hospedado no GitHub Pages, com o Cloudflare entrando como camada de borda para aplicar aquilo que o GitHub Pages não permite configurar diretamente.
+
+Só que segurança não termina no header HTTP. Depois que a borda ficou protegida, faltava olhar para dentro do projeto: dependências antigas, APIs removidas, build quebrando depois de upgrade e pequenos padrões de código que podem virar regressão de segurança no futuro.
+
+Esta parte 2 é exatamente essa etapa: transformar o susto do `npm audit` em uma migração controlada para o Astro mais recente.
+
+## Contexto: Analisar a segurança de um site estático.
+
+Mais habituado com aplicações rails, as primeiras ideias partiram de uma análise white-box tradicional, usando ferramentas comuns em projetos Ruby/Rails, como Brakeman e specs RSpec voltadas para autorização de rotas.
+
+Porém, este blog não é Rails. Ele é um projeto Astro estático. Não tem ActiveRecord, não tem controller, não tem autenticação e não tem API RESTful no repositório. Foi aí que as pesquisas comçaram:
+
+| Em um Rails                     | Neste projeto Astro                                |
+| ------------------------------- | -------------------------------------------------- |
+| Brakeman                        | `npm audit`, ESLint, TypeScript e testes white-box |
+| SQL injection no ActiveRecord   | Dependências vulneráveis e HTML inseguro           |
+| Bypass de autenticação em rotas | Regressões em links, CSP, scripts e renderização   |
+| Specs de autorização            | Specs de segurança sobre o código-fonte            |
+
+
+## Primeiro diagnóstico: npm audit
+
+Comecei pelo comando mais simples:
+
+```bash
+npm audit --audit-level=moderate
+```
+
+Por que usar esse comando?
+
+Porque ele consulta a base de advisories do npm e cruza isso com a árvore real do `package-lock.json`. O `--audit-level=moderate` faz o comando falhar quando houver vulnerabilidade moderada ou pior, o que é útil para CI.
+
+O resultado inicial foi:
+
+```text
+28 vulnerabilities (2 low, 8 moderate, 18 high)
+```
+
+A maior parte vinha de dependências transitivas do stack antigo: `astro`, `esbuild`, `rollup`, `sharp`, `postcss`, `prismjs`, `yaml`, `devalue` e afins.
+
+![Print em estilo terminal mostrando a evolução do npm audit: primeiro 28 vulnerabilidades, depois migração  e por fim zero vulnerabilidades](/images/security-part2-audit-migration.svg)
+
+Na primeira parte eu tinha comentado que `npm audit fix` tentou atualizar o Astro de versão e que aquilo não deveria ser tratado como correção automática. Agora a aualização foi intencional: Tratei como migração de framework, não como "só atualizar pacote".
+
+## O comando perigoso: npm audit fix --force
+
+O comando usado foi:
+
+```bash
+npm audit fix --force
+```
+
+Por que usar?
+
+Porque o audit indicava correções disponíveis, mas várias exigiam upgrade. O `--force` autoriza o npm a atravessar barreiras de SemVer e instalar versões potencialmente incompatíveis.
+
+Por que isso é perigoso?
+
+Porque o próprio npm avisa:
+
+```text
+npm warn using --force Recommended protections disabled.
+npm warn audit Updating astro to 7.1.3, which is a SemVer major change.
+```
+
+Esse aviso é a parte mais importante do comando. Ele não significa "pronto, seguro". Significa: "agora você aceitou quebrar compatibilidade e precisa migrar o projeto de verdade".
+
+Depois do `--force`, o audit caiu bastante, mas ainda sobraram vulnerabilidades relacionadas a `vite` e `esbuild`:
+
+```text
+2 vulnerabilities (1 moderate, 1 high)
+```
+
+Nesse ponto, o processo de upgrade tinha virado um balaio de gato: `astro@7.1.3` instalado, mas algumas integrações antigas ainda puxavam versões vulneráveis ou incompatíveis.
+
+## Confirmando a versão mais recente do Astro
+
+Antes de seguir, conferi qual era a versão mais recente publicada no npm:
+
+```bash
+npm view astro version
+```
+
+Resultado:
+
+```text
+7.1.3
+```
+
+Ou seja: sim, o projeto foi migrado para a versão mais recente do Astro disponível naquele momento.
+
+Por que isso importa em segurança?
+
+Framework antigo acumula duas categorias de risco:
+
+- vulnerabilidades conhecidas em dependências diretas ou transitivas;
+- APIs antigas e deprecadas que continuam funcionando até o dia em que deixam de existir.
+
+Neste projeto, ambos os cenários ocorreram: a versão anterior do Astro dependia de pacotes vulneráveis na cadeia de dependências, e a migração para o Astro 7 expôs o uso de APIs que já haviam sido descontinuadas.
+
+## Alinhando a árvore de dependências
+
+Depois do `audit fix --force`, conferi a árvore:
+
+```bash
+npm ls astro @astrojs/mdx @astrojs/react @astrojs/tailwind vite esbuild
+```
+
+Esse comando é útil porque o problema nem sempre está no pacote direto. Às vezes a raiz parece atualizada, mas um peer dependency ou pacote transitivo ainda prende uma versão vulnerável.
+
+O principal conflito era este:
+
+```text
+@astrojs/tailwind@5.1.5
+peer astro "^3.0.0 || ^4.0.0 || ^5.0.0"
+```
+
+Como o projeto agora estava em `astro@7.1.3`, essa integração antiga não fazia mais sentido. A própria documentação do Astro marca `@astrojs/tailwind` como deprecated e orienta seguir o caminho atual de Tailwind pelo pipeline de estilos.
+
+Removi a integração:
+
+```bash
+npm uninstall @astrojs/tailwind
+```
+
+E atualizei os pacotes que precisavam acompanhar o upgrade:
+
+```bash
+npm install @astrojs/react@^6.0.1 @astrojs/check@^0.9.9 autoprefixer@^10.5.4
+npm install --save-dev vite@^8.1.5
+```
+
+O `vite@8.1.5` direto no projeto resolveu o peer que ainda fazia o npm manter uma cópia antiga de Vite no topo. Depois disso, o audit ficou limpo:
+
+```bash
+npm audit --audit-level=moderate
+```
+
+```text
+found 0 vulnerabilities
+```
+
+## Tailwind sem @astrojs/tailwind
+
+Ao remover a integração antiga, eu precisei deixar explícito o que ela fazia por trás: conectar Tailwind no pipeline de CSS.
+
+Criei um CSS de entrada:
+
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+E importei esse arquivo no layout base:
+
+```astro
+import '@/styling/tailwind.css'
+```
+
+Também adicionei um `postcss.config.cjs`:
+
+```js
+module.exports = {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  },
+}
+```
+
+Por que isso foi feito?
+
+Porque eu preferi preservar Tailwind 3, que já era o stack do projeto, em vez de misturar duas migrações grandes ao mesmo tempo: Astro 7 e Tailwind 4. Segurança também é reduzir variáveis. Primeiro estabiliza o framework, depois migra o design system se fizer sentido.
+
+## Quebras reais do Astro 7
+
+Depois de alinhar pacotes, rodei:
+
+```bash
+npm run build
+```
+
+E apareceu a primeira quebra real:
+
+```text
+[MISSING_EXPORT] "ViewTransitions" is not exported by "\0astro:transitions".
+```
+
+A correção foi trocar:
+
+```astro
+import {ViewTransitions} from 'astro:transitions'
+
+<ViewTransitions />
+```
+
+por:
+
+```astro
+import {ClientRouter} from 'astro:transitions'
+
+<ClientRouter />
+```
+
+Segundo a documentação oficial de upgrade do Astro, `ViewTransitions` foi renomeado para `ClientRouter`. A ideia é deixar mais claro que esse componente ativa o roteamento client-side, não apenas a API nativa de view transitions do navegador.
+
+Outra quebra foi `Astro.glob`. No Astro novo, esse caminho saiu da API. A troca foi centralizar o carregamento dos posts em `src/utils/blog.ts` usando `import.meta.glob`:
+
+```ts
+const blogPostModules = import.meta.glob<BlogPostModule>(
+  '/src/content/blog/*.mdx',
+  {
+    eager: true,
+  },
+)
+
+export const getBlogPosts = () => Object.values(blogPostModules)
+```
+
+Por que centralizar?
+
+Porque antes havia `Astro.glob` em vários lugares: menu, busca, página de blog e página dinâmica de post. Se a forma de carregar conteúdo mudar de novo, agora existe um ponto principal para mexer.
+
+![Mapa visual mostrando a sequência da migração: diagnóstico, upgrade, ajustes de código e validação](/images/security-part2-upgrade-map.svg)
+
+## TypeScript, ESLint e o warning escondido
+
+Depois do upgrade, o TypeScript também precisou acompanhar o novo tsconfig do Astro:
+
+```bash
+npm install typescript@^6.0.3
+```
+
+Com TypeScript 6, o ESLint começou a avisar que `@typescript-eslint` estava antigo:
+
+```text
+WARNING: You are currently running a version of TypeScript which is not officially supported by @typescript-eslint/typescript-estree.
+```
+
+Esse tipo de warning não deve ser ignorado. Lint quebrado ou parser desatualizado significa que uma parte da análise está trabalhando fora da faixa suportada.
+
+Atualizei:
+
+```bash
+npm install --save-dev @typescript-eslint/eslint-plugin@^8.65.0 @typescript-eslint/parser@^8.65.0
+```
+
+Depois disso, rodei:
+
+```bash
+npm run lint
+```
+
+Resultado:
+
+```text
+> eslint .
+```
+
+Sem erros. Sem warning de TypeScript incompatível.
+
+Também precisei reescrever um trecho do `ThemeSwitcher.astro`. O build aceitava TypeScript dentro do `<script>`, mas o parser do ESLint tropeçava em algumas chamadas genéricas quebradas em múltiplas linhas. A solução foi manter tipagem, mas quebrar as cadeias em variáveis locais:
+
+```ts
+const switchers = document.querySelectorAll<HTMLElement>('.theme-switcher')
+
+switchers.forEach((root) => {
+  if (root.dataset.bound === 'true') return
+  root.dataset.bound = 'true'
+})
+```
+
+Isso deixou o código mais legível e compatível com as duas ferramentas: `astro check` e ESLint.
+
+## Testes de segurança no código
+
+A parte mais importante para mim foi não deixar isso só como uma limpeza pontual. Criei um script de teste usando o `node:test`, sem adicionar framework novo:
+
+```bash
+npm run security:test
+```
+
+O teste percorre os arquivos de `src` e `public` e procura padrões que eu não quero que voltem para o projeto.
+
+O comando agregado ficou:
+
+```bash
+npm run security
+```
+
+Ele executa:
+
+```bash
+npm run typecheck
+npm run security:test
+npm run security:audit
+```
+
+Resultado final:
+
+```text
+# tests 5
+# pass 5
+
+found 0 vulnerabilities
+```
+
+![Matriz visual listando os testes automatizados cobertos: links externos seguros, bloqueio de HTML cru, bloqueio de execução dinâmica, bloqueio de handlers inline, CSP e Referrer-Policy](/images/security-part2-test-coverage.svg)
+
+Hoje o site está coberto por estes testes automatizados:
+
+| Teste                                                                      | O que evita                                           |
+| -------------------------------------------------------------------------- | ----------------------------------------------------- |
+| `target="_blank"` exige `rel="noopener noreferrer"`                        | Tabnabbing e acesso indevido via `window.opener`      |
+| Bloqueio de `set:html`, `is:raw`, `dangerouslySetInnerHTML` e `innerHTML=` | Regressões com HTML cru e risco de XSS                |
+| Bloqueio de `eval()` e `new Function()`                                    | Execução dinâmica de código                           |
+| Bloqueio de handlers inline em markup, como `onerror=`                     | Superfície comum de XSS e CSP mais fraca              |
+| Checagem de CSP e Referrer-Policy no layout base                           | Remoção acidental das políticas do `<head>`           |
+| `npm audit --audit-level=moderate`                                         | Dependências com vulnerabilidades moderadas ou piores |
+| `tsc --noEmit`                                                             | Incompatibilidades de tipos depois de upgrades        |
+
+Além disso, o build final garante que as páginas estáticas ainda sejam geradas corretamente:
+
+```bash
+npm run build
+```
+
+```text
+Result (26 files):
+- 0 errors
+- 0 warnings
+- 0 hints
+
+9 page(s) built
+```
+
+## Por que migrar para a versão mais recente do Astro?
+
+Migrar framework dá trabalho. Neste caso, quebrou API, exigiu ajuste de Tailwind, TypeScript, ESLint e carregamento de posts. Então a pergunta honesta é: por que fazer?
+
+Porque ficar em versão antiga cria uma dívida invisível. O site continua abrindo, mas a base vai perdendo suporte nas ferramentas ao redor. O audit começa a apontar vulnerabilidades em pacotes transitivos. Integrações ficam depreciadas. APIs antigas funcionam por compatibilidade até serem removidas.
+
+No meu caso, a migração trouxe três ganhos claros:
+
+- a árvore de dependências saiu de vulnerável para `found 0 vulnerabilities`;
+- APIs antigas foram substituídas por APIs atuais (`ClientRouter` e `import.meta.glob`);
+- o projeto ganhou testes de segurança que rodam localmente e podem ir para CI.
+
+Ou seja, a migração não foi só "ter número novo no package.json". Foi uma redução real de risco operacional.
+
+## O que ficou resolvido
+
+| Área                | Resultado                                                               |
+| ------------------- | ----------------------------------------------------------------------- |
+| Dependências        | `npm audit` zerado                                                      |
+| Astro               | migrado para `7.1.3`                                                    |
+| Vite/esbuild        | alinhados em versões sem advisory aberto no audit                       |
+| Tailwind            | removida integração antiga incompatível; pipeline via PostCSS explícito |
+| APIs removidas      | `ViewTransitions` -> `ClientRouter`; `Astro.glob` -> `import.meta.glob` |
+| TypeScript          | atualizado e passando `tsc --noEmit`                                    |
+| ESLint              | passando sem warning de TypeScript incompatível                         |
+| Segurança white-box | testes automatizados em `tests/security.test.mjs`                       |
+| Build               | 9 páginas geradas com 0 erros, 0 warnings e 0 hints                     |
+
+## Próximos passos
+
+Essa rodada cobriu muita coisa, mas ainda há pontos bons para testar em uma terceira etapa.
+
+1. Validar os headers diretamente em produção depois do deploy.
+
+```bash
+curl -I https://www.marcopicanco.com
+```
+
+O objetivo é confirmar que Cloudflare continua aplicando `X-Frame-Options`, `X-Content-Type-Options`, `Permissions-Policy`, `Cross-Origin-Opener-Policy`, `Cross-Origin-Resource-Policy` e HSTS.
+
+2. Rodar um scanner de headers externo.
+
+Ferramentas como Security Headers, Mozilla Observatory ou OWASP ZAP em modo passivo ajudam a conferir o comportamento real no navegador e na borda.
+
+3. Automatizar no CI.
+
+O ideal é criar um workflow que rode:
+
+```bash
+npm ci
+npm run lint
+npm run security
+npm run build
+```
+
+Assim, vulnerabilidade de dependência, regressão de CSP ou quebra de build falham antes do deploy.
+
+4. Revisar a CSP com calma.
+
+Hoje ainda existe `'unsafe-inline'` em `script-src` e `style-src` por causa do runtime e dos estilos inline gerados no site estático. Em GitHub Pages, sem servidor de aplicação, nonce por request não é simples. Mesmo assim, vale investigar se dá para reduzir isso com mudanças no build ou na arquitetura.
+
+5. Considerar Content Collections.
+
+`import.meta.glob` resolveu a migração, mas o caminho mais estruturado para conteúdo no Astro é usar Content Collections. Isso ajudaria a validar frontmatter, tipos e estrutura dos posts de forma mais robusta.
+
+6. Fazer uma varredura DAST não destrutiva.
+
+Depois do deploy, vale testar rotas conhecidas, arquivos sensíveis, cache, redirecionamentos HTTP -> HTTPS, headers por tipo de asset e comportamento em `www` vs domínio raiz.
+
+## Conclusão
+
+A parte 1 fechou a porta da borda: headers, DNS e Cloudflare.
+
+A parte 2 fechou uma parte importante da casa por dentro: dependências, framework, build e testes automatizados.
+
+O ponto principal é este: segurança em site estático não é só configurar header uma vez e esquecer. É manter a cadeia de dependências atualizada, entender o impacto de upgrades maiores, automatizar regressões e validar em produção. O site pode ser simples, mas a disciplina precisa ser a mesma.
+
+Referências usadas nesta migração:
+
+- [Astro: Upgrade to v5](https://docs.astro.build/en/guides/upgrade-to/v5/)
+- [Astro: `Astro.glob()` removido e alternativa com `import.meta.glob`](https://docs.astro.build/en/reference/errors/astro-glob-used-outside/)
+- [Astro: documentação da integração Tailwind, marcada como deprecated](https://docs.astro.build/en/guides/integrations-guide/tailwind/)
+- [Astro: imports e `import.meta.glob`](https://docs.astro.build/en/guides/imports/)

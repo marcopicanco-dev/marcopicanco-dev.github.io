@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 620" role="img" aria-labelledby="title desc">
+  <title id="title">Matriz de testes de segurança cobertos</title>
+  <desc id="desc">Tabela visual com as proteções automatizadas: links externos seguros, bloqueio de HTML cru, bloqueio de execução dinâmica, bloqueio de handlers inline, CSP e audit de dependências.</desc>
+  <rect width="1100" height="620" fill="#282a36"/>
+  <text x="70" y="72" fill="#f8f8f2" font-family="Karla, Arial, sans-serif" font-size="34" font-weight="700">Cobertura automatizada depois da parte 2</text>
+  <text x="70" y="108" fill="#d7d5ee" font-family="Karla, Arial, sans-serif" font-size="18">O objetivo é impedir regressões simples antes do deploy.</text>
+
+  <g transform="translate(70 150)">
+    <rect width="960" height="390" rx="14" fill="#21222c" stroke="#6272a4" stroke-opacity="0.35"/>
+    <g font-family="Karla, Arial, sans-serif" font-size="18">
+      <text x="34" y="52" fill="#8be9fd" font-weight="700">Teste</text>
+      <text x="520" y="52" fill="#8be9fd" font-weight="700">Risco reduzido</text>
+      <text x="850" y="52" fill="#8be9fd" font-weight="700">Status</text>
+    </g>
+    <g stroke="#6272a4" stroke-opacity="0.28">
+      <path d="M0 78H960"/>
+      <path d="M0 138H960"/>
+      <path d="M0 198H960"/>
+      <path d="M0 258H960"/>
+      <path d="M0 318H960"/>
+    </g>
+    <g font-family="Karla, Arial, sans-serif" font-size="17">
+      <text x="34" y="116" fill="#f8f8f2">target=_blank exige rel seguro</text>
+      <text x="520" y="116" fill="#d7d5ee">tabnabbing / window.opener</text>
+      <text x="850" y="116" fill="#50fa7b" font-weight="700">passou</text>
+
+      <text x="34" y="176" fill="#f8f8f2">bloqueia set:html / is:raw</text>
+      <text x="520" y="176" fill="#d7d5ee">XSS por HTML não sanitizado</text>
+      <text x="850" y="176" fill="#50fa7b" font-weight="700">passou</text>
+
+      <text x="34" y="236" fill="#f8f8f2">bloqueia eval / new Function</text>
+      <text x="520" y="236" fill="#d7d5ee">execução dinâmica de código</text>
+      <text x="850" y="236" fill="#50fa7b" font-weight="700">passou</text>
+
+      <text x="34" y="296" fill="#f8f8f2">bloqueia handlers inline</text>
+      <text x="520" y="296" fill="#d7d5ee">CSP fraca e superfície XSS</text>
+      <text x="850" y="296" fill="#50fa7b" font-weight="700">passou</text>
+
+      <text x="34" y="356" fill="#f8f8f2">confere CSP e Referrer-Policy</text>
+      <text x="520" y="356" fill="#d7d5ee">regressão no layout raiz</text>
+      <text x="850" y="356" fill="#50fa7b" font-weight="700">passou</text>
+    </g>
+  </g>
+</svg>

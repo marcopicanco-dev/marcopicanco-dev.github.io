@@ -1,7 +1,9 @@
 ---
 import HeadSeo from '@/components/HeadSeo.astro'
 import Nav from '@/components/navigation/Nav.astro'
-import { ViewTransitions } from 'astro:transitions'
+import { ClientRouter } from 'astro:transitions'
+import { DEFAULT_LANGUAGE_CODE } from '@/config'
+import { type LanguageKeys, LANGUAGES } from '@/i18n/ui'
 import { type Frontmatter } from '@/types'
 
 // font
@@ -10,12 +12,21 @@ import '@fontsource/karla/500.css'
 import '@fontsource/karla/700.css'
 
 // custom styling
+import '@/styling/tailwind.css'
 import '@/styling/scrollbar.css'
 import '@/styling/code.css'
 
 const { frontmatter } = Astro.props as {
   frontmatter?: Frontmatter
 }
+
+const langFromURL = Astro.url.pathname.split('/')[1] || DEFAULT_LANGUAGE_CODE
+const lang: LanguageKeys = Object.prototype.hasOwnProperty.call(
+  LANGUAGES,
+  langFromURL,
+)
+  ? (langFromURL as LanguageKeys)
+  : DEFAULT_LANGUAGE_CODE
 ---
 
 <style is:global>
@@ -24,7 +35,7 @@ const { frontmatter } = Astro.props as {
   }
 </style>
 
-<html data-theme="dracula">
+<html data-theme="dracula" lang={lang}>
   <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -35,10 +46,12 @@ const { frontmatter } = Astro.props as {
       http-equiv="Content-Security-Policy"
       content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'"
     />
-    <ViewTransitions />
+    <ClientRouter />
     <HeadSeo type="website" frontmatter={frontmatter} />
   </head>
-  <body class="bg-lightModeBg text-lightModeText selection:bg-draculaAccent/30 selection:text-draculaBg dark:bg-darkModeBg dark:text-darkModeText">
+  <body
+    class="bg-lightModeBg text-lightModeText selection:bg-draculaAccent/30 selection:text-draculaBg dark:bg-darkModeBg dark:text-darkModeText"
+  >
     <Nav />
     <div
       class="fixed left-0 top-0 z-[-2] h-screen w-full bg-lightModeBg bg-[radial-gradient(circle_at_top_right,_rgba(189,147,249,0.2),_transparent_25%),radial-gradient(circle_at_bottom_left,_rgba(139,233,253,0.12),_transparent_30%)] transition-colors duration-[inherit] dark:bg-darkModeBg dark:bg-[radial-gradient(circle_at_top_right,_rgba(189,147,249,0.15),_transparent_25%),radial-gradient(circle_at_bottom_left,_rgba(139,233,253,0.08),_transparent_30%)]"

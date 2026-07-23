@@ -27,8 +27,7 @@ export const OG_IMAGE = 'og.png'
 export const LIGHT_MODE_CODE_BLOCK_THEME: ThemeObjectOrShikiThemeName =
   'dracula'
 
-export const DARK_MODE_CODE_BLOCK_THEME: ThemeObjectOrShikiThemeName =
-  'dracula'
+export const DARK_MODE_CODE_BLOCK_THEME: ThemeObjectOrShikiThemeName = 'dracula'
 
 // list of all themes you can use: https://expressive-code.com/guides/themes/#available-themes
 // if u change any of those code block theme values make sure to change them as well in astro.config.mjs inside expressiveCode in themes array

@@ -4,84 +4,114 @@ import { PROJECT_NAME, SITE } from '@/config'
 import '@/styling/blog-fonts.css'
 import {
   formatBlogDate,
+  getBlogPosts,
   getBlogPostUrl,
-  type BlogFrontmatter,
+  sortBlogPostsByDateDesc,
 } from '@/utils/blog'
 
-const posts = await Astro.glob('../../content/blog/*.mdx')
-const sortedPosts = posts.sort(
-  (a, b) =>
-    new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime(),
-)
+const sortedPosts = sortBlogPostsByDateDesc(getBlogPosts())
 const featuredPosts = sortedPosts.slice(0, 2)
 const otherPosts = sortedPosts.slice(2)
 ---
 
-<Base frontmatter={{ title: `${PROJECT_NAME} Blog`, description: SITE.description, file: '' }}>
+<Base
+  frontmatter={{
+    title: `${PROJECT_NAME} Blog`,
+    description: SITE.description,
+    file: '',
+  }}
+>
   <div class="blog-fonts mx-auto max-w-6xl px-5 py-20">
     <section class="mb-16 text-center">
-      <span class="blog-ui text-sm uppercase tracking-[0.4em] text-lightModeText/60 dark:text-darkModeText/60">Blog</span>
-      <h2 class="mt-4 text-5xl font-bold text-lightModeText dark:text-darkModeText">
+      <span
+        class="blog-ui text-sm uppercase tracking-[0.4em] text-lightModeText/60 dark:text-darkModeText/60"
+        >Blog</span
+      >
+      <h2
+        class="mt-4 text-5xl font-bold text-lightModeText dark:text-darkModeText"
+      >
         Os números governam o mundo.
       </h2>
-      <h4 class="mx-auto mt-6 max-w-3xl text-lg leading-8 text-lightModeText/80 dark:text-darkModeText/80">
+      <h4
+        class="mx-auto mt-6 max-w-3xl text-lg leading-8 text-lightModeText/80 dark:text-darkModeText/80"
+      >
         Pitágoras
       </h4>
-      <p class="mx-auto mt-6 max-w-3xl text-lg leading-8 text-lightModeText/80 dark:text-darkModeText/80">
-      🌎 💻
+      <p
+        class="mx-auto mt-6 max-w-3xl text-lg leading-8 text-lightModeText/80 dark:text-darkModeText/80"
+      >
+        🌎 💻
       </p>
     </section>
 
     <section class="grid gap-6 lg:grid-cols-2">
-      {featuredPosts.map((post) => (
-        <article class="group rounded-[2rem] border border-draculaBorder/20 bg-draculaPanel/95 p-8 shadow-[0_28px_48px_-32px_rgba(0,0,0,0.55)] transition hover:-translate-y-1 hover:border-draculaAccent hover:shadow-[0_28px_56px_-24px_rgba(0,0,0,0.45)]">
-          <a class="blog-ui text-sm font-semibold uppercase tracking-[0.25em] text-draculaAccent2 transition hover:text-draculaAccent" href={getBlogPostUrl(post.frontmatter as BlogFrontmatter)}>
-            {formatBlogDate(post.frontmatter.date)}
-          </a>
-          <h2 class="mt-6 text-3xl font-semibold leading-tight text-draculaText">
-            <a href={getBlogPostUrl(post.frontmatter as BlogFrontmatter)}>{post.frontmatter.title}</a>
-          </h2>
-          <p class="mt-5 text-lg leading-8 text-draculaMuted">{post.frontmatter.description}</p>
-          <a
-            href={getBlogPostUrl(post.frontmatter as BlogFrontmatter)}
-            class="blog-ui mt-8 inline-flex items-center gap-2 text-sm font-semibold text-draculaAccent2 transition hover:text-draculaAccent"
-          >
-            Ler mais →
-          </a>
-        </article>
-      ))}
+      {
+        featuredPosts.map((post) => (
+          <article class="group rounded-[2rem] border border-draculaBorder/20 bg-draculaPanel/95 p-8 shadow-[0_28px_48px_-32px_rgba(0,0,0,0.55)] transition hover:-translate-y-1 hover:border-draculaAccent hover:shadow-[0_28px_56px_-24px_rgba(0,0,0,0.45)]">
+            <a
+              class="blog-ui text-sm font-semibold uppercase tracking-[0.25em] text-draculaAccent2 transition hover:text-draculaAccent"
+              href={getBlogPostUrl(post.frontmatter)}
+            >
+              {formatBlogDate(post.frontmatter.date)}
+            </a>
+            <h2 class="mt-6 text-3xl font-semibold leading-tight text-draculaText">
+              <a href={getBlogPostUrl(post.frontmatter)}>
+                {post.frontmatter.title}
+              </a>
+            </h2>
+            <p class="mt-5 text-lg leading-8 text-draculaMuted">
+              {post.frontmatter.description}
+            </p>
+            <a
+              href={getBlogPostUrl(post.frontmatter)}
+              class="blog-ui mt-8 inline-flex items-center gap-2 text-sm font-semibold text-draculaAccent2 transition hover:text-draculaAccent"
+            >
+              Ler mais →
+            </a>
+          </article>
+        ))
+      }
     </section>
 
-    {otherPosts.length > 0 && (
-      <section class="mt-16">
-        <div class="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <span class="blog-ui text-sm uppercase tracking-[0.4em] text-lightModeText/60 dark:text-darkModeText/60">Arquivos</span>
-            <h2 class="mt-2 text-3xl font-bold text-lightModeText dark:text-darkModeText">Posts anteriores</h2>
+    {
+      otherPosts.length > 0 && (
+        <section class="mt-16">
+          <div class="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <span class="blog-ui text-sm uppercase tracking-[0.4em] text-lightModeText/60 dark:text-darkModeText/60">
+                Arquivos
+              </span>
+              <h2 class="mt-2 text-3xl font-bold text-lightModeText dark:text-darkModeText">
+                Posts anteriores
+              </h2>
+            </div>
           </div>
-        </div>
 
-        <div class="space-y-4">
-          {otherPosts.map((post) => (
-            <article class="rounded-[1.75rem] border border-draculaBorder/20 bg-draculaPanel/90 p-6 transition hover:-translate-y-0.5 hover:border-draculaAccent hover:shadow-[0_18px_28px_-24px_rgba(0,0,0,0.45)]">
-              <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <a
-                  class="blog-ui text-sm font-semibold text-draculaAccent2 hover:text-draculaAccent"
-                  href={getBlogPostUrl(post.frontmatter as BlogFrontmatter)}
-                >
-                  {formatBlogDate(post.frontmatter.date)}
-                </a>
-                <a href={getBlogPostUrl(post.frontmatter as BlogFrontmatter)} class="text-xl font-semibold text-draculaText transition hover:text-draculaAccent">
-                  {post.frontmatter.title}
-                </a>
-              </div>
-              <p class="mt-4 text-base leading-7 text-draculaMuted">
-                {post.frontmatter.description}
-              </p>
-            </article>
-          ))}
-        </div>
-      </section>
-    )}
+          <div class="space-y-4">
+            {otherPosts.map((post) => (
+              <article class="rounded-[1.75rem] border border-draculaBorder/20 bg-draculaPanel/90 p-6 transition hover:-translate-y-0.5 hover:border-draculaAccent hover:shadow-[0_18px_28px_-24px_rgba(0,0,0,0.45)]">
+                <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <a
+                    class="blog-ui text-sm font-semibold text-draculaAccent2 hover:text-draculaAccent"
+                    href={getBlogPostUrl(post.frontmatter)}
+                  >
+                    {formatBlogDate(post.frontmatter.date)}
+                  </a>
+                  <a
+                    href={getBlogPostUrl(post.frontmatter)}
+                    class="text-xl font-semibold text-draculaText transition hover:text-draculaAccent"
+                  >
+                    {post.frontmatter.title}
+                  </a>
+                </div>
+                <p class="mt-4 text-base leading-7 text-draculaMuted">
+                  {post.frontmatter.description}
+                </p>
+              </article>
+            ))}
+          </div>
+        </section>
+      )
+    }
   </div>
 </Base>
