@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 420" font-family="'Karla', Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="900" height="420" rx="16" fill="#21222c" />
+
+  <text x="450" y="42" fill="#f8f8f2" font-size="20" font-weight="700" text-anchor="middle">Onde cada proteção foi resolvida</text>
+
+  <!-- Left panel: code / meta tag -->
+  <rect x="30" y="70" width="400" height="320" rx="12" fill="#282a36" stroke="#bd93f9" stroke-width="1.5" />
+  <text x="230" y="105" fill="#bd93f9" font-size="17" font-weight="700" text-anchor="middle">Resolvido no código</text>
+  <text x="230" y="126" fill="#b7b3ff" font-size="13" text-anchor="middle">&lt;meta&gt; no HTML — Base.astro</text>
+
+  <rect x="55" y="150" width="350" height="46" rx="8" fill="#21222c" stroke="#44475a" />
+  <text x="75" y="178" fill="#f8f8f2" font-size="14">✓ Content-Security-Policy</text>
+
+  <rect x="55" y="206" width="350" height="46" rx="8" fill="#21222c" stroke="#44475a" />
+  <text x="75" y="234" fill="#f8f8f2" font-size="14">✓ Referrer-Policy</text>
+
+  <text x="230" y="290" fill="#ff5555" font-size="13" text-anchor="middle">⚠ frame-ancestors é ignorado</text>
+  <text x="230" y="310" fill="#ff5555" font-size="13" text-anchor="middle">quando o CSP vem via &lt;meta&gt;</text>
+
+  <text x="230" y="355" fill="#6272a4" font-size="12" text-anchor="middle">funciona sem servidor,</text>
+  <text x="230" y="372" fill="#6272a4" font-size="12" text-anchor="middle">sai junto no build estático</text>
+
+  <!-- Right panel: Cloudflare edge -->
+  <rect x="470" y="70" width="400" height="320" rx="12" fill="#282a36" stroke="#50fa7b" stroke-width="1.5" />
+  <text x="670" y="105" fill="#50fa7b" font-size="17" font-weight="700" text-anchor="middle">Resolvido na borda</text>
+  <text x="670" y="126" fill="#8be9fd" font-size="13" text-anchor="middle">Cloudflare — Transform Rule</text>
+
+  <rect x="495" y="150" width="350" height="40" rx="8" fill="#21222c" stroke="#44475a" />
+  <text x="515" y="175" fill="#f8f8f2" font-size="14">✓ X-Frame-Options</text>
+
+  <rect x="495" y="198" width="350" height="40" rx="8" fill="#21222c" stroke="#44475a" />
+  <text x="515" y="223" fill="#f8f8f2" font-size="14">✓ X-Content-Type-Options</text>
+
+  <rect x="495" y="246" width="350" height="40" rx="8" fill="#21222c" stroke="#44475a" />
+  <text x="515" y="271" fill="#f8f8f2" font-size="14">✓ Permissions-Policy</text>
+
+  <rect x="495" y="294" width="350" height="40" rx="8" fill="#21222c" stroke="#44475a" />
+  <text x="515" y="319" fill="#f8f8f2" font-size="14">✓ Access-Control-Allow-Origin</text>
+
+  <text x="670" y="372" fill="#6272a4" font-size="12" text-anchor="middle">só existem como header HTTP real</text>
+</svg>

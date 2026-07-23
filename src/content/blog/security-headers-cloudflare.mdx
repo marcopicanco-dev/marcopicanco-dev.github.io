@@ -4,15 +4,15 @@ description: 'Como analisei um relatório de segurança do meu blog, descobri os
 date: '2026-07-23'
 ---
 
-Rodei um scanner de segurança neste blog e o resultado veio cheio de alertas: faltavam `Content-Security-Policy`, `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy` e `Permissions-Policy`. Também apareceu um `Access-Control-Allow-Origin: *` bem solto.
+Depois de me deparar enxurrada de notícias sobre `cyber security`, resolvi testar meu site que por sinal é bem simples, é uma aplicação estática hospedada no github pages. Acabei de rodar um scanner de segurança e o resultado veio cheio de alertas: faltavam `Content-Security-Policy`, `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy` e `Permissions-Policy`. Também apareceu um `Access-Control-Allow-Origin: *` bem solto.
 
-Antes de sair adicionando headers, precisei entender uma limitação que muita gente esbarra ao hospedar em SSG estático: **o GitHub Pages não permite configurar headers HTTP customizados**. Não existe um `_headers` como na Netlify, nem controle de servidor. O que o GitHub entrega, é o que o visitante recebe.
+Antes de sair adicionando headers, precisei entender uma limitação que muita gente esbarra ao hospedar em SSG estático: **o GitHub Pages não permite configurar headers HTTP customizados**. Não existe um `_headers` como na Netlify, nem controle de servidor. O que o GitHub entrega, é o que o visitante recebe. E agora?
 
-Isso divide o problema em dois pedaços.
+Isso divide o problema em duas partes!
 
-## O que dá pra resolver só no código
+## O que dá pra resolver só no código?
 
-`Content-Security-Policy` e `Referrer-Policy` têm equivalente via `<meta>` no `<head>` do HTML, então dá pra aplicar direto no build do site.
+Depois de algumas pesquisas vi que o `Content-Security-Policy` e  o `Referrer-Policy` têm equivalente via `<meta>` no `<head>` do HTML, então dá pra aplicar direto no build do site.
 
 Adicionei isso no layout raiz (`Base.astro`):
 
@@ -29,11 +29,11 @@ Duas ressalvas importantes:
 - CSP via `<meta>` **ignora a diretiva `frame-ancestors`**, que é justamente a que protege contra clickjacking. Só funciona como header HTTP real.
 - O runtime de hidratação do Astro injeta um `<script>` e um `<style>` inline na página. Sem servidor, não dá pra gerar um nonce por request, então precisei liberar `'unsafe-inline'` nos dois — senão a busca, o troca-tema e o menu mobile quebram.
 
-Antes de considerar isso pronto, testei de verdade: subi o build, abri em um Chrome headless via protocolo CDP e chequei o console em várias interações (busca, tema, menu mobile, página de post). Na primeira rodada apareceu um bloqueio real: os posts do blog carregam fontes do Google Fonts via `@import`, e minha CSP inicial não liberava esse domínio. Ajustei `style-src` e `font-src` para incluir `fonts.googleapis.com`/`fonts.gstatic.com` e o erro sumiu.
+Antes de considerar isso pronto, rodei mais testes: subi o build, abri em um Chrome headless via protocolo CDP e chequei o console em várias interações (busca, tema, menu mobile, página de post). Na primeira rodada apareceu um bloqueio real: os posts do blog carregam fontes do Google Fonts via `@import`, e minha CSP inicial não liberava esse domínio. Como peguei esse tema free do Astro e fui fazendo costumizações, nem tinha me tocado desse pequeno detalhe, logo a ajustei `style-src` e `font-src` para incluir `fonts.googleapis.com`/`fonts.gstatic.com` e o erro sumiu.
 
-## O que só dá pra resolver com um proxy na frente
+## O que só dá pra resolver com um proxy na frente?
 
-`X-Frame-Options`, `X-Content-Type-Options` e `Permissions-Policy` **só existem como header HTTP** — não há meta tag equivalente que os navegadores respeitem. Como o GitHub Pages não expõe isso, a solução foi colocar o domínio atrás do **Cloudflare** (plano free) e usar uma **Transform Rule → Response Header Transform Rule** pra injetar os headers na resposta antes dela chegar ao visitante:
+`X-Frame-Options`, `X-Content-Type-Options` e `Permissions-Policy` **só existem como header HTTP** — não há meta tag equivalente que os navegadores respeitem. Como o GitHub Pages não expõe isso, a solução foi colocar o domínio atrás do **Cloudflare** (plano free, é lógico!) e usar uma **Transform Rule → Response Header Transform Rule** pra injetar os headers na resposta antes dela chegar ao visitante:
 
 | Header | Valor |
 |---|---|
@@ -44,13 +44,15 @@ Antes de considerar isso pronto, testei de verdade: subi o build, abri em um Chr
 | `Cross-Origin-Opener-Policy` | `same-origin` |
 | `Cross-Origin-Resource-Policy` | `same-origin` |
 
-Com o Cloudflare na frente, também aproveitei pra reforçar TLS: `Always Use HTTPS`, `Automatic HTTPS Rewrites` e HSTS. No caso do HSTS, fui com calma — antes de marcar `includeSubDomains` conferi via `dig`/`host` se existia algum subdomínio ainda sem HTTPS, porque isso é uma configuração **difícil de reverter** (o navegador guarda a política por meses) e o preload em `hstspreload.org` é praticamente uma via de mão única.
+![Diagrama mostrando que CSP e Referrer-Policy são resolvidos via meta tag no HTML, enquanto X-Frame-Options, X-Content-Type-Options, Permissions-Policy e CORS só existem como header HTTP e por isso são resolvidos na borda, pelo Cloudflare](/images/security-headers-scope.svg)
 
-## A armadilha: configurar o Cloudflare não é a mesma coisa que estar protegido
+Com o Cloudflare na frente, também aproveitei pra reforçar TLS: `Always Use HTTPS`, `Automatic HTTPS Rewrites` e HSTS. No caso do HSTS, fui com calma — antes de marcar `includeSubDomains` conferi via `dig`/`host` se existia algum subdomínio ainda sem HTTPS, porque isso é uma configuração **difícil de reverter** (o navegador guarda a política por meses) e o preload em `hstspreload.org` é praticamente uma via de mão única. Portanto, MUITO CUIDADO.
 
-Aqui mora o detalhe que mais importou nessa história inteira. Depois de criar a Transform Rule com todos os headers, testei o site em produção pra confirmar — e os headers de resposta eram **idênticos aos do relatório original**: `server: GitHub.com`, `via: 1.1 varnish`, `x-fastly-request-id`, sem nenhum `cf-ray`, sem nenhum dos headers configurados. Nada tinha mudado.
+## A armadilha: não basta configurar o Cloudflare e achar que está protegido.
 
-O motivo: eu tinha configurado a regra dentro da minha conta Cloudflare, mas o **domínio nunca foi delegado pro Cloudflare**. Os nameservers ainda eram os padrão do registrador (Google Domains, hoje Squarespace Domains), apontando direto pro GitHub Pages. Ou seja, o tráfego real dos visitantes nunca passava perto do Cloudflare — a regra existia, mas era invisível pra internet. Rodei:
+Aqui mora um detalhe muito importante. Depois de criar a Transform Rule com todos os headers, testei o site em produção pra confirmar — e os headers de resposta eram **idênticos aos do relatório original**: `server: GitHub.com`, `via: 1.1 varnish`, `x-fastly-request-id`, sem nenhum `cf-ray`, sem nenhum dos headers configurados. Nada tinha mudado, continuava a mesma coisa.
+
+O motivo: eu tinha configurado a regra dentro da minha conta Cloudflare, mas o **domínio nunca foi delegado pro Cloudflare**. Os nameservers ainda eram os padrões do registrador (Google Domains, hoje Squarespace Domains), apontando direto pro GitHub Pages. Ou seja, o tráfego real dos visitantes nunca passava perto do Cloudflare — a regra existia, mas era invisível pra internet. Rodei:
 
 ```bash
 dig +short NS marcopicanco.com
@@ -62,11 +64,13 @@ A correção foi trocar os nameservers no painel do registrador (Squarespace →
 
 Mesmo com o DNS propagado, ainda teve mais uma etapa: tentar bater direto num IP do Cloudflare pra esse domínio devolvia erro de handshake TLS (`SSL routines::sslv3 alert handshake failure`). O Cloudflare detecta a troca de nameserver de forma periódica, não instantânea, e só depois disso emite o certificado SSL (Universal SSL) pro domínio — até esse certificado ficar pronto, a conexão HTTPS nem completa. Então a sequência real de espera foi: propagação de DNS → detecção da zona pelo Cloudflare → emissão do certificado → só aí os headers passam a valer.
 
-A lição: **depois de configurar qualquer proteção de borda (Cloudflare, WAF, CDN), sempre valide direto na URL de produção** — headers configurados num painel não valem nada até o tráfego de fato passar por ali. Uma regra "pronta" que nunca é aplicada é pior do que não ter regra nenhuma, porque dá falsa sensação de segurança.
+![Diagrama comparando o fluxo de rede antes e depois: antes, o visitante ia direto pro GitHub Pages porque os nameservers ainda eram do registrador e o Cloudflare ficava fora do caminho; depois, com os nameservers apontando pro Cloudflare, o tráfego passa pela borda e recebe os headers de segurança antes de chegar ao GitHub Pages](/images/security-dns-before-after.svg)
+
+A lição: **depois de configurar qualquer proteção de borda (Cloudflare, WAF, CDN), sempre valide direto na URL de produção** — headers configurados num painel não valem nada até o tráfego de fato passar por ali. Uma regra "pronta" que nunca é aplicada é pior do que não ter regra nenhuma.
 
 ## Fechando outras pontas
 
-Com o site já era meu, fiz uma varredura leve e não-destrutiva nele mesmo: tentei bater em `.git/config`, `.env`, `package.json`, `astro.config.mjs` e outros arquivos comumente esquecidos expostos — todos 404, como esperado (só o `dist/` é publicado). Certificado TLS válido, TLS 1.2/1.3 respondendo normalmente.
+Como o site é pessoal, estou usando pra efeito didático e logo fiz uma varredura leve e não-destrutiva nele mesmo: tentei bater em `.git/config`, `.env`, `package.json`, `astro.config.mjs` e outros arquivos comumente esquecidos expostos — todos 404, como esperado (só o `dist/` é publicado). Certificado TLS válido, TLS 1.2/1.3 respondendo normalmente.
 
 Duas coisas que não existiam e são boa prática de qualquer site, sem relação direta com o relatório original:
 
