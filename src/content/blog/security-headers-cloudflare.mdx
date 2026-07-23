@@ -1,0 +1,69 @@
+---
+title: 'Corrigindo headers de segurança em um site estático no GitHub Pages com Cloudflare'
+description: 'Como analisei um relatório de segurança do meu blog, descobri os limites do GitHub Pages para headers HTTP e resolvi usando meta tags e Cloudflare.'
+date: '2026-07-23'
+---
+
+Rodei um scanner de segurança neste blog e o resultado veio cheio de alertas: faltavam `Content-Security-Policy`, `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy` e `Permissions-Policy`. Também apareceu um `Access-Control-Allow-Origin: *` bem solto.
+
+Antes de sair adicionando headers, precisei entender uma limitação que muita gente esbarra ao hospedar em SSG estático: **o GitHub Pages não permite configurar headers HTTP customizados**. Não existe um `_headers` como na Netlify, nem controle de servidor. O que o GitHub entrega, é o que o visitante recebe.
+
+Isso divide o problema em dois pedaços.
+
+## O que dá pra resolver só no código
+
+`Content-Security-Policy` e `Referrer-Policy` têm equivalente via `<meta>` no `<head>` do HTML, então dá pra aplicar direto no build do site.
+
+Adicionei isso no layout raiz (`Base.astro`):
+
+```html
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<meta
+  http-equiv="Content-Security-Policy"
+  content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'"
+/>
+```
+
+Duas ressalvas importantes:
+
+- CSP via `<meta>` **ignora a diretiva `frame-ancestors`**, que é justamente a que protege contra clickjacking. Só funciona como header HTTP real.
+- O runtime de hidratação do Astro injeta um `<script>` e um `<style>` inline na página. Sem servidor, não dá pra gerar um nonce por request, então precisei liberar `'unsafe-inline'` nos dois — senão a busca, o troca-tema e o menu mobile quebram.
+
+Antes de considerar isso pronto, testei de verdade: subi o build, abri em um Chrome headless via protocolo CDP e chequei o console em várias interações (busca, tema, menu mobile, página de post). Na primeira rodada apareceu um bloqueio real: os posts do blog carregam fontes do Google Fonts via `@import`, e minha CSP inicial não liberava esse domínio. Ajustei `style-src` e `font-src` para incluir `fonts.googleapis.com`/`fonts.gstatic.com` e o erro sumiu.
+
+## O que só dá pra resolver com um proxy na frente
+
+`X-Frame-Options`, `X-Content-Type-Options` e `Permissions-Policy` **só existem como header HTTP** — não há meta tag equivalente que os navegadores respeitem. Como o GitHub Pages não expõe isso, a solução foi colocar o domínio atrás do **Cloudflare** (plano free) e usar uma **Transform Rule → Response Header Transform Rule** pra injetar os headers na resposta antes dela chegar ao visitante:
+
+| Header | Valor |
+|---|---|
+| `X-Frame-Options` | `SAMEORIGIN` |
+| `X-Content-Type-Options` | `nosniff` |
+| `Permissions-Policy` | `geolocation=(), microphone=(), camera=(), payment=(), usb=()` |
+| `Access-Control-Allow-Origin` | `https://www.marcopicanco.com` |
+| `Cross-Origin-Opener-Policy` | `same-origin` |
+| `Cross-Origin-Resource-Policy` | `same-origin` |
+
+Com o Cloudflare na frente, também aproveitei pra reforçar TLS: `Always Use HTTPS`, `Automatic HTTPS Rewrites` e HSTS. No caso do HSTS, fui com calma — antes de marcar `includeSubDomains` conferi via `dig`/`host` se existia algum subdomínio ainda sem HTTPS, porque isso é uma configuração **difícil de reverter** (o navegador guarda a política por meses) e o preload em `hstspreload.org` é praticamente uma via de mão única.
+
+## Dependências e automação
+
+Rodei `npm audit` e apareceram vulnerabilidades em pacotes transitivos do Astro (rollup, sharp, prismjs, yaml). Tentei `npm audit fix` — e ele resolveu "corrigindo" isso pulando o Astro de v4 pra v7 de uma vez, o que quebrou o build (`ViewTransitions` não existe mais na API nova). Revertido na hora. Upgrade de maior version não é fix de segurança, é migração, e vou fazer isso com calma, em outro momento, testando cada parte.
+
+O que fica automatizado pra não esquecer disso de novo: um `.github/dependabot.yml` com checagem semanal de `npm` e `github-actions`, mais os alertas de segurança do Dependabot ativados no repositório — assim, na próxima vulnerabilidade, chega um aviso (ou um PR) em vez de eu descobrir só quando rodar o scanner de novo.
+
+## Resumo
+
+| Header | Onde foi resolvido |
+|---|---|
+| Content-Security-Policy | `<meta>` no HTML |
+| Referrer-Policy | `<meta>` no HTML |
+| X-Frame-Options | Cloudflare (Transform Rule) |
+| X-Content-Type-Options | Cloudflare (Transform Rule) |
+| Permissions-Policy | Cloudflare (Transform Rule) |
+| Access-Control-Allow-Origin solto | Cloudflare (Transform Rule) |
+| HSTS | Cloudflare (Edge Certificates) |
+
+Site estático no GitHub Pages é ótimo pelo custo zero e pela simplicidade, mas vale saber onde termina o que o código resolve sozinho e onde começa o que precisa de uma camada de rede na frente. 🔒
+
+Até a próxima!!!
