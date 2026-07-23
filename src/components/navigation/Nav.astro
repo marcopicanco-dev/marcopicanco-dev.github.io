@@ -8,7 +8,7 @@ import {
 
 import { type LanguageKeys, LANGUAGES } from '@/i18n/ui'
 import { type SearchRecord } from '@/types'
-import { getBlogPostUrl, type BlogFrontmatter } from '@/utils/blog'
+import { getBlogPosts, getBlogPostUrl } from '@/utils/blog'
 
 import ThemeSwitcher from '@/components/navigation/ThemeSwitcher.astro'
 import Search from '@/components/navigation/Search'
@@ -36,12 +36,12 @@ const navLinks = [
 ]
 
 const getSearchItems = async () => {
-  const blogPosts = await Astro.glob('@/content/blog/*.mdx')
+  const blogPosts = getBlogPosts()
 
   return blogPosts.map((post) => ({
     title: post.frontmatter.title,
     description: post.frontmatter.description,
-    url: getBlogPostUrl(post.frontmatter as BlogFrontmatter),
+    url: getBlogPostUrl(post.frontmatter),
   }))
 }
 
@@ -80,6 +80,7 @@ const searchItems: SearchRecord[] = await getSearchItems()
       <a
         class="mr-6 hover:opacity-70 w800:hidden"
         target="_blank"
+        rel="noopener noreferrer"
         href={GITHUB_REPO_URL}
       >
         <svg
@@ -95,6 +96,7 @@ const searchItems: SearchRecord[] = await getSearchItems()
       <a
         class="mr-10 hover:opacity-70 w800:hidden"
         target="_blank"
+        rel="noopener noreferrer"
         href={LINKEDIN_URL}
       >
         <svg
