@@ -25,7 +25,6 @@ Porém, este blog não é Rails. Ele é um projeto Astro estático. Não tem Act
 | Bypass de autenticação em rotas | Regressões em links, CSP, scripts e renderização   |
 | Specs de autorização            | Specs de segurança sobre o código-fonte            |
 
-
 ## Primeiro diagnóstico: npm audit
 
 Comecei pelo comando mais simples:
@@ -308,8 +307,8 @@ npm run security:audit
 Resultado final:
 
 ```text
-# tests 5
-# pass 5
+# tests 6
+# pass 6
 
 found 0 vulnerabilities
 ```
@@ -318,15 +317,15 @@ found 0 vulnerabilities
 
 Hoje o site está coberto por estes testes automatizados:
 
-| Teste                                                                      | O que evita                                           |
-| -------------------------------------------------------------------------- | ----------------------------------------------------- |
-| `target="_blank"` exige `rel="noopener noreferrer"`                        | Tabnabbing e acesso indevido via `window.opener`      |
-| Bloqueio de `set:html`, `is:raw`, `dangerouslySetInnerHTML` e `innerHTML=` | Regressões com HTML cru e risco de XSS                |
-| Bloqueio de `eval()` e `new Function()`                                    | Execução dinâmica de código                           |
-| Bloqueio de handlers inline em markup, como `onerror=`                     | Superfície comum de XSS e CSP mais fraca              |
-| Checagem de CSP e Referrer-Policy no layout base                           | Remoção acidental das políticas do `<head>`           |
-| `npm audit --audit-level=moderate`                                         | Dependências com vulnerabilidades moderadas ou piores |
-| `tsc --noEmit`                                                             | Incompatibilidades de tipos depois de upgrades        |
+| Teste                                                                      | O que evita                                            |
+| -------------------------------------------------------------------------- | ------------------------------------------------------ |
+| `target="_blank"` exige `rel="noopener noreferrer"`                        | Tabnabbing e acesso indevido via `window.opener`       |
+| Bloqueio de `set:html`, `is:raw`, `dangerouslySetInnerHTML` e `innerHTML=` | Regressões com HTML cru e risco de XSS                 |
+| Bloqueio de `eval()` e `new Function()`                                    | Execução dinâmica de código                            |
+| Bloqueio de handlers inline em markup, como `onerror=`                     | Superfície comum de XSS e CSP mais fraca               |
+| Checagem de CSP no `astro.config.mjs` e Referrer-Policy no layout base     | Remoção acidental das políticas do `<head>` e do build |
+| `npm audit --audit-level=moderate`                                         | Dependências com vulnerabilidades moderadas ou piores  |
+| `tsc --noEmit`                                                             | Incompatibilidades de tipos depois de upgrades         |
 
 Além disso, o build final garante que as páginas estáticas ainda sejam geradas corretamente:
 
@@ -335,12 +334,12 @@ npm run build
 ```
 
 ```text
-Result (26 files):
+Result (28 files):
 - 0 errors
 - 0 warnings
 - 0 hints
 
-9 page(s) built
+10 page(s) built
 ```
 
 ## Por que migrar para a versão mais recente do Astro?
@@ -352,24 +351,24 @@ Porque ficar em versão antiga cria uma dívida invisível. O site continua abri
 No meu caso, a migração trouxe três ganhos claros:
 
 - a árvore de dependências saiu de vulnerável para `found 0 vulnerabilities`;
-- APIs antigas foram substituídas por APIs atuais (`ClientRouter` e `import.meta.glob`);
+- APIs antigas foram substituídas por APIs atuais durante a migração (`ClientRouter` e `import.meta.glob`);
 - o projeto ganhou testes de segurança que rodam localmente e podem ir para CI.
 
 Ou seja, a migração não foi só "ter número novo no package.json". Foi uma redução real de risco operacional.
 
 ## O que ficou resolvido
 
-| Área                | Resultado                                                               |
-| ------------------- | ----------------------------------------------------------------------- |
-| Dependências        | `npm audit` zerado                                                      |
-| Astro               | migrado para `7.1.3`                                                    |
-| Vite/esbuild        | alinhados em versões sem advisory aberto no audit                       |
-| Tailwind            | removida integração antiga incompatível; pipeline via PostCSS explícito |
-| APIs removidas      | `ViewTransitions` -> `ClientRouter`; `Astro.glob` -> `import.meta.glob` |
-| TypeScript          | atualizado e passando `tsc --noEmit`                                    |
-| ESLint              | passando sem warning de TypeScript incompatível                         |
-| Segurança white-box | testes automatizados em `tests/security.test.mjs`                       |
-| Build               | 9 páginas geradas com 0 erros, 0 warnings e 0 hints                     |
+| Área                | Resultado                                                                                         |
+| ------------------- | ------------------------------------------------------------------------------------------------- |
+| Dependências        | `npm audit` zerado                                                                                |
+| Astro               | migrado para `7.1.3`                                                                              |
+| Vite/esbuild        | alinhados em versões sem advisory aberto no audit                                                 |
+| Tailwind            | removida integração antiga incompatível; pipeline via PostCSS explícito                           |
+| APIs removidas      | `ViewTransitions` -> `ClientRouter` na primeira estabilização; `Astro.glob` -> `import.meta.glob` |
+| TypeScript          | atualizado e passando `tsc --noEmit`                                                              |
+| ESLint              | passando sem warning de TypeScript incompatível                                                   |
+| Segurança white-box | testes automatizados em `tests/security.test.mjs`                                                 |
+| Build               | 10 páginas geradas com 0 erros, 0 warnings e 0 hints                                              |
 
 ## Próximos passos
 
@@ -402,7 +401,7 @@ Assim, vulnerabilidade de dependência, regressão de CSP ou quebra de build fal
 
 4. Revisar a CSP com calma.
 
-Hoje ainda existe `'unsafe-inline'` em `script-src` e `style-src` por causa do runtime e dos estilos inline gerados no site estático. Em GitHub Pages, sem servidor de aplicação, nonce por request não é simples. Mesmo assim, vale investigar se dá para reduzir isso com mudanças no build ou na arquitetura.
+Naquele momento ainda existia `'unsafe-inline'` em `script-src` e `style-src` por causa do runtime e dos estilos inline gerados no site estático. A parte 3 atacou esse ponto com a CSP nativa do Astro 7, hashes gerados no build e o comando `npm run security:csp`. O `script-src` deixou de depender de `unsafe-inline`; a exceção que sobrou ficou mais restrita em `style-src-attr`.
 
 5. Considerar Content Collections.
 

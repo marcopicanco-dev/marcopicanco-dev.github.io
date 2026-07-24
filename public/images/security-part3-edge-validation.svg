@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 600" role="img" aria-labelledby="title desc">
+  <title id="title">Validação dos headers em produção</title>
+  <desc id="desc">Comparação mostrando os achados de produção antes e depois: X-Frame-Options inválido e Referrer-Policy ausente foram corrigidos no Cloudflare.</desc>
+  <rect width="1100" height="600" fill="#282a36"/>
+  <text x="70" y="72" fill="#f8f8f2" font-family="Karla, Arial, sans-serif" font-size="34" font-weight="700">Produção é a fonte da verdade</text>
+  <text x="70" y="110" fill="#d7d5ee" font-family="Karla, Arial, sans-serif" font-size="18">O scanner e o curl validam o que o navegador realmente recebe.</text>
+
+  <g transform="translate(70 155)">
+    <rect width="460" height="330" rx="16" fill="#11121a" stroke="#ff79c6" stroke-opacity="0.55"/>
+    <circle cx="34" cy="34" r="7" fill="#ff5555"/>
+    <circle cx="58" cy="34" r="7" fill="#f1fa8c"/>
+    <circle cx="82" cy="34" r="7" fill="#50fa7b"/>
+    <text x="230" y="40" text-anchor="middle" fill="#ff79c6" font-family="Karla, Arial, sans-serif" font-size="17" font-weight="700">Antes</text>
+    <text x="34" y="92" fill="#f8f8f2" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="18">$ curl -I https://www...</text>
+    <text x="34" y="142" fill="#ffb86c" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="16">x-frame-options:</text>
+    <text x="34" y="170" fill="#ff79c6" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="16">X-Frame-Options</text>
+    <text x="34" y="226" fill="#ffb86c" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="16">referrer-policy:</text>
+    <text x="34" y="254" fill="#ff79c6" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="16">&lt;missing&gt;</text>
+  </g>
+
+  <g transform="translate(570 155)">
+    <rect width="460" height="330" rx="16" fill="#11121a" stroke="#50fa7b" stroke-opacity="0.65"/>
+    <circle cx="34" cy="34" r="7" fill="#ff5555"/>
+    <circle cx="58" cy="34" r="7" fill="#f1fa8c"/>
+    <circle cx="82" cy="34" r="7" fill="#50fa7b"/>
+    <text x="230" y="40" text-anchor="middle" fill="#50fa7b" font-family="Karla, Arial, sans-serif" font-size="17" font-weight="700">Depois</text>
+    <text x="34" y="92" fill="#f8f8f2" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="18">$ npm run security:headers</text>
+    <text x="34" y="142" fill="#8be9fd" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="16">x-frame-options:</text>
+    <text x="34" y="170" fill="#50fa7b" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="16">SAMEORIGIN</text>
+    <text x="34" y="226" fill="#8be9fd" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="16">referrer-policy:</text>
+    <text x="34" y="254" fill="#50fa7b" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="16">strict-origin-when-cross-origin</text>
+  </g>
+
+  <text x="550" y="548" text-anchor="middle" fill="#b7b3ff" font-family="Karla, Arial, sans-serif" font-size="18">Cloudflare Transform Rules + teste automatizado pós-deploy</text>
+</svg>

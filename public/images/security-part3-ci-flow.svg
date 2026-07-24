@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 560" role="img" aria-labelledby="title desc">
+  <title id="title">Fluxo de CI e validação pós-deploy</title>
+  <desc id="desc">Diagrama mostrando pull request, CI, deploy no GitHub Pages e validação de headers na produção através do Cloudflare.</desc>
+  <rect width="1100" height="560" fill="#f8f8ff"/>
+  <text x="70" y="72" fill="#24243d" font-family="Karla, Arial, sans-serif" font-size="34" font-weight="700">Do pull request ao header real</text>
+  <text x="70" y="108" fill="#595b85" font-family="Karla, Arial, sans-serif" font-size="18">O CI localiza problemas antes do deploy, e o pós-deploy prova a borda.</text>
+
+  <g fill="#ffffff" stroke="#6272a4" stroke-opacity="0.3">
+    <rect x="70" y="170" width="190" height="160" rx="12"/>
+    <rect x="310" y="170" width="190" height="160" rx="12"/>
+    <rect x="550" y="170" width="190" height="160" rx="12"/>
+    <rect x="790" y="170" width="240" height="160" rx="12"/>
+  </g>
+
+  <g font-family="Karla, Arial, sans-serif">
+    <text x="98" y="214" fill="#7c5cff" font-size="18" font-weight="700">PR / Push</text>
+    <text x="98" y="254" fill="#24243d" font-size="16">npm ci</text>
+    <text x="98" y="284" fill="#24243d" font-size="16">lint</text>
+    <text x="98" y="314" fill="#24243d" font-size="16">security</text>
+
+    <text x="338" y="214" fill="#007d95" font-size="18" font-weight="700">Build</text>
+    <text x="338" y="254" fill="#24243d" font-size="16">astro check</text>
+    <text x="338" y="284" fill="#24243d" font-size="16">astro build</text>
+
+    <text x="578" y="214" fill="#c43182" font-size="18" font-weight="700">Deploy</text>
+    <text x="578" y="254" fill="#24243d" font-size="16">GitHub Pages</text>
+    <text x="578" y="284" fill="#595b85" font-size="15">dist publicado</text>
+
+    <text x="818" y="214" fill="#12844b" font-size="18" font-weight="700">Pós-deploy</text>
+    <text x="818" y="254" fill="#24243d" font-size="16">curl / fetch HEAD</text>
+    <text x="818" y="284" fill="#24243d" font-size="16">Cloudflare headers</text>
+    <text x="818" y="314" fill="#24243d" font-size="16">SecurityHeaders links</text>
+  </g>
+
+  <g stroke="#bd93f9" stroke-width="3" stroke-linecap="round">
+    <path d="M265 250h36"/>
+    <path d="M505 250h36"/>
+    <path d="M745 250h36"/>
+  </g>
+  <g fill="#bd93f9">
+    <path d="M301 250l-12-8v16z"/>
+    <path d="M541 250l-12-8v16z"/>
+    <path d="M781 250l-12-8v16z"/>
+  </g>
+
+  <rect x="70" y="400" width="960" height="74" rx="12" fill="#282a36"/>
+  <text x="96" y="446" fill="#f8f8f2" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="20">npm run security:headers</text>
+  <text x="710" y="446" fill="#50fa7b" font-family="Karla, Arial, sans-serif" font-size="20" font-weight="700">produção validada</text>
+</svg>

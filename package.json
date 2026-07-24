@@ -11,6 +11,8 @@
     "format": "prettier '**/*.{cjs,mjs,ts,tsx,md,mdx,json,astro}' --write",
     "lint": "eslint .",
     "security:audit": "npm audit --audit-level=moderate",
+    "security:csp": "node scripts/print-csp-header.mjs",
+    "security:headers": "node scripts/check-production-headers.mjs",
     "security:test": "node --test tests/security.test.mjs",
     "security": "npm run typecheck && npm run security:test && npm run security:audit",
     "typecheck": "tsc --noEmit"

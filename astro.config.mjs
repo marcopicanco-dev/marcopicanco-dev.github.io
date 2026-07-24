@@ -6,6 +6,30 @@ import expressiveCode from 'astro-expressive-code'
 // https://astro.build/config
 export default defineConfig({
   site: 'https://www.marcopicanco.com',
+  markdown: {
+    syntaxHighlight: false,
+  },
+  security: {
+    csp: {
+      directives: [
+        "default-src 'self'",
+        "font-src 'self' https://fonts.gstatic.com",
+        "img-src 'self' data:",
+        "connect-src 'self'",
+        "object-src 'none'",
+        "base-uri 'self'",
+        "form-action 'self'",
+        "frame-ancestors 'self'",
+      ],
+      styleDirective: {
+        resources: [
+          { resource: "'self'", kind: 'element' },
+          { resource: 'https://fonts.googleapis.com', kind: 'element' },
+          { resource: "'unsafe-inline'", kind: 'attribute' },
+        ],
+      },
+    },
+  },
   integrations: [
     expressiveCode({
       themes: ['dracula', 'github-dark', 'github-light'],
