@@ -140,7 +140,7 @@ test('markup must not use inline event handlers', () => {
   assert.deepEqual(findings, [])
 })
 
-test('base layout must define restrictive browser security policy', async () => {
+test('base layout must define strict referrer policy', async () => {
   const baseLayout = await readFile(
     path.join(rootDir, 'src/layouts/Base.astro'),
     'utf8',
@@ -150,9 +150,19 @@ test('base layout must define restrictive browser security policy', async () => 
     baseLayout,
     /name="referrer"\s+content="strict-origin-when-cross-origin"/,
   )
-  assert.match(baseLayout, /http-equiv="Content-Security-Policy"/)
-  assert.match(baseLayout, /default-src 'self'/)
-  assert.match(baseLayout, /object-src 'none'/)
-  assert.match(baseLayout, /base-uri 'self'/)
-  assert.match(baseLayout, /form-action 'self'/)
+})
+
+test('astro config must generate restrictive CSP without unsafe inline scripts', async () => {
+  const astroConfig = await readFile(
+    path.join(rootDir, 'astro.config.mjs'),
+    'utf8',
+  )
+
+  assert.match(astroConfig, /security:\s*{/)
+  assert.match(astroConfig, /csp:\s*{/)
+  assert.match(astroConfig, /default-src 'self'/)
+  assert.match(astroConfig, /object-src 'none'/)
+  assert.match(astroConfig, /base-uri 'self'/)
+  assert.match(astroConfig, /form-action 'self'/)
+  assert.doesNotMatch(astroConfig, /scriptDirective:[\s\S]*'unsafe-inline'/)
 })

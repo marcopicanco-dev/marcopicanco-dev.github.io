@@ -1,0 +1,423 @@
+---
+title: 'Corrigindo headers de segurança em um site estático no GitHub Pages com Cloudflare - Parte 3'
+description: 'Como transformei a validação de headers em teste de produção: curl, SecurityHeaders.com, Cloudflare Transform Rules, Referrer-Policy e CI pós-deploy.'
+date: '2026-07-23'
+heroImage: '/images/security-part3-edge-validation.svg'
+heroImageAlt: 'Comparação visual dos headers de produção antes e depois das correções no Cloudflare'
+---
+
+Na parte 1, o foco foi entender a diferença entre aquilo que dá para resolver no código de um site estático e aquilo que precisa ser aplicado na borda, pelo Cloudflare.
+
+Na parte 2, entrei no repositório: `npm audit`, migração para Astro 7, ajustes de build e testes white-box para evitar regressões no código.
+
+Agora a parte 3 fecha o ciclo com uma pergunta simples e desconfortável: **como provar que a produção está realmente protegida?**
+
+Não basta olhar o painel do Cloudflare e achar que está certo. O navegador não recebe intenção, recebe resposta HTTP. Então a validação precisa acontecer na URL real:
+
+```bash
+curl -I https://www.marcopicanco.com
+```
+
+## O primeiro teste: curl -I
+
+O comando `curl -I` faz uma requisição `HEAD` e mostra somente os headers da resposta. Para esse caso, é perfeito: eu não precisava baixar o HTML inteiro, só queria ver o que o visitante recebe antes do corpo da página.
+
+Depois das correções, a resposta passou a trazer:
+
+```text
+server: cloudflare
+x-frame-options: SAMEORIGIN
+referrer-policy: strict-origin-when-cross-origin
+x-content-type-options: nosniff
+permissions-policy: geolocation=(), microphone=(), camera=(), payment=(), usb=()
+content-security-policy: default-src 'self'; ...; frame-ancestors 'self'
+cross-origin-opener-policy: same-origin
+cross-origin-resource-policy: same-origin
+strict-transport-security: max-age=31556952
+access-control-allow-origin: https://www.marcopicanco.com
+cf-ray: a1fdba7278972570-GRU
+```
+
+Dois detalhes importam muito aqui.
+
+O primeiro é `server: cloudflare` junto com `cf-ray`. Isso prova que o tráfego passou pela borda do Cloudflare. Na parte 1 eu já tinha caído na armadilha de configurar regra no painel enquanto o domínio ainda não estava de fato passando pelo Cloudflare.
+
+O segundo é que os headers do GitHub Pages ainda aparecem na resposta:
+
+```text
+via: 1.1 varnish
+x-served-by: cache-gru-sbsp...
+x-github-request-id: ...
+```
+
+Isso é esperado. A origem continua sendo GitHub Pages, mas a resposta passa pelo Cloudflare antes de chegar ao visitante.
+
+![Comparação visual mostrando que X-Frame-Options e Referrer-Policy só ficaram corretos depois da validação em produção](/images/security-part3-edge-validation.svg)
+
+## O scanner externo: SecurityHeaders.com
+
+Depois do `curl`, rodei o scanner do SecurityHeaders.com:
+
+```text
+https://securityheaders.com/?q=www.marcopicanco.com&hide=on&followRedirects=on
+```
+
+Esse scanner é útil porque ele olha a resposta como um terceiro externo, fora do meu terminal e fora do painel do Cloudflare. Ele também dá contexto sobre headers comuns de segurança e aponta quando algum está ausente ou mal configurado.
+
+Foi ele que puxou uma ponta que ainda faltava:
+
+```text
+Referrer-Policy is a new header that allows a site to control how much information the browser includes with navigations away from a document and should be set by all sites.
+```
+
+Até então eu tinha:
+
+```html
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+```
+
+Isso é útil no HTML, mas o SecurityHeaders.com estava cobrando o header HTTP real:
+
+```text
+Referrer-Policy: strict-origin-when-cross-origin
+```
+
+E o scanner estava certo em cobrar. A documentação e os artigos do Scott Helme tratam `Referrer-Policy` como header de resposta HTTP. O valor `strict-origin-when-cross-origin` é um bom equilíbrio para este site: mantém mais contexto em navegação dentro da mesma origem, envia apenas a origem em navegação cross-origin segura e não envia referrer em downgrade de HTTPS para HTTP.
+
+## O erro mais didático: X-Frame-Options
+
+Antes de corrigir o `Referrer-Policy`, outro problema apareceu no `curl`:
+
+```text
+x-frame-options: X-Frame-Options
+```
+
+O header existia, mas o valor estava errado. O correto seria:
+
+```text
+x-frame-options: SAMEORIGIN
+```
+
+Esse foi um erro de preenchimento no Cloudflare. Em uma **Response Header Transform Rule**, existem dois campos:
+
+```text
+Header name
+Value
+```
+
+Para `X-Frame-Options`, a configuração correta é:
+
+```text
+Operation: Set static
+Header name: X-Frame-Options
+Value: SAMEORIGIN
+```
+
+O erro foi colocar o nome do header também como valor. O navegador recebeu exatamente aquilo que foi configurado:
+
+```text
+X-Frame-Options
+```
+
+Configuração errada não falha silenciosamente. Ela vira produção.
+
+## Corrigindo no Cloudflare
+
+As correções foram feitas em:
+
+```text
+Cloudflare Dashboard
+Rules
+Transform Rules
+Modify Response Header
+```
+
+O tipo de operação usado foi **Set static**, porque a intenção era definir valores fixos para headers de segurança.
+
+Para corrigir o `X-Frame-Options`:
+
+```text
+Operation: Set static
+Header name: X-Frame-Options
+Value: SAMEORIGIN
+```
+
+Para corrigir o `Referrer-Policy`:
+
+```text
+Operation: Set static
+Header name: Referrer-Policy
+Value: strict-origin-when-cross-origin
+```
+
+Um detalhe bobo, mas importante: no campo **Header name**, o valor deve ser somente o nome do header. Não é para digitar `Header name: Referrer-Policy`, nem usar `Referrer-Policy:`, nem colocar aspas. O campo já é o rótulo.
+
+Segundo a documentação do Cloudflare, Response Header Transform Rules permitem definir, adicionar ou remover headers enviados ao visitante. O `Set static` sobrescreve o valor anterior do header ou cria o header caso ele não exista.
+
+## Corrigindo o aviso do script-src
+
+Depois que o `Referrer-Policy` entrou, o SecurityHeaders.com apontou outro aviso importante:
+
+```text
+Content-Security-Policy: This policy contains 'unsafe-inline' which is dangerous in the script-src directive.
+```
+
+Esse alerta é sério. `script-src 'unsafe-inline'` permite a execução de qualquer `<script>` inline autorizado pela página. Em termos práticos, ele reduz uma das maiores proteções da CSP contra XSS.
+
+O caminho ingênuo seria simplesmente trocar:
+
+```text
+script-src 'self' 'unsafe-inline'
+```
+
+por:
+
+```text
+script-src 'self'
+```
+
+Mas isso quebraria o site. O Astro gera alguns scripts inline para o runtime, para islands e para a hidratação da busca. Logo, a solução correta não era apagar e torcer. Era substituir `unsafe-inline` por hashes.
+
+Como o projeto já estava no Astro 7, eu pude usar a CSP nativa do framework:
+
+```js
+export default defineConfig({
+  security: {
+    csp: {
+      directives: [
+        "default-src 'self'",
+        "font-src 'self' https://fonts.gstatic.com",
+        "img-src 'self' data:",
+        "connect-src 'self'",
+        "object-src 'none'",
+        "base-uri 'self'",
+        "form-action 'self'",
+        "frame-ancestors 'self'",
+      ],
+      styleDirective: {
+        resources: [
+          { resource: "'self'", kind: 'element' },
+          { resource: 'https://fonts.googleapis.com', kind: 'element' },
+          { resource: "'unsafe-inline'", kind: 'attribute' },
+        ],
+      },
+    },
+  },
+})
+```
+
+Também removi a `<meta http-equiv="Content-Security-Policy">` manual do layout. E a partir daí, o build passou a gerar uma política com hashes:
+
+```text
+script-src 'self' 'sha256-...'
+style-src-elem 'self' https://fonts.googleapis.com 'sha256-...'
+style-src-attr 'unsafe-inline'
+```
+
+Repare no detalhe: o `unsafe-inline` saiu de `script-src`. Ele ficou apenas em `style-src-attr`, de forma mais específica, porque os blocos de código do Expressive Code geram atributos `style=""` para cores de syntax highlighting. Ainda é um ponto para melhorar, mas é bem diferente de liberar script inline.
+
+Para evitar copiar hashes manualmente do HTML, criei:
+
+```bash
+npm run security:csp
+```
+
+Esse comando lê `dist/index.html` e imprime a CSP gerada pelo Astro. O fluxo agora é:
+
+```bash
+npm run build
+npm run security:csp
+```
+
+Na Cloudflare, a regra fica:
+
+```text
+Operation: Set static
+Header name: Content-Security-Policy
+Value: saída do npm run security:csp
+```
+
+Isso é o suficiente para remover o aviso do `script-src` no SecurityHeaders.com. O cuidado é que hashes mudam quando o HTML gerado muda. Por isso o CI também precisa validar se o header HTTP ainda contém os hashes gerados pela página publicada.
+
+## Automatizando a prova
+
+Depois de corrigir manualmente, eu não queria depender de lembrar de rodar `curl -I` toda vez.
+
+Criei um script:
+
+```bash
+npm run security:headers
+```
+
+Por baixo, ele executa:
+
+```bash
+node scripts/check-production-headers.mjs
+```
+
+Esse script faz duas requisições para produção:
+
+- uma `HEAD`, para validar headers;
+- uma `GET`, para garantir que o HTML ainda mantém a meta tag de referrer e a CSP gerada pelo Astro.
+
+Ele valida:
+
+| Header                         | Valor esperado                                                              |
+| ------------------------------ | --------------------------------------------------------------------------- |
+| `server`                       | `cloudflare`                                                                |
+| `cf-ray`                       | presente                                                                    |
+| `x-frame-options`              | `SAMEORIGIN` ou `DENY`                                                      |
+| `referrer-policy`              | `strict-origin-when-cross-origin`                                           |
+| `x-content-type-options`       | `nosniff`                                                                   |
+| `permissions-policy`           | câmera, microfone, geolocalização, pagamento e USB bloqueados               |
+| `cross-origin-opener-policy`   | `same-origin`                                                               |
+| `cross-origin-resource-policy` | `same-origin`                                                               |
+| `access-control-allow-origin`  | `https://www.marcopicanco.com`                                              |
+| `strict-transport-security`    | `max-age` de pelo menos um ano                                              |
+| `content-security-policy`      | diretivas essenciais, hashes do Astro e sem `unsafe-inline` em `script-src` |
+
+Quando o `X-Frame-Options` estava errado, o script falhou assim:
+
+```text
+Production security header check failed for https://www.marcopicanco.com/
+x-frame-options expected one of "SAMEORIGIN, DENY", received "X-Frame-Options"
+```
+
+Quando o `Referrer-Policy` ainda não existia como header HTTP, falhou assim:
+
+```text
+Production security header check failed for https://www.marcopicanco.com/
+referrer-policy expected "strict-origin-when-cross-origin", received "<missing>"
+```
+
+E se a Cloudflare continuar servindo uma CSP antiga com `script-src 'unsafe-inline'`, o teste agora falha assim:
+
+```text
+content-security-policy script-src must not include 'unsafe-inline'
+```
+
+Depois das correções no Cloudflare:
+
+```bash
+npm run security:headers
+```
+
+Resultado:
+
+```text
+Production security headers passed for https://www.marcopicanco.com/
+```
+
+Essa é a diferença entre configuração e evidência.
+
+## Levando para o CI
+
+Também atualizei os workflows do GitHub Actions.
+
+No CI de pull request:
+
+```bash
+npm ci
+npm run lint
+npm run security
+npm run build
+```
+
+Esse fluxo cobre código, dependências e build antes do merge.
+
+No deploy:
+
+```bash
+npm ci
+npm run lint
+npm run security
+npm run build
+```
+
+Depois do deploy para GitHub Pages, o workflow espera um pouco e roda:
+
+```bash
+npm run security:headers
+```
+
+Essa separação é importante. `npm run security` testa o repositório local: TypeScript, testes white-box e audit de dependências. Já `npm run security:headers` testa produção: Cloudflare, GitHub Pages e headers reais.
+
+![Fluxo visual mostrando CI, build, deploy e validação pós-deploy dos headers de produção](/images/security-part3-ci-flow.svg)
+
+## O que cada ferramenta entregou
+
+| Ferramenta/fonte                       | Papel no processo                                            |
+| -------------------------------------- | ------------------------------------------------------------ |
+| `curl -I`                              | mostrou os headers reais recebidos em produção               |
+| SecurityHeaders.com                    | apontou lacunas e confirmou critérios esperados pelo mercado |
+| Cloudflare Transform Rules             | aplicou headers HTTP que o GitHub Pages não controla         |
+| Scott Helme                            | referência conceitual para `Referrer-Policy` e headers       |
+| MDN HTTP Observatory                   | scanner externo complementar para cabeçalhos HTTP            |
+| GitHub Actions                         | automatizou lint, security, build e validação pós-deploy     |
+| `scripts/check-production-headers.mjs` | transformou `curl -I` em teste reproduzível                  |
+
+![Quadro visual listando as fontes e ferramentas usadas na validação: SecurityHeaders.com, Cloudflare Docs, Scott Helme e curl](/images/security-part3-sources.svg)
+
+## Resultado depois da parte 3
+
+| Item                             | Status                                          |
+| -------------------------------- | ----------------------------------------------- |
+| Tráfego passando pelo Cloudflare | ok                                              |
+| `X-Frame-Options`                | `SAMEORIGIN`                                    |
+| `Referrer-Policy`                | `strict-origin-when-cross-origin`               |
+| `X-Content-Type-Options`         | `nosniff`                                       |
+| `Permissions-Policy`             | restritiva                                      |
+| `Content-Security-Policy`        | hash-based, sem `unsafe-inline` em `script-src` |
+| `Cross-Origin-Opener-Policy`     | `same-origin`                                   |
+| `Cross-Origin-Resource-Policy`   | `same-origin`                                   |
+| HSTS                             | `max-age` maior que um ano                      |
+| CI local                         | lint, security e build                          |
+| CI pós-deploy                    | validação de headers de produção                |
+
+## Próximos passos
+
+Agora que os três primeiros pontos da parte 2 foram resolvidos, ainda dá para avançar.
+
+1. Reduzir a exceção restante da CSP.
+
+O `script-src` já saiu de `unsafe-inline`, mas ainda existe `style-src-attr 'unsafe-inline'` por causa dos blocos de código. Vale testar Prism, outra configuração do Expressive Code ou uma forma de eliminar atributos `style=""` do HTML gerado.
+
+2. Automatizar a atualização da CSP na borda.
+
+Hoje a CSP hash-based pode ser aplicada com Transform Rule estática, desde que o valor seja atualizado quando o build mudar. Um próximo passo melhor é usar Cloudflare Worker, Snippet ou API para sincronizar esse header automaticamente.
+
+3. Testar headers por tipo de asset.
+
+Além do HTML principal, vale validar imagens, CSS, JS e páginas 404. Alguns headers podem fazer sentido só para HTML; outros devem aparecer em todos os assets.
+
+4. Rodar DAST passivo.
+
+OWASP ZAP em modo passivo pode inspecionar a navegação sem atacar o site, útil para uma varredura inicial sem impacto.
+
+5. Investigar Content Collections.
+
+A migração para `import.meta.glob` resolveu o Astro 7, mas Content Collections dariam validação mais forte para frontmatter e estrutura dos posts.
+
+6. Guardar evidências.
+
+Uma evolução boa seria salvar o resultado dos headers em artifact do GitHub Actions ou gerar um pequeno relatório em Markdown a cada deploy.
+
+## Conclusão
+
+A lição desta parte foi simples: **o painel não é evidência**.
+
+Eu configurei headers no Cloudflare, mas só o `curl`, o SecurityHeaders.com e o script pós-deploy provaram que a resposta real estava correta. E foi justamente essa validação que encontrou dois problemas: um header com valor errado e outro ausente como header HTTP.
+
+Site estático parece simples, mas a cadeia real tem código, build, GitHub Pages, cache, Cloudflare e navegador. Segurança aparece quando todas essas camadas são testadas juntas e nenhuma é negligenciada.
+
+Referências usadas:
+
+- [SecurityHeaders.com](https://securityheaders.com/)
+- [SecurityHeaders.com API Docs](https://securityheaders.com/api/docs/)
+- [Cloudflare: Response Header Transform Rules](https://developers.cloudflare.com/rules/transform/response-header-modification/)
+- [Cloudflare: criar regra pelo dashboard](https://developers.cloudflare.com/rules/transform/response-header-modification/create-dashboard/)
+- [Astro: configuração de Content Security Policy](https://docs.astro.build/en/reference/configuration-reference/#securitycsp)
+- [Astro: APIs de CSP em runtime](https://docs.astro.build/en/reference/api-reference/#csp)
+- [MDN: Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP)
+- [Scott Helme: A new security header: Referrer Policy](https://scotthelme.co.uk/a-new-security-header-referrer-policy/)
+- [MDN HTTP Observatory](https://developer.mozilla.org/en-US/observatory)

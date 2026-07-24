@@ -12,7 +12,7 @@ Isso dividiu o problema em duas partes:
 
 ## A primeira: O que dá pra resolver só no código?
 
-Depois de algumas pesquisas vi que o `Content-Security-Policy` e  o `Referrer-Policy` têm equivalente via `<meta>` no `<head>` do HTML, então dá pra aplicar direto no build do site.
+Depois de algumas pesquisas vi que o `Content-Security-Policy` e o `Referrer-Policy` têm equivalente via `<meta>` no `<head>` do HTML, então dá pra aplicar direto no build do site.
 
 Adicionei isso no layout raiz (`Base.astro`):
 
@@ -29,20 +29,22 @@ Duas ressalvas importantes:
 - CSP via `<meta>` **ignora a diretiva `frame-ancestors`**, que é justamente a que protege contra clickjacking. Só funciona como header HTTP real.
 - O compilador do Astro renderiza o HTML injetando estilos, inline, enquanto seu runtime de hidratação injeta o `<style>` para interatividade. Sem servidor, não dá pra gerar um nonce por request, então precisei liberar `'unsafe-inline'` nos dois — senão a busca, o troca-tema e o menu mobile quebram.
 
+Atualização depois da migração: na parte 3, essa decisão foi revisada. O `script-src 'unsafe-inline'` saiu e foi substituído por hashes gerados pelo Astro 7. A exceção que ficou é mais restrita: `style-src-attr 'unsafe-inline'`, usada pelos atributos `style=""` dos blocos de código.
+
 Antes de finalizar, executei testes adicionais: gerei o build de produção, inspecionei as interações via protocolo CDP no Chrome Headless e monitorei o console durante fluxos críticos (busca, alternância de tema, menu mobile e navegação de posts). Na primeira rodada apareceu um bloqueio real: os posts do blog carregam fontes do Google Fonts via `@import`, e minha CSP inicial não liberava esse domínio. Como peguei esse tema free do Astro e fui fazendo costumizações, nem tinha me tocado desse pequeno detalhe, logo a ajustei `style-src` e `font-src` para incluir `fonts.googleapis.com`/`fonts.gstatic.com` e o erro sumiu. Mais tarde, eu perceberia que ia ter que atualizar o tema, mas esse assunto fica mais pra frente.
 
 ## A segunda: O que só dá pra resolver com um proxy na frente?
 
 `X-Frame-Options`, `X-Content-Type-Options` e `Permissions-Policy` **só existem como header HTTP** — não há meta tag equivalente que os navegadores respeitem. Como o GitHub Pages não expõe isso, a solução foi colocar o domínio atrás do **Cloudflare** (plano free, é lógico!) e usar uma **Transform Rule → Response Header Transform Rule** pra injetar os headers na resposta antes dela chegar ao visitante:
 
-| Header | Valor |
-|---|---|
-| `X-Frame-Options` | `SAMEORIGIN` |
-| `X-Content-Type-Options` | `nosniff` |
-| `Permissions-Policy` | `geolocation=(), microphone=(), camera=(), payment=(), usb=()` |
-| `Access-Control-Allow-Origin` | `https://www.marcopicanco.com` |
-| `Cross-Origin-Opener-Policy` | `same-origin` |
-| `Cross-Origin-Resource-Policy` | `same-origin` |
+| Header                         | Valor                                                          |
+| ------------------------------ | -------------------------------------------------------------- |
+| `X-Frame-Options`              | `SAMEORIGIN`                                                   |
+| `X-Content-Type-Options`       | `nosniff`                                                      |
+| `Permissions-Policy`           | `geolocation=(), microphone=(), camera=(), payment=(), usb=()` |
+| `Access-Control-Allow-Origin`  | `https://www.marcopicanco.com`                                 |
+| `Cross-Origin-Opener-Policy`   | `same-origin`                                                  |
+| `Cross-Origin-Resource-Policy` | `same-origin`                                                  |
 
 ![Diagrama mostrando que CSP e Referrer-Policy são resolvidos via meta tag no HTML, enquanto X-Frame-Options, X-Content-Type-Options, Permissions-Policy e CORS só existem como header HTTP e por isso são resolvidos na borda, pelo Cloudflare](/images/security-headers-scope.svg)
 
@@ -85,17 +87,17 @@ O que fica automatizado pra não esquecer disso de novo: um `.github/dependabot.
 
 ## Resumo
 
-| Item | Onde foi resolvido |
-|---|---|
-| Content-Security-Policy | `<meta>` no HTML |
-| Referrer-Policy | `<meta>` no HTML |
-| X-Frame-Options | Cloudflare (Transform Rule) |
-| X-Content-Type-Options | Cloudflare (Transform Rule) |
-| Permissions-Policy | Cloudflare (Transform Rule) |
-| Access-Control-Allow-Origin solto | Cloudflare (Transform Rule) |
-| HSTS | Cloudflare (Edge Certificates) |
-| Delegação de DNS pro Cloudflare | Nameservers trocados no registrador |
-| robots.txt / security.txt | Arquivos novos em `public/` |
+| Item                              | Onde foi resolvido                  |
+| --------------------------------- | ----------------------------------- |
+| Content-Security-Policy           | `<meta>` no HTML                    |
+| Referrer-Policy                   | `<meta>` no HTML                    |
+| X-Frame-Options                   | Cloudflare (Transform Rule)         |
+| X-Content-Type-Options            | Cloudflare (Transform Rule)         |
+| Permissions-Policy                | Cloudflare (Transform Rule)         |
+| Access-Control-Allow-Origin solto | Cloudflare (Transform Rule)         |
+| HSTS                              | Cloudflare (Edge Certificates)      |
+| Delegação de DNS pro Cloudflare   | Nameservers trocados no registrador |
+| robots.txt / security.txt         | Arquivos novos em `public/`         |
 
 Site estático no GitHub Pages é ótimo pelo custo zero e pela simplicidade, mas vale saber onde termina o que o código resolve sozinho e onde começa o que precisa de uma camada de rede na frente — e, mais importante, **testar direto na URL de produção** antes de dar por resolvido. 🔒
 

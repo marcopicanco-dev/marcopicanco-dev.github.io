@@ -1,7 +1,6 @@
 ---
 import HeadSeo from '@/components/HeadSeo.astro'
 import Nav from '@/components/navigation/Nav.astro'
-import { ClientRouter } from 'astro:transitions'
 import { DEFAULT_LANGUAGE_CODE } from '@/config'
 import { type LanguageKeys, LANGUAGES } from '@/i18n/ui'
 import { type Frontmatter } from '@/types'
@@ -42,11 +41,6 @@ const lang: LanguageKeys = Object.prototype.hasOwnProperty.call(
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
-    <meta
-      http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'"
-    />
-    <ClientRouter />
     <HeadSeo type="website" frontmatter={frontmatter} />
   </head>
   <body

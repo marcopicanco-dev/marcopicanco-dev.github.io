@@ -30,6 +30,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Lint
+        run: npm run lint
+
+      - name: Security checks
+        run: npm run security
+
       - name: Build Astro
         run: npm run build
 
@@ -50,3 +56,38 @@ jobs:
         id: deployment
         # Atualizado para v5 (suporte oficial e nativo ao Node 24)
         uses: actions/deploy-pages@v5
+
+  production-security:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: External scanner links
+        run: |
+          {
+            echo "### External security header scanners"
+            echo ""
+            echo "- SecurityHeaders.com: https://securityheaders.com/?q=www.marcopicanco.com&hide=on&followRedirects=on"
+            echo "- MDN HTTP Observatory: https://developer.mozilla.org/en-US/observatory/analyze?host=www.marcopicanco.com"
+            echo ""
+            echo "SecurityHeaders.com may challenge automated CI requests, so this workflow keeps the browser scan link as manual evidence and enforces the same core headers with npm run security:headers."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Wait for edge cache
+        run: sleep 60
+
+      - name: Validate production security headers
+        env:
+          SITE_URL: https://www.marcopicanco.com
+        run: npm run security:headers
