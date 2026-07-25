@@ -2,6 +2,7 @@
 title: 'Corrigindo headers de segurança em um site estático no GitHub Pages com Cloudflare'
 description: 'Como analisei um relatório de segurança do meu blog, descobri os limites do GitHub Pages para headers HTTP e resolvi usando meta tags e Cloudflare.'
 date: '2026-07-23'
+publishedAt: '2026-07-23T09:00:00-03:00'
 ---
 
 Depois de me deparar enxurrada de notícias sobre `cyber security`, resolvi testar meu site que por sinal é bem simples, é uma aplicação estática hospedada no github pages. Acabei de rodar um scanner de segurança e o resultado veio cheio de alertas: faltavam `Content-Security-Policy`, `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy` e `Permissions-Policy`. Também apareceu um `Access-Control-Allow-Origin: *`.
