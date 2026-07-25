@@ -84,10 +84,17 @@ jobs:
             echo "SecurityHeaders.com may challenge automated CI requests, so this workflow keeps the browser scan link as manual evidence and enforces the same core headers with npm run security:headers."
           } >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Wait for edge cache
-        run: sleep 60
-
       - name: Validate production security headers
         env:
           SITE_URL: https://www.marcopicanco.com
-        run: npm run security:headers
+        run: |
+          for attempt in 1 2 3 4 5; do
+            if npm run security:headers; then
+              exit 0
+            fi
+
+            echo "Production headers are not ready yet; retrying in 60 seconds..."
+            sleep 60
+          done
+
+          npm run security:headers
