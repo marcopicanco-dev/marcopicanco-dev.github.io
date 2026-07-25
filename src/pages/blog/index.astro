@@ -1,17 +1,34 @@
 ---
 import Base from '@/layouts/Base.astro'
-import { PROJECT_NAME, SITE } from '@/config'
+import { DEFAULT_LANGUAGE_CODE, PROJECT_NAME, SITE } from '@/config'
 import '@/styling/blog-fonts.css'
 import {
   formatBlogDate,
   getBlogPosts,
   getBlogPostUrl,
+  getSearchRecords,
   sortBlogPostsByDateDesc,
 } from '@/utils/blog'
+import BlogArchive from '@/components/BlogArchive'
+import Search from '@/components/navigation/Search'
+import { LANGUAGES, type LanguageKeys } from '@/i18n/ui'
 
 const sortedPosts = sortBlogPostsByDateDesc(getBlogPosts())
-const featuredPosts = sortedPosts.slice(0, 2)
-const otherPosts = sortedPosts.slice(2)
+const archivePosts = sortedPosts.map((post) => ({
+  title: post.frontmatter.title,
+  description: post.frontmatter.description,
+  date: post.frontmatter.date,
+  formattedDate: formatBlogDate(post.frontmatter.date),
+  url: getBlogPostUrl(post.frontmatter),
+}))
+const searchItems = getSearchRecords()
+const langFromURL = Astro.url.pathname.split('/')[1] || DEFAULT_LANGUAGE_CODE
+const lang: LanguageKeys = Object.prototype.hasOwnProperty.call(
+  LANGUAGES,
+  langFromURL,
+)
+  ? (langFromURL as LanguageKeys)
+  : DEFAULT_LANGUAGE_CODE
 ---
 
 <Base
@@ -44,74 +61,10 @@ const otherPosts = sortedPosts.slice(2)
       </p>
     </section>
 
-    <section class="grid gap-6 lg:grid-cols-2">
-      {
-        featuredPosts.map((post) => (
-          <article class="group rounded-[2rem] border border-draculaBorder/20 bg-draculaPanel/95 p-8 shadow-[0_28px_48px_-32px_rgba(0,0,0,0.55)] transition hover:-translate-y-1 hover:border-draculaAccent hover:shadow-[0_28px_56px_-24px_rgba(0,0,0,0.45)]">
-            <a
-              class="blog-ui text-sm font-semibold uppercase tracking-[0.25em] text-draculaAccent2 transition hover:text-draculaAccent"
-              href={getBlogPostUrl(post.frontmatter)}
-            >
-              {formatBlogDate(post.frontmatter.date)}
-            </a>
-            <h2 class="mt-6 text-3xl font-semibold leading-tight text-draculaText">
-              <a href={getBlogPostUrl(post.frontmatter)}>
-                {post.frontmatter.title}
-              </a>
-            </h2>
-            <p class="mt-5 text-lg leading-8 text-draculaMuted">
-              {post.frontmatter.description}
-            </p>
-            <a
-              href={getBlogPostUrl(post.frontmatter)}
-              class="blog-ui mt-8 inline-flex items-center gap-2 text-sm font-semibold text-draculaAccent2 transition hover:text-draculaAccent"
-            >
-              Ler mais →
-            </a>
-          </article>
-        ))
-      }
+    <section class="mx-auto mb-10 max-w-2xl">
+      <Search items={searchItems} lang={lang} client:only="react" />
     </section>
 
-    {
-      otherPosts.length > 0 && (
-        <section class="mt-16">
-          <div class="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <span class="blog-ui text-sm uppercase tracking-[0.4em] text-lightModeText/60 dark:text-darkModeText/60">
-                Arquivos
-              </span>
-              <h2 class="mt-2 text-3xl font-bold text-lightModeText dark:text-darkModeText">
-                Posts anteriores
-              </h2>
-            </div>
-          </div>
-
-          <div class="space-y-4">
-            {otherPosts.map((post) => (
-              <article class="rounded-[1.75rem] border border-draculaBorder/20 bg-draculaPanel/90 p-6 transition hover:-translate-y-0.5 hover:border-draculaAccent hover:shadow-[0_18px_28px_-24px_rgba(0,0,0,0.45)]">
-                <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <a
-                    class="blog-ui text-sm font-semibold text-draculaAccent2 hover:text-draculaAccent"
-                    href={getBlogPostUrl(post.frontmatter)}
-                  >
-                    {formatBlogDate(post.frontmatter.date)}
-                  </a>
-                  <a
-                    href={getBlogPostUrl(post.frontmatter)}
-                    class="text-xl font-semibold text-draculaText transition hover:text-draculaAccent"
-                  >
-                    {post.frontmatter.title}
-                  </a>
-                </div>
-                <p class="mt-4 text-base leading-7 text-draculaMuted">
-                  {post.frontmatter.description}
-                </p>
-              </article>
-            ))}
-          </div>
-        </section>
-      )
-    }
+    <BlogArchive posts={archivePosts} client:load />
   </div>
 </Base>

@@ -3,11 +3,7 @@ import Search from '@/components/navigation/Search'
 import { type SearchRecord } from '@/types'
 import { LANGUAGES, type LanguageKeys } from '@/i18n/ui'
 import { DEFAULT_LANGUAGE_CODE } from '@/config'
-import {
-  getBlogPosts,
-  getBlogPostUrl,
-  sortBlogPostsByDateDesc,
-} from '@/utils/blog'
+import { getSearchRecords } from '@/utils/blog'
 
 const langFromURL = Astro.url.pathname.split('/')[1] || DEFAULT_LANGUAGE_CODE
 const lang: LanguageKeys = Object.prototype.hasOwnProperty.call(
@@ -18,18 +14,7 @@ const lang: LanguageKeys = Object.prototype.hasOwnProperty.call(
   : DEFAULT_LANGUAGE_CODE
 
 const getPosts = async () => {
-  const blogPosts = getBlogPosts()
-
-  return sortBlogPostsByDateDesc(blogPosts).map((post) => {
-    const frontmatter = post.frontmatter
-
-    return {
-      title: frontmatter.title,
-      description: frontmatter.description,
-      date: frontmatter.date,
-      url: getBlogPostUrl(frontmatter),
-    }
-  })
+  return getSearchRecords()
 }
 
 const posts = await getPosts()
