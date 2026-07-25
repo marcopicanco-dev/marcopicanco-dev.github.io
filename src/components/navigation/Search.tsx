@@ -5,6 +5,12 @@ import { type SearchRecord } from '@/types'
 import SearchResults from '@/components/navigation/SearchResults'
 import { type LanguageKeys, SEARCH } from '@/i18n/ui'
 
+const normalizeSearchText = (value: string) =>
+  value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+
 export default function Search({
   items,
   lang,
@@ -19,8 +25,10 @@ export default function Search({
   const overlayRef = useRef(null)
 
   const options = {
-    keys: ['title', 'description'],
+    keys: ['title', 'description', 'keywords'],
     isCaseSensitive: false,
+    ignoreLocation: true,
+    threshold: 0.4,
   }
 
   const fuse = new Fuse(items, options)
@@ -40,8 +48,19 @@ export default function Search({
     } else if (inputValue.length > 0 && inputValue.length < 3) {
       setMessage(SEARCH[lang].keepTyping)
     } else {
+      const normalizedInput = normalizeSearchText(inputValue)
+      const directMatches = items.filter((item) =>
+        normalizeSearchText(
+          `${item.title} ${item.description} ${item.keywords ?? ''}`,
+        ).includes(normalizedInput),
+      )
       const searchResult: FuseResult<SearchRecord>[] = fuse.search(inputValue)
-      const results: SearchRecord[] = searchResult.map((result) => result.item)
+      const fuzzyMatches = searchResult.map((result) => result.item)
+      const results: SearchRecord[] = [
+        ...new Map(
+          [...directMatches, ...fuzzyMatches].map((item) => [item.url, item]),
+        ).values(),
+      ]
       setMatchedItems(results)
 
       if (results.length === 0) {

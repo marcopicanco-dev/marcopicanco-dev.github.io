@@ -10,4 +10,5 @@ export type Frontmatter = {
 
 export type SearchRecord = {
   url: string
+  keywords?: string
 } & TitleDesc
