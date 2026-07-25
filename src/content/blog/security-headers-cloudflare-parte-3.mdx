@@ -10,7 +10,7 @@ Na parte 1, o foco foi entender a diferença entre aquilo que dá para resolver 
 
 Na parte 2, entrei no repositório: `npm audit`, migração para Astro 7, ajustes de build e testes white-box para evitar regressões no código.
 
-Agora a parte 3 fecha o ciclo com uma pergunta simples e desconfortável: **como provar que a produção está realmente protegida?**
+Agora a parte 3 fecha o ciclo com uma pergunta simples: **como provar que a produção está realmente protegida?**
 
 Não basta olhar o painel do Cloudflare e achar que está certo. O navegador não recebe intenção, recebe resposta HTTP. Então a validação precisa acontecer na URL real:
 
@@ -38,7 +38,7 @@ access-control-allow-origin: https://www.marcopicanco.com
 cf-ray: a1fdba7278972570-GRU
 ```
 
-Dois detalhes importam muito aqui.
+Dois detalhes importantes:
 
 O primeiro é `server: cloudflare` junto com `cf-ray`. Isso prova que o tráfego passou pela borda do Cloudflare. Na parte 1 eu já tinha caído na armadilha de configurar regra no painel enquanto o domínio ainda não estava de fato passando pelo Cloudflare.
 
@@ -376,7 +376,7 @@ Essa separação é importante. `npm run security` testa o repositório local: T
 
 ## Próximos passos
 
-Agora que os três primeiros pontos da parte 2 foram resolvidos, ainda dá para avançar.
+Agora que os três primeiros pontos da parte 2 foram resolvidos, vamos avançar.
 
 1. Reduzir a exceção restante da CSP.
 
@@ -392,7 +392,7 @@ Além do HTML principal, vale validar imagens, CSS, JS e páginas 404. Alguns he
 
 4. Rodar DAST passivo.
 
-OWASP ZAP em modo passivo pode inspecionar a navegação sem atacar o site, útil para uma varredura inicial sem impacto.
+OWASP ZAP(ferramenta de open surce voltada para testes de segurança de aplicações web) em modo passivo pode inspecionar a navegação sem atacar o site, útil para uma varredura inicial sem impacto.
 
 5. Investigar Content Collections.
 

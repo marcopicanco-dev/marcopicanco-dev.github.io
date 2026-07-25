@@ -2,8 +2,7 @@
   <title id="title">Validação dos headers em produção</title>
   <desc id="desc">Comparação mostrando os achados de produção antes e depois: X-Frame-Options inválido e Referrer-Policy ausente foram corrigidos no Cloudflare.</desc>
   <rect width="1100" height="600" fill="#282a36"/>
-  <text x="70" y="72" fill="#f8f8f2" font-family="Karla, Arial, sans-serif" font-size="34" font-weight="700">Produção é a fonte da verdade</text>
-  <text x="70" y="110" fill="#d7d5ee" font-family="Karla, Arial, sans-serif" font-size="18">O scanner e o curl validam o que o navegador realmente recebe.</text>
+  <text x="70" y="82" fill="#d7d5ee" font-family="Karla, Arial, sans-serif" font-size="18">O scanner e o curl validam o que o navegador realmente recebe.</text>
 
   <g transform="translate(70 155)">
     <rect width="460" height="330" rx="16" fill="#11121a" stroke="#ff79c6" stroke-opacity="0.55"/>
