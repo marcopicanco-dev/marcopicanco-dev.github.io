@@ -4,9 +4,9 @@ import { DEFAULT_LANGUAGE_CODE, PROJECT_NAME, SITE } from '@/config'
 import '@/styling/blog-fonts.css'
 import {
   formatBlogDate,
+  getBlogSearchRecords,
   getBlogPosts,
   getBlogPostUrl,
-  getSearchRecords,
   sortBlogPostsByDateDesc,
 } from '@/utils/blog'
 import BlogArchive from '@/components/BlogArchive'
@@ -21,7 +21,7 @@ const archivePosts = sortedPosts.map((post) => ({
   formattedDate: formatBlogDate(post.frontmatter.date),
   url: getBlogPostUrl(post.frontmatter),
 }))
-const searchItems = getSearchRecords()
+const searchItems = getBlogSearchRecords()
 const langFromURL = Astro.url.pathname.split('/')[1] || DEFAULT_LANGUAGE_CODE
 const lang: LanguageKeys = Object.prototype.hasOwnProperty.call(
   LANGUAGES,

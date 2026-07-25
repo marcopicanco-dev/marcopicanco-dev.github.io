@@ -61,7 +61,7 @@ export const formatBlogDate = (date: string) =>
     day: 'numeric',
   })
 
-const getBlogPostKeywords = (frontmatter: BlogFrontmatter) => {
+export const getBlogPostKeywords = (frontmatter: BlogFrontmatter) => {
   const url = getBlogPostUrl(frontmatter)
 
   if (url.includes('parte-')) {
@@ -120,10 +120,13 @@ const siteSearchRecords: SearchRecord[] = [
 
 export const getSearchRecords = (): SearchRecord[] => [
   ...siteSearchRecords,
-  ...sortBlogPostsByDateDesc(getBlogPosts()).map((post) => ({
+  ...getBlogSearchRecords(),
+]
+
+export const getBlogSearchRecords = (): SearchRecord[] =>
+  sortBlogPostsByDateDesc(getBlogPosts()).map((post) => ({
     title: post.frontmatter.title,
     description: post.frontmatter.description,
     url: getBlogPostUrl(post.frontmatter),
     keywords: getBlogPostKeywords(post.frontmatter),
-  })),
-]
+  }))
