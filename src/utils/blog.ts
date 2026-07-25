@@ -4,6 +4,7 @@ export type BlogFrontmatter = {
   title: string
   description: string
   date: string
+  publishedAt?: string
   heroImage?: string
   heroImageAlt?: string
 }
@@ -19,12 +20,11 @@ const blogPostModules = import.meta.glob<BlogPostModule>(
 
 export const getBlogPosts = () => Object.values(blogPostModules)
 
+const getPublishedTime = (post: BlogPostModule) =>
+  new Date(post.frontmatter.publishedAt ?? post.frontmatter.date).getTime()
+
 export const sortBlogPostsByDateDesc = (posts: BlogPostModule[]) =>
-  [...posts].sort(
-    (a, b) =>
-      new Date(b.frontmatter.date).getTime() -
-      new Date(a.frontmatter.date).getTime(),
-  )
+  [...posts].sort((a, b) => getPublishedTime(b) - getPublishedTime(a))
 
 const slugify = (value: string) =>
   value
