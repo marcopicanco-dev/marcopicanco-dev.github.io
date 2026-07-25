@@ -21,10 +21,22 @@ const blogPostModules = import.meta.glob<BlogPostModule>(
 export const getBlogPosts = () => Object.values(blogPostModules)
 
 const getPublishedTime = (post: BlogPostModule) =>
-  new Date(post.frontmatter.publishedAt ?? post.frontmatter.date).getTime()
+  new Date(`${post.frontmatter.publishedAt ?? post.frontmatter.date}`).getTime()
+
+const getSeriesPart = (post: BlogPostModule) => {
+  const match = post.frontmatter.title.match(/parte\s+(\d+)/i)
+
+  return match ? Number(match[1]) : 1
+}
 
 export const sortBlogPostsByDateDesc = (posts: BlogPostModule[]) =>
-  [...posts].sort((a, b) => getPublishedTime(b) - getPublishedTime(a))
+  [...posts].sort((a, b) => {
+    const timeDiff = getPublishedTime(b) - getPublishedTime(a)
+
+    if (timeDiff !== 0) return timeDiff
+
+    return getSeriesPart(b) - getSeriesPart(a)
+  })
 
 const slugify = (value: string) =>
   value
@@ -42,7 +54,7 @@ export const getBlogPostUrl = (frontmatter: BlogFrontmatter) =>
   `/${getBlogPostSlug(frontmatter)}/`
 
 export const formatBlogDate = (date: string) =>
-  new Date(date).toLocaleDateString('pt-BR', {
+  new Date(`${date}T12:00:00`).toLocaleDateString('pt-BR', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
