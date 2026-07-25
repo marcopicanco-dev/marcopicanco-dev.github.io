@@ -10,7 +10,7 @@
     "astro": "astro",
     "format": "prettier '**/*.{cjs,mjs,ts,tsx,md,mdx,json,astro}' --write",
     "lint": "eslint .",
-    "security:audit": "npm audit --audit-level=moderate",
+    "security:audit": "npm audit --audit-level=moderate --omit=dev",
     "security:csp": "node scripts/print-csp-header.mjs",
     "security:headers": "node scripts/check-production-headers.mjs",
     "security:test": "node --test tests/security.test.mjs",
