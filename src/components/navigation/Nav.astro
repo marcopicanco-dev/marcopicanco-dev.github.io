@@ -44,6 +44,7 @@ const searchItems: SearchRecord[] = await getSearchItems()
 
 <nav
   class="fixed left-0 top-0 z-[60] h-20 w-full border-b border-black/20 bg-opacity-50 backdrop-blur-md backdrop-filter dark:border-white/20"
+  aria-label="Navegação principal"
 >
   <div
     class="mx-auto flex h-20 w-full items-center justify-between px-8 py-5 w500:px-5"
@@ -53,7 +54,7 @@ const searchItems: SearchRecord[] = await getSearchItems()
         class="mr-10 inline-block transition-opacity hover:opacity-70 w800:mr-0"
         href={lang === DEFAULT_LANGUAGE_CODE ? '/' : `/${lang}`}
       >
-        <h2 class="text-2xl font-bold w500:text-xl">{PROJECT_NAME}</h2>
+        <span class="text-2xl font-bold w500:text-xl">{PROJECT_NAME}</span>
       </a>
 
       <div class="z-20 w800:hidden">
@@ -76,6 +77,7 @@ const searchItems: SearchRecord[] = await getSearchItems()
         target="_blank"
         rel="noopener noreferrer"
         href={GITHUB_REPO_URL}
+        aria-label="Abrir GitHub de Marco Picanço"
       >
         <svg
           class="h-6 w-6"
@@ -92,6 +94,7 @@ const searchItems: SearchRecord[] = await getSearchItems()
         target="_blank"
         rel="noopener noreferrer"
         href={LINKEDIN_URL}
+        aria-label="Abrir LinkedIn de Marco Picanço"
       >
         <svg
           class="h-6 w-6"

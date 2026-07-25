@@ -77,6 +77,7 @@ export default function Search({
         onClick={() => {
           setIsOverlayActive(true)
         }}
+        aria-label={SEARCH[lang].search}
         className="flex w-full items-center gap-4 rounded-base px-6 py-2 outline outline-1 outline-black/20 transition-[background-color] hover:bg-black/20 dark:outline-white/20 dark:hover:bg-white/20 w400:hidden"
       >
         <svg
@@ -100,6 +101,7 @@ export default function Search({
         onClick={() => {
           setIsOverlayActive(true)
         }}
+        aria-label={SEARCH[lang].search}
         className="hidden w400:inline-block"
       >
         <svg
