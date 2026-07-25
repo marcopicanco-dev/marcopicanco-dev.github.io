@@ -11,7 +11,7 @@ import { type SearchRecord } from '@/types'
 import { getSearchRecords } from '@/utils/blog'
 
 import ThemeSwitcher from '@/components/navigation/ThemeSwitcher.astro'
-import Search from '@/components/navigation/Search'
+import Search from '@/components/navigation/Search.astro'
 import MobileNav from '@/components/navigation/MobileNav.astro'
 
 const langFromURL = Astro.url.pathname.split('/')[1] || DEFAULT_LANGUAGE_CODE
@@ -58,7 +58,7 @@ const searchItems: SearchRecord[] = await getSearchItems()
       </a>
 
       <div class="z-20 w800:hidden">
-        <Search items={searchItems} lang={lang} client:only="react" />
+        <Search items={searchItems} lang={lang} />
       </div>
     </div>
 

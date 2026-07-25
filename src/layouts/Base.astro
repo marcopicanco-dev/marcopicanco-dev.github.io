@@ -5,10 +5,12 @@ import { DEFAULT_LANGUAGE_CODE } from '@/config'
 import { type LanguageKeys, LANGUAGES } from '@/i18n/ui'
 import { type Frontmatter } from '@/types'
 
-// font
-import '@fontsource/karla/400.css'
-import '@fontsource/karla/500.css'
-import '@fontsource/karla/700.css'
+import karla400Url from '@fontsource/karla/files/karla-latin-400-normal.woff2?url'
+import karla500Url from '@fontsource/karla/files/karla-latin-500-normal.woff2?url'
+import karla700Url from '@fontsource/karla/files/karla-latin-700-normal.woff2?url'
+import '@fontsource/karla/latin-400.css'
+import '@fontsource/karla/latin-500.css'
+import '@fontsource/karla/latin-700.css'
 
 // custom styling
 import '@/styling/tailwind.css'
@@ -41,6 +43,27 @@ const lang: LanguageKeys = Object.prototype.hasOwnProperty.call(
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <link
+      rel="preload"
+      href={karla400Url}
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href={karla500Url}
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href={karla700Url}
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
     <HeadSeo type="website" frontmatter={frontmatter} />
   </head>
   <body

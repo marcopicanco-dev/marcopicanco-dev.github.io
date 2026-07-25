@@ -1,5 +1,5 @@
 ---
-import Search from '@/components/navigation/Search'
+import Search from '@/components/navigation/Search.astro'
 import { type SearchRecord } from '@/types'
 import { LANGUAGES, type LanguageKeys } from '@/i18n/ui'
 import { DEFAULT_LANGUAGE_CODE } from '@/config'
@@ -112,7 +112,7 @@ const navLinks = [
       }
     </nav>
     <div class="w-full">
-      <Search items={searchItems} lang={lang} client:only="react" />
+      <Search items={searchItems} lang={lang} />
     </div>
   </div>
 </div>
