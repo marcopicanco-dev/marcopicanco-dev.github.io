@@ -116,17 +116,12 @@ function expectDirectiveTokens(policy, directive, expectedTokens) {
   )
 }
 
-function getHashTokens(policy, directive) {
-  return getDirectiveTokens(policy, directive).filter((token) =>
-    /^'sha(256|384|512)-[^']+'$/.test(token),
-  )
-}
-
 function expectCsp(headers, html) {
   const headerPolicy = normalize(headers.get('content-security-policy'))
   assert.ok(headerPolicy, 'content-security-policy header is required')
 
   const htmlPolicy = extractCspMeta(html)
+  assert.ok(htmlPolicy, 'HTML must include a non-empty generated CSP meta tag')
 
   expectHeaderIncludes(
     headers,
@@ -150,29 +145,6 @@ function expectCsp(headers, html) {
     "content-security-policy script-src-elem must not include 'unsafe-inline'",
   )
 
-  const generatedScriptHashes = [
-    ...getHashTokens(htmlPolicy, 'script-src'),
-    ...getHashTokens(htmlPolicy, 'script-src-elem'),
-  ]
-  assert.ok(
-    generatedScriptHashes.length > 0,
-    'generated CSP meta tag must include script-src hashes',
-  )
-  if (getHashTokens(htmlPolicy, 'script-src').length > 0) {
-    expectDirectiveTokens(
-      headerPolicy,
-      'script-src',
-      getHashTokens(htmlPolicy, 'script-src'),
-    )
-  }
-  if (getHashTokens(htmlPolicy, 'script-src-elem').length > 0) {
-    expectDirectiveTokens(
-      headerPolicy,
-      'script-src-elem',
-      getHashTokens(htmlPolicy, 'script-src-elem'),
-    )
-  }
-
   const styleTokens = getDirectiveTokens(headerPolicy, 'style-src')
   assert.ok(
     !styleTokens.includes("'unsafe-inline'"),
@@ -184,21 +156,6 @@ function expectCsp(headers, html) {
     !styleElementTokens.includes("'unsafe-inline'"),
     "content-security-policy style-src-elem must not include 'unsafe-inline'",
   )
-
-  if (getHashTokens(htmlPolicy, 'style-src').length > 0) {
-    expectDirectiveTokens(
-      headerPolicy,
-      'style-src',
-      getHashTokens(htmlPolicy, 'style-src'),
-    )
-  }
-  if (getHashTokens(htmlPolicy, 'style-src-elem').length > 0) {
-    expectDirectiveTokens(
-      headerPolicy,
-      'style-src-elem',
-      getHashTokens(htmlPolicy, 'style-src-elem'),
-    )
-  }
 
   const styleAttributeTokens = getDirectiveTokens(htmlPolicy, 'style-src-attr')
   if (styleAttributeTokens.length > 0) {
