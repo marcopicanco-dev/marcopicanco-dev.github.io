@@ -38,22 +38,22 @@ const lang: LanguageKeys = Object.prototype.hasOwnProperty.call(
     file: '',
   }}
 >
-  <div class="blog-fonts mx-auto max-w-6xl px-5 py-20">
+  <main class="blog-fonts mx-auto max-w-6xl px-5 py-20">
     <section class="mb-16 text-center">
       <span
         class="blog-ui text-sm uppercase tracking-[0.4em] text-lightModeText/60 dark:text-darkModeText/60"
         >Blog</span
       >
-      <h2
+      <h1
         class="mt-4 text-5xl font-bold text-lightModeText dark:text-darkModeText"
       >
         Os números governam o mundo.
-      </h2>
-      <h4
+      </h1>
+      <p
         class="mx-auto mt-6 max-w-3xl text-lg leading-8 text-lightModeText/80 dark:text-darkModeText/80"
       >
         Pitágoras
-      </h4>
+      </p>
       <p
         class="mx-auto mt-6 max-w-3xl text-lg leading-8 text-lightModeText/80 dark:text-darkModeText/80"
       >
@@ -66,5 +66,5 @@ const lang: LanguageKeys = Object.prototype.hasOwnProperty.call(
     </section>
 
     <BlogArchive posts={archivePosts} client:load />
-  </div>
+  </main>
 </Base>

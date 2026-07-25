@@ -40,7 +40,14 @@ const navLinks = [
 ]
 ---
 
-<button data-active="false" id="hamburger-btn" class="ml-6 hidden w800:inline">
+<button
+  data-active="false"
+  id="hamburger-btn"
+  class="ml-6 hidden w800:inline"
+  aria-label="Abrir menu de navegação"
+  aria-expanded="false"
+  aria-controls="mobile-hamburger"
+>
   <svg
     class="h-6 w-6"
     xmlns="http://www.w3.org/2000/svg"
@@ -92,7 +99,7 @@ const navLinks = [
   class="fixed left-0 top-20 z-50 hidden h-[calc(100dvh-80px)] w-full bg-lightDraculaBg bg-opacity-95 py-8 transition-colors duration-[inherit] dark:bg-darkModeBg"
 >
   <div class="w-full px-8 w500:px-5">
-    <nav class="mb-8 grid gap-4 text-xl font-semibold">
+    <nav class="mb-8 grid gap-4 text-xl font-semibold" aria-label="Menu mobile">
       {
         navLinks.map((link) => (
           <a
@@ -122,6 +129,7 @@ const navLinks = [
       const isActive = btn?.getAttribute('data-active') === 'true'
 
       btn?.setAttribute('data-active', isActive ? 'false' : 'true')
+      btn?.setAttribute('aria-expanded', isActive ? 'false' : 'true')
 
       document.body.style.overflow = isActive ? 'unset' : 'hidden'
 

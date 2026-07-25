@@ -186,13 +186,13 @@ const careerRoadmap = [
     --portfolio-panel: #ffffff;
     --portfolio-panel-soft: #ececff;
     --portfolio-text: #24243d;
-    --portfolio-muted: #595b85;
+    --portfolio-muted: #3f4168;
     --portfolio-border: rgb(98 114 164 / 0.28);
-    --portfolio-purple: #7c5cff;
-    --portfolio-pink: #c43182;
-    --portfolio-cyan: #007d95;
-    --portfolio-green: #12844b;
-    --portfolio-yellow: #7a6200;
+    --portfolio-purple: #5f35d8;
+    --portfolio-pink: #9f1d68;
+    --portfolio-cyan: #006a7e;
+    --portfolio-green: #0c703d;
+    --portfolio-yellow: #665100;
     --portfolio-chip: rgb(212 207 255 / 0.7);
 
     background-color: var(--portfolio-bg) !important;
@@ -204,13 +204,13 @@ const careerRoadmap = [
     --portfolio-panel: #21222c;
     --portfolio-panel-soft: #282a36;
     --portfolio-text: #f8f8f2;
-    --portfolio-muted: #d7d5ee;
+    --portfolio-muted: #ecebff;
     --portfolio-border: rgb(98 114 164 / 0.28);
-    --portfolio-purple: #bd93f9;
-    --portfolio-pink: #ff79c6;
-    --portfolio-cyan: #8be9fd;
-    --portfolio-green: #50fa7b;
-    --portfolio-yellow: #f1fa8c;
+    --portfolio-purple: #d7c4ff;
+    --portfolio-pink: #ff9ad7;
+    --portfolio-cyan: #b7f3ff;
+    --portfolio-green: #90ffad;
+    --portfolio-yellow: #fff3a3;
     --portfolio-chip: rgb(68 71 90 / 0.7);
   }
 
@@ -230,24 +230,24 @@ const careerRoadmap = [
     color: var(--portfolio-text) !important;
   }
 
-  .portfolio-theme [class*='text-[#d7d5ee]'] {
+  .portfolio-theme [class*='portfolio-muted'] {
     color: var(--portfolio-muted) !important;
   }
 
-  .portfolio-theme [class*='text-[#b7b3ff]'],
+  .portfolio-theme [class*='portfolio-purple'],
   .portfolio-theme [class*='text-[#bd93f9]'] {
     color: var(--portfolio-purple) !important;
   }
 
-  .portfolio-theme [class*='text-[#ff79c6]'] {
+  .portfolio-theme [class*='portfolio-pink'] {
     color: var(--portfolio-pink) !important;
   }
 
-  .portfolio-theme [class*='text-[#8be9fd]'] {
+  .portfolio-theme [class*='portfolio-cyan'] {
     color: var(--portfolio-cyan) !important;
   }
 
-  .portfolio-theme [class*='text-[#50fa7b]'] {
+  .portfolio-theme [class*='portfolio-green'] {
     color: var(--portfolio-green) !important;
   }
 
@@ -266,6 +266,46 @@ const careerRoadmap = [
   .dark .portfolio-theme [class*='shadow-[0_'] {
     box-shadow: 0 40px 110px -55px rgb(0 0 0 / 0.9) !important;
   }
+
+  .portfolio-muted {
+    color: var(--portfolio-muted);
+  }
+
+  .portfolio-purple {
+    color: var(--portfolio-purple);
+  }
+
+  .portfolio-pink {
+    color: var(--portfolio-pink);
+  }
+
+  .portfolio-cyan {
+    color: var(--portfolio-cyan);
+  }
+
+  .portfolio-green {
+    color: var(--portfolio-green);
+  }
+
+  .portfolio-chip-label {
+    background-color: #37394a;
+    color: #ffffff;
+  }
+
+  .portfolio-chip-metric {
+    background-color: #37394a;
+    color: #c9f7ff;
+  }
+
+  .portfolio-contact-mail {
+    background-color: #5f35d8;
+    color: #ffffff;
+  }
+
+  .dark .portfolio-contact-mail {
+    background-color: #d7c4ff;
+    color: #1b1c27;
+  }
 </style>
 
 <Base frontmatter={{ title, description, file: '' }}>
@@ -282,7 +322,7 @@ const careerRoadmap = [
         >
           <div>
             <p
-              class="text-sm font-semibold uppercase tracking-[0.32em] text-[#8be9fd]"
+              class="portfolio-cyan text-sm font-semibold uppercase tracking-[0.32em]"
             >
               Funcionalidade, usabilidade e qualidade técnica. Sempre.
             </p>
@@ -291,7 +331,7 @@ const careerRoadmap = [
             >
               Desenvolvedor Full Stack Ruby on Rails
             </h1>
-            <p class="mt-7 max-w-2xl text-lg leading-8 text-[#d7d5ee]">
+            <p class="portfolio-muted mt-7 max-w-2xl text-lg leading-8">
               Desenvolvo aplicações web, APIs, backoffices, com foco em testes,
               manutenção e qualidade.
             </p>
@@ -320,10 +360,10 @@ const careerRoadmap = [
               <span class="h-3 w-3 rounded-full bg-[#ff5555]"></span>
               <span class="h-3 w-3 rounded-full bg-[#f1fa8c]"></span>
               <span class="h-3 w-3 rounded-full bg-[#50fa7b]"></span>
-              <span class="ml-auto text-xs text-[#b7b3ff]">portfolio.rb</span>
+              <span class="portfolio-purple ml-auto text-xs">portfolio.rb</span>
             </div>
             <div
-              class="space-y-5 pt-5 font-mono text-sm leading-7 text-[#d7d5ee]"
+              class="portfolio-muted space-y-5 pt-5 font-mono text-sm leading-7"
             >
               <p>
                 foco = <span class="text-[#f1fa8c]"
@@ -331,9 +371,9 @@ const careerRoadmap = [
                 >
               </p>
               <p>
-                software<br /><span class="pl-6 text-[#50fa7b]">.testado</span
-                ><br /><span class="pl-6 text-[#50fa7b]">.bem_escrito</span><br
-                /><span class="pl-6 text-[#50fa7b]">.facil_de_manter</span>
+                software<br /><span class="portfolio-green pl-6">.testado</span
+                ><br /><span class="portfolio-green pl-6">.bem_escrito</span><br
+                /><span class="portfolio-green pl-6">.facil_de_manter</span>
               </p>
             </div>
           </aside>
@@ -343,8 +383,8 @@ const careerRoadmap = [
           {
             stats.map((item) => (
               <div class="rounded-lg border border-[#6272a4]/20 bg-[#21222c]/75 p-5">
-                <p class="text-2xl font-bold text-[#8be9fd]">{item.value}</p>
-                <p class="mt-2 text-sm text-[#d7d5ee]">{item.label}</p>
+                <p class="portfolio-cyan text-2xl font-bold">{item.value}</p>
+                <p class="portfolio-muted mt-2 text-sm">{item.label}</p>
               </div>
             ))
           }
@@ -357,7 +397,7 @@ const careerRoadmap = [
         highlights.map((item) => (
           <article class="rounded-lg border border-[#6272a4]/20 bg-[#21222c]/80 p-6">
             <h2 class="text-lg font-bold text-[#f8f8f2]">{item.title}</h2>
-            <p class="mt-4 text-sm leading-7 text-[#d7d5ee]">{item.text}</p>
+            <p class="portfolio-muted mt-4 text-sm leading-7">{item.text}</p>
           </article>
         ))
       }
@@ -371,7 +411,7 @@ const careerRoadmap = [
         <div class="flex flex-wrap items-end justify-between gap-6">
           <div>
             <p
-              class="text-sm font-semibold uppercase tracking-[0.32em] text-[#ff79c6]"
+              class="portfolio-pink text-sm font-semibold uppercase tracking-[0.32em]"
             >
               Portifólio de soluções
             </p>
@@ -380,7 +420,7 @@ const careerRoadmap = [
             >
               Projetos orientados a problemas reais de empresa.
             </h2>
-            <p class="mt-5 max-w-3xl text-base leading-8 text-[#d7d5ee]">
+            <p class="portfolio-muted mt-5 max-w-3xl text-base leading-8">
               Uma vitrine das frentes em que consigo atuar para reduzir atrito
               operacional, integrar sistemas, estabilizar produtos e acelerar
               entregas com Ruby on Rails.
@@ -394,7 +434,9 @@ const careerRoadmap = [
           </a>
         </div>
 
-        <p class="mt-12 text-sm font-bold text-[#b7b3ff]">Lista de soluções</p>
+        <p class="portfolio-purple mt-12 text-sm font-bold">
+          Lista de soluções
+        </p>
         <div class="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
           {
             businessProblems.map((item) => (
@@ -421,21 +463,21 @@ const careerRoadmap = [
 
                 <div class="p-5">
                   <div class="flex flex-wrap gap-2">
-                    <span class="rounded-full bg-[#44475a]/80 px-2.5 py-1 text-[0.68rem] font-bold uppercase text-[#f8f8f2]">
+                    <span class="portfolio-chip-label rounded-full px-2.5 py-1 text-[0.68rem] font-bold uppercase">
                       {item.area}
                     </span>
-                    <span class="rounded-full bg-[#44475a]/80 px-2.5 py-1 text-[0.68rem] font-bold uppercase text-[#8be9fd]">
+                    <span class="portfolio-chip-metric rounded-full px-2.5 py-1 text-[0.68rem] font-bold uppercase">
                       {item.metric}
                     </span>
                   </div>
                   <h3 class="mt-4 text-lg font-bold leading-6 text-[#f8f8f2]">
                     {item.title}
                   </h3>
-                  <p class="mt-3 min-h-[5.25rem] text-sm leading-7 text-[#d7d5ee]">
+                  <p class="portfolio-muted mt-3 min-h-[5.25rem] text-sm leading-7">
                     {item.solution}
                   </p>
                   <div class="mt-5 border-t border-[#6272a4]/20 pt-4">
-                    <p class="text-xs font-bold uppercase tracking-[0.14em] text-[#b7b3ff]">
+                    <p class="portfolio-purple text-xs font-bold uppercase tracking-[0.14em]">
                       {item.kind}
                     </p>
                   </div>
@@ -470,8 +512,8 @@ const careerRoadmap = [
           <article
             class="rounded-lg border border-[#6272a4]/20 bg-[#282a36] p-6"
           >
-            <h3 class="text-lg font-bold text-[#8be9fd]">Escopo possível</h3>
-            <p class="mt-4 text-sm leading-7 text-[#d7d5ee]">
+            <h3 class="portfolio-cyan text-lg font-bold">Escopo possível</h3>
+            <p class="portfolio-muted mt-4 text-sm leading-7">
               Sistemas Ruby on Rails, APIs RESTful, Webhooks, correção de bugs,
               testes automatizados, evolução de backoffice e integrações com
               bancos de dados.
@@ -480,8 +522,8 @@ const careerRoadmap = [
           <article
             class="rounded-lg border border-[#6272a4]/20 bg-[#282a36] p-6"
           >
-            <h3 class="text-lg font-bold text-[#ff79c6]">Forma de trabalho</h3>
-            <p class="mt-4 text-sm leading-7 text-[#d7d5ee]">
+            <h3 class="portfolio-pink text-lg font-bold">Forma de trabalho</h3>
+            <p class="portfolio-muted mt-4 text-sm leading-7">
               Diagnóstico curto, definição de prioridades, implementação com
               qualidade, documentação objetiva e entrega incremental usando
               práticas ágeis.
@@ -509,7 +551,7 @@ const careerRoadmap = [
 
         <div>
           <p
-            class="text-sm font-semibold uppercase tracking-[0.32em] text-[#50fa7b]"
+            class="portfolio-green text-sm font-semibold uppercase tracking-[0.32em]"
           >
             Sobre
           </p>
@@ -518,7 +560,7 @@ const careerRoadmap = [
           >
             Desenvolvedor Full Stack.
           </h2>
-          <div class="mt-7 space-y-5 text-base leading-8 text-[#d7d5ee]">
+          <div class="portfolio-muted mt-7 space-y-5 text-base leading-8">
             <p>
               Sou <strong>Desenvolvedor Full Stack</strong> com mais de 3 anos de
               experiência no ecossistema <strong>Ruby on Rails</strong>, atuando
@@ -540,24 +582,27 @@ const careerRoadmap = [
         <div class="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p
-              class="text-sm font-semibold uppercase tracking-[0.32em] text-[#ff79c6]"
+              class="portfolio-pink text-sm font-semibold uppercase tracking-[0.32em]"
             >
               Experiência
             </p>
           </div>
-          <p class="text-sm font-semibold text-[#b7b3ff]">
+          <p class="portfolio-purple text-sm font-semibold">
             jan de 2019 — atual · 7 anos 7 meses
           </p>
         </div>
 
-        <div class="mt-10 overflow-x-auto pb-2">
-          <div class="relative min-w-[880px]">
+        <section
+          class="mt-10 pb-2"
+          aria-label="Linha do tempo de experiência profissional"
+        >
+          <div class="relative">
             <div
-              class="absolute left-8 right-8 top-[4.6rem] h-px bg-[#6272a4]/50"
+              class="absolute left-8 right-8 top-[4.6rem] hidden h-px bg-[#6272a4]/50 lg:block"
               aria-hidden="true"
             >
             </div>
-            <div class="grid grid-cols-4 gap-6">
+            <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {
                 careerRoadmap.map((item, index) => (
                   <article class="relative flex min-h-[28rem] flex-col items-center">
@@ -578,9 +623,9 @@ const careerRoadmap = [
                     <div
                       class={`flex h-28 w-full items-center justify-center rounded-b-[48px] rounded-t-lg px-4 text-center ${item.accent}`}
                     >
-                      <h4 class="text-base font-black leading-5 text-[#f8f8f2]">
+                      <p class="text-base font-black leading-5 text-[#f8f8f2]">
                         {item.role}
-                      </h4>
+                      </p>
                     </div>
 
                     <span
@@ -589,10 +634,10 @@ const careerRoadmap = [
                     />
 
                     <div class="mt-4 flex min-h-[13rem] w-[84%] flex-col rounded-md border border-[#6272a4]/25 bg-[#282a36] p-4">
-                      <p class="text-xs font-semibold leading-5 text-[#50fa7b]">
+                      <p class="portfolio-green text-xs font-semibold leading-5">
                         {item.place}
                       </p>
-                      <ul class="mt-4 space-y-2 text-sm leading-5 text-[#d7d5ee]">
+                      <ul class="portfolio-muted mt-4 space-y-2 text-sm leading-5">
                         {item.bullets.map((bullet) => (
                           <li class="flex gap-2">
                             <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#8be9fd]" />
@@ -600,7 +645,7 @@ const careerRoadmap = [
                           </li>
                         ))}
                       </ul>
-                      <p class="mt-6 text-xs font-semibold text-[#8be9fd]">
+                      <p class="portfolio-cyan mt-6 text-xs font-semibold">
                         {item.company}
                       </p>
                     </div>
@@ -609,7 +654,7 @@ const careerRoadmap = [
               }
             </div>
           </div>
-        </div>
+        </section>
       </div>
 
       <div class="mt-6 rounded-lg border border-[#6272a4]/20 bg-[#21222c] p-6">
@@ -630,21 +675,21 @@ const careerRoadmap = [
                 <div class="min-w-0">
                   <div class="flex flex-wrap items-start justify-between gap-3">
                     <div>
-                      <h4 class="text-base font-bold leading-6 text-[#f8f8f2]">
+                      <p class="text-base font-bold leading-6 text-[#f8f8f2]">
                         {item.school}
-                      </h4>
-                      <p class="mt-1 text-sm leading-6 text-[#d7d5ee]">
+                      </p>
+                      <p class="portfolio-muted mt-1 text-sm leading-6">
                         {item.title}, {item.field}
                       </p>
-                      <p class="text-sm font-medium text-[#b7b3ff]">
+                      <p class="portfolio-purple text-sm font-medium">
                         {item.period}
                       </p>
                     </div>
                   </div>
-                  <p class="mt-4 max-w-4xl text-sm leading-6 text-[#d7d5ee]">
+                  <p class="portfolio-muted mt-4 max-w-4xl text-sm leading-6">
                     {item.summary}
                   </p>
-                  <p class="mt-4 text-sm leading-6 text-[#d7d5ee]">
+                  <p class="portfolio-muted mt-4 text-sm leading-6">
                     <strong class="font-bold text-[#f8f8f2]">
                       Competências:
                     </strong>{' '}
@@ -671,7 +716,7 @@ const careerRoadmap = [
           <h2 class="mt-4 text-3xl font-bold text-[#f8f8f2]">
             Vamos conversar sobre o próximo projeto.
           </h2>
-          <p class="mt-4 max-w-2xl text-base leading-8 text-[#d7d5ee]">
+          <p class="portfolio-muted mt-4 max-w-2xl text-base leading-8">
             Envie uma mensagem para alinhar contexto, objetivo e o melhor
             caminho de implementação.
           </p>
@@ -694,7 +739,7 @@ const careerRoadmap = [
             GitHub
           </a>
           <a
-            class="inline-flex items-center justify-center rounded-lg bg-[#bd93f9] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#ff79c6] focus:outline-none focus:ring-2 focus:ring-[#ff79c6] focus:ring-offset-2 focus:ring-offset-[#21222c]"
+            class="portfolio-contact-mail inline-flex items-center justify-center rounded-lg px-5 py-3 text-sm font-bold transition focus:outline-none focus:ring-2 focus:ring-[#ff79c6] focus:ring-offset-2 focus:ring-offset-[#21222c]"
             href={`mailto:${email}`}
             target="_blank"
             rel="noopener noreferrer"
@@ -706,7 +751,7 @@ const careerRoadmap = [
     </section>
 
     <footer
-      class="border-t border-[#6272a4]/20 px-5 py-8 text-sm text-[#d7d5ee]"
+      class="portfolio-muted border-t border-[#6272a4]/20 px-5 py-8 text-sm"
     >
       <div
         class="mx-auto grid max-w-6xl items-center gap-5 md:grid-cols-[1fr_auto_1fr]"
