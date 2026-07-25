@@ -10,7 +10,7 @@ import {
   sortBlogPostsByDateDesc,
 } from '@/utils/blog'
 import BlogArchive from '@/components/BlogArchive'
-import Search from '@/components/navigation/Search'
+import Search from '@/components/navigation/Search.astro'
 import { LANGUAGES, type LanguageKeys } from '@/i18n/ui'
 
 const sortedPosts = sortBlogPostsByDateDesc(getBlogPosts())
@@ -62,7 +62,7 @@ const lang: LanguageKeys = Object.prototype.hasOwnProperty.call(
     </section>
 
     <section class="mx-auto mb-10 max-w-2xl">
-      <Search items={searchItems} lang={lang} client:only="react" />
+      <Search items={searchItems} lang={lang} />
     </section>
 
     <BlogArchive posts={archivePosts} client:load />

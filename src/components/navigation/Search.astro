@@ -1,0 +1,252 @@
+---
+import { type SearchRecord } from '@/types'
+import { type LanguageKeys, SEARCH } from '@/i18n/ui'
+
+const { items, lang } = Astro.props as {
+  items: SearchRecord[]
+  lang: LanguageKeys
+}
+
+const serializedItems = JSON.stringify(items).replace(/</g, '\\u003c')
+---
+
+<div
+  data-search-root
+  data-search-items={serializedItems}
+  data-search-label={SEARCH[lang].search}
+  data-keep-typing={SEARCH[lang].keepTyping}
+  data-no-results={SEARCH[lang].noResults}
+  data-results-label={SEARCH[lang].results}
+>
+  <button
+    type="button"
+    data-search-open
+    aria-label={SEARCH[lang].search}
+    class="flex w-full items-center gap-4 rounded-base px-6 py-2 outline outline-1 outline-black/20 transition-[background-color] hover:bg-black/20 dark:outline-white/20 dark:hover:bg-white/20 w400:hidden"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-4 w-4"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z"
+        class="stroke-lightModeIcon dark:stroke-darkModeIcon"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"></path>
+    </svg>
+
+    <span>{SEARCH[lang].search}</span>
+  </button>
+
+  <button
+    type="button"
+    data-search-open
+    aria-label={SEARCH[lang].search}
+    class="hidden w400:inline-block"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-6 w-6"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z"
+        class="stroke-lightModeIcon dark:stroke-darkModeIcon"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"></path>
+    </svg>
+  </button>
+
+  <div
+    data-search-overlay
+    class="invisible fixed left-0 top-0 z-50 h-[100dvh] w-full bg-transparent py-20 opacity-0 transition-all duration-300"
+  >
+    <div
+      data-search-panel
+      class="mx-auto flex h-full w-[700px] scale-[0.9] flex-col rounded-base border border-draculaBorder/30 bg-lightDraculaPanel/95 p-10 transition-all duration-300 dark:border-draculaBorder/40 dark:bg-draculaPanel/95 w800:w-full w800:p-5"
+    >
+      <div class="h-[82px]">
+        <input
+          data-search-input
+          class="w-full rounded-base bg-lightDraculaBg/95 p-[10px] px-5 text-xl outline outline-1 outline-draculaBorder/20 transition-[outline] focus:outline-draculaBorder/50 dark:bg-draculaPanel/95 dark:outline-draculaBorder/30 dark:focus:outline-draculaAccent/40 w600:text-lg"
+          placeholder={SEARCH[lang].search}
+          type="text"
+          autocomplete="off"
+        />
+
+        <p data-search-count class="mt-[10px] hidden w600:text-sm"></p>
+      </div>
+
+      <div
+        class="mt-[10px] h-[calc(100%-92px)] w-full shrink rounded-base border border-black/20 p-[10px] dark:border-white/20"
+      >
+        <div
+          data-search-message
+          class="flex h-full w-full items-center justify-center"
+        >
+          <p class="text-lg w600:text-base"></p>
+        </div>
+        <div
+          data-search-list
+          class="search-list hidden h-full w-full flex-col gap-[10px] overflow-y-auto p-[5px]"
+        >
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  type SearchItem = {
+    title: string
+    description: string
+    url: string
+    keywords?: string
+  }
+
+  const normalizeSearchText = (value: string) =>
+    value
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+
+  const createResultLink = (item: SearchItem) => {
+    const link = document.createElement('a')
+    link.href = new URL(item.url, window.location.origin).toString()
+    link.className =
+      'w-full rounded-base p-[10px] transition-all hover:bg-black/10 dark:hover:bg-white/10 w600:p-1.5'
+
+    const title = document.createElement('p')
+    title.className = 'text-xl font-semibold w600:text-lg'
+    title.textContent = item.title
+
+    const description = document.createElement('p')
+    description.className = 'mt-2 opacity-80 w600:text-sm'
+    description.textContent = item.description
+
+    link.append(title, description)
+
+    return link
+  }
+
+  const setupSearch = () => {
+    const roots = document.querySelectorAll<HTMLElement>('[data-search-root]')
+
+    roots.forEach((root) => {
+      if (root.dataset.bound === 'true') return
+      root.dataset.bound = 'true'
+
+      const overlay = root.querySelector<HTMLElement>('[data-search-overlay]')
+      const panel = root.querySelector<HTMLElement>('[data-search-panel]')
+      const input = root.querySelector<HTMLInputElement>('[data-search-input]')
+      const count = root.querySelector<HTMLElement>('[data-search-count]')
+      const message = root.querySelector<HTMLElement>('[data-search-message]')
+      const messageText = message?.querySelector('p')
+      const list = root.querySelector<HTMLElement>('[data-search-list]')
+      const openButtons =
+        root.querySelectorAll<HTMLButtonElement>('[data-search-open]')
+      const items = JSON.parse(root.dataset.searchItems ?? '[]') as SearchItem[]
+
+      const setMessage = (text: string | null) => {
+        if (!message || !messageText || !list || !count) return
+
+        messageText.textContent = text ?? ''
+        message.classList.toggle('hidden', !text)
+        message.classList.toggle('flex', Boolean(text))
+        list.classList.toggle('hidden', Boolean(text))
+        list.classList.toggle('flex', !text)
+        count.classList.add('hidden')
+      }
+
+      const closeOverlay = () => {
+        overlay?.classList.add('invisible', 'bg-transparent', 'opacity-0')
+        overlay?.classList.remove('visible', 'bg-black/20', 'opacity-100')
+        overlay?.classList.remove('dark:bg-white/20')
+        panel?.classList.add('scale-[0.9]')
+        panel?.classList.remove('scale-100')
+        document.body.style.overflow = ''
+      }
+
+      const openOverlay = () => {
+        overlay?.classList.remove('invisible', 'bg-transparent', 'opacity-0')
+        overlay?.classList.add('visible', 'bg-black/20', 'opacity-100')
+        overlay?.classList.add('dark:bg-white/20')
+        panel?.classList.remove('scale-[0.9]')
+        panel?.classList.add('scale-100')
+        document.body.style.overflow = 'hidden'
+        window.setTimeout(() => input?.focus(), 50)
+      }
+
+      const renderResults = (results: SearchItem[]) => {
+        if (!list || !count) return
+
+        list.replaceChildren(...results.map(createResultLink))
+        list.classList.remove('hidden')
+        list.classList.add('flex')
+        message?.classList.add('hidden')
+        message?.classList.remove('flex')
+        count.textContent = `${results.length} ${root.dataset.resultsLabel}`
+        count.classList.remove('hidden')
+      }
+
+      const search = (value: string) => {
+        const inputValue = value.trim()
+
+        if (!inputValue) {
+          list?.replaceChildren()
+          count?.classList.add('hidden')
+          setMessage(null)
+          return
+        }
+
+        if (inputValue.length < 3) {
+          list?.replaceChildren()
+          setMessage(root.dataset.keepTyping ?? '')
+          return
+        }
+
+        const normalizedInput = normalizeSearchText(inputValue)
+        const words = normalizedInput.split(/\s+/).filter(Boolean)
+        const results = items.filter((item) => {
+          const content = normalizeSearchText(
+            `${item.title} ${item.description} ${item.keywords ?? ''}`,
+          )
+
+          return words.every((word) => content.includes(word))
+        })
+
+        if (results.length === 0) {
+          list?.replaceChildren()
+          setMessage(root.dataset.noResults ?? '')
+          return
+        }
+
+        renderResults(results)
+      }
+
+      openButtons.forEach((button) => {
+        button.addEventListener('click', openOverlay)
+      })
+
+      overlay?.addEventListener('click', (event) => {
+        if (event.target === overlay) closeOverlay()
+      })
+
+      input?.addEventListener('input', () => search(input.value))
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') closeOverlay()
+      })
+    })
+  }
+
+  setupSearch()
+  document.addEventListener('astro:after-swap', setupSearch)
+</script>
