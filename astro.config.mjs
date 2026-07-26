@@ -6,9 +6,6 @@ import expressiveCode from 'astro-expressive-code'
 // https://astro.build/config
 export default defineConfig({
   site: 'https://www.marcopicanco.com',
-  build: {
-    inlineStylesheets: 'always',
-  },
   markdown: {
     syntaxHighlight: false,
   },
