@@ -195,6 +195,10 @@ const careerRoadmap = [
     --portfolio-green: #0c703d;
     --portfolio-yellow: #665100;
     --portfolio-chip: rgb(212 207 255 / 0.7);
+    --portfolio-card-bg: #ffffff;
+    --portfolio-card-title: #24243d;
+    --portfolio-card-muted: #303153;
+    --portfolio-card-accent: #4b24c9;
 
     background-color: var(--portfolio-bg) !important;
     color: var(--portfolio-text) !important;
@@ -213,6 +217,10 @@ const careerRoadmap = [
     --portfolio-green: #90ffad;
     --portfolio-yellow: #fff3a3;
     --portfolio-chip: rgb(68 71 90 / 0.7);
+    --portfolio-card-bg: #1b1c27;
+    --portfolio-card-title: #ffffff;
+    --portfolio-card-muted: #f0efff;
+    --portfolio-card-accent: #e2d2ff;
   }
 
   .portfolio-theme [class*='bg-[#282a36]'] {
@@ -301,6 +309,22 @@ const careerRoadmap = [
   .portfolio-contact-mail {
     background-color: #5f35d8;
     color: #ffffff;
+  }
+
+  .portfolio-solution-card {
+    background-color: var(--portfolio-card-bg);
+  }
+
+  .portfolio-solution-title {
+    color: var(--portfolio-card-title);
+  }
+
+  .portfolio-solution-text {
+    color: var(--portfolio-card-muted);
+  }
+
+  .portfolio-solution-kind {
+    color: var(--portfolio-card-accent);
   }
 
   .dark .portfolio-contact-mail {
@@ -441,7 +465,7 @@ const careerRoadmap = [
         <div class="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
           {
             businessProblems.map((item) => (
-              <article class="overflow-hidden rounded-lg border border-[#6272a4]/20 bg-[#1b1c27] transition hover:-translate-y-1 hover:border-[#8be9fd]/70">
+              <article class="portfolio-solution-card overflow-hidden rounded-lg border border-[#6272a4]/20 transition hover:-translate-y-1 hover:border-[#8be9fd]/70">
                 <div class={`relative h-44 overflow-hidden ${item.accent}`}>
                   <div class="absolute inset-x-8 bottom-0 h-32 rounded-t-lg border border-[#282a36]/70 bg-[#11121a] p-3 shadow-[0_20px_45px_-20px_rgba(0,0,0,0.75)]">
                     <div class="flex items-center gap-1.5">
@@ -471,14 +495,14 @@ const careerRoadmap = [
                       {item.metric}
                     </span>
                   </div>
-                  <h3 class="mt-4 text-lg font-bold leading-6 text-[#f8f8f2]">
+                  <h3 class="portfolio-solution-title mt-4 text-lg font-bold leading-6">
                     {item.title}
                   </h3>
-                  <p class="portfolio-muted mt-3 min-h-[5.25rem] text-sm leading-7">
+                  <p class="portfolio-solution-text mt-3 min-h-[5.25rem] text-sm leading-7">
                     {item.solution}
                   </p>
                   <div class="mt-5 border-t border-[#6272a4]/20 pt-4">
-                    <p class="portfolio-purple text-xs font-bold uppercase tracking-[0.14em]">
+                    <p class="portfolio-solution-kind text-xs font-bold uppercase tracking-[0.14em]">
                       {item.kind}
                     </p>
                   </div>
