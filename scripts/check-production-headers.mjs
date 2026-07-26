@@ -29,6 +29,11 @@ const requiredCspDirectives = [
   "frame-ancestors 'self'",
 ]
 
+const cloudflareInsightsTokens = {
+  'connect-src': ['https://cloudflareinsights.com'],
+  'script-src': ['https://static.cloudflareinsights.com'],
+}
+
 function normalize(value) {
   return value?.trim() ?? ''
 }
@@ -129,6 +134,10 @@ function expectCsp(headers, html) {
     requiredCspDirectives,
   )
   expectDirectiveTokens(headerPolicy, 'script-src', ["'self'"])
+
+  for (const [directive, tokens] of Object.entries(cloudflareInsightsTokens)) {
+    expectDirectiveTokens(headerPolicy, directive, tokens)
+  }
 
   const scriptTokens = getDirectiveTokens(headerPolicy, 'script-src')
   assert.ok(

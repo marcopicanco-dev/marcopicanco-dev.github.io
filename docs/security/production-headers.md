@@ -63,6 +63,12 @@ Do not use `Header name: Referrer-Policy` in the field. The field value must be 
 
 Astro now generates a hash-based CSP during the production build. This removes the dangerous `script-src 'unsafe-inline'` exception while keeping Astro runtime scripts working.
 
+The value printed by `npm run security:csp` is the edge header value, not only the raw HTML meta value. It intentionally adds:
+
+- `frame-ancestors 'self'`, because browsers ignore `frame-ancestors` when it is delivered through a `<meta http-equiv="Content-Security-Policy">`;
+- `https://static.cloudflareinsights.com` in `script-src`, because Cloudflare Web Analytics injects `beacon.min.js`;
+- `https://cloudflareinsights.com` in `connect-src`, because the beacon reports analytics data back to Cloudflare.
+
 After every build that changes inline scripts or generated styles, print the current CSP value:
 
 ```bash
@@ -77,6 +83,8 @@ In Cloudflare, update the Response Header Transform Rule:
 - header value: output from `npm run security:csp`
 
 Do not wrap the header value in extra quotes. The value intentionally includes `style-src-attr 'unsafe-inline'` because the code block highlighter emits inline `style=""` attributes. The stricter part is that `script-src` and `style-src` no longer contain `'unsafe-inline'`.
+
+If you do not want to allow Cloudflare Web Analytics in CSP, disable Web Analytics/Scrape Shield email obfuscation features that inject scripts at the Cloudflare edge. Otherwise Lighthouse will report blocked `beacon.min.js` requests in the browser console.
 
 ## Automated Production Check
 
