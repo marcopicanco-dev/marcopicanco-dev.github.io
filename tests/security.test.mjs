@@ -164,5 +164,11 @@ test('astro config must generate restrictive CSP without unsafe inline scripts',
   assert.match(astroConfig, /object-src 'none'/)
   assert.match(astroConfig, /base-uri 'self'/)
   assert.match(astroConfig, /form-action 'self'/)
-  assert.doesNotMatch(astroConfig, /scriptDirective:[\s\S]*'unsafe-inline'/)
+
+  const scriptDirective = astroConfig.match(
+    /scriptDirective:\s*{[\s\S]*?}\s*,\s*styleDirective:/,
+  )?.[0]
+
+  assert.ok(scriptDirective, 'astro config must define scriptDirective')
+  assert.doesNotMatch(scriptDirective, /'unsafe-inline'/)
 })
