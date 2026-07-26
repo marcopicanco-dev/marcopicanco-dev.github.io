@@ -115,6 +115,24 @@ const lang: LanguageKeys = Object.prototype.hasOwnProperty.call(
     // im adding those classes with 300ms delay, so theres no flashing on inital page load
   }
 
+  function setupEmailLinks() {
+    const links = document.querySelectorAll('[data-email-link]')
+
+    links.forEach((link) => {
+      if (!(link instanceof HTMLAnchorElement)) return
+
+      const { emailUser, emailDomain } = link.dataset
+
+      if (!emailUser || !emailDomain) return
+
+      const scheme = ['mai', 'lto:'].join('')
+
+      link.href = `${scheme}${emailUser}@${emailDomain}`
+    })
+  }
+
   init()
+  setupEmailLinks()
   document.addEventListener('astro:after-swap', init)
+  document.addEventListener('astro:after-swap', setupEmailLinks)
 </script>
