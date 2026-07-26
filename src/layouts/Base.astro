@@ -68,6 +68,8 @@ const lang: LanguageKeys = Object.prototype.hasOwnProperty.call(
       crossorigin
     />
     <HeadSeo type="website" frontmatter={frontmatter} />
+    <script is:inline defer src="/scripts/site.js"></script>
+    <script is:inline defer src="/scripts/theme-switcher.js"></script>
   </head>
   <body
     class="bg-lightModeBg text-lightModeText selection:bg-draculaAccent/30 selection:text-draculaBg dark:bg-darkModeBg dark:text-darkModeText"
@@ -82,58 +84,3 @@ const lang: LanguageKeys = Object.prototype.hasOwnProperty.call(
     </div>
   </body>
 </html>
-
-<script>
-  const lightModeCodeBlockTheme = 'dracula'
-  const darkModeCodeBlockTheme = 'dracula'
-
-  function init() {
-    document.documentElement.classList.add('scroll-smooth')
-    // adding scroll-smooth class to html tag manually didn't work so I'm adding that class this way
-
-    if (
-      localStorage.theme === 'dark' ||
-      (!('theme' in localStorage) &&
-        window.matchMedia('(prefers-color-scheme: dark)').matches)
-    ) {
-      document.documentElement.classList.add('dark')
-      document.documentElement.setAttribute(
-        'data-theme',
-        darkModeCodeBlockTheme,
-      )
-    } else {
-      document.documentElement.classList.remove('dark')
-      document.documentElement.setAttribute(
-        'data-theme',
-        lightModeCodeBlockTheme,
-      )
-    }
-
-    setTimeout(() => {
-      document.body.classList.add('duration-300', 'transition-colors')
-    }, 300)
-
-    // im adding those classes with 300ms delay, so theres no flashing on inital page load
-  }
-
-  function setupEmailLinks() {
-    const links = document.querySelectorAll('[data-email-link]')
-
-    links.forEach((link) => {
-      if (!(link instanceof HTMLAnchorElement)) return
-
-      const { emailUser, emailDomain } = link.dataset
-
-      if (!emailUser || !emailDomain) return
-
-      const scheme = ['mai', 'lto:'].join('')
-
-      link.href = `${scheme}${emailUser}@${emailDomain}`
-    })
-  }
-
-  init()
-  setupEmailLinks()
-  document.addEventListener('astro:after-swap', init)
-  document.addEventListener('astro:after-swap', setupEmailLinks)
-</script>
