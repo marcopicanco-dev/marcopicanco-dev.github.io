@@ -143,6 +143,10 @@
   color: var(--portfolio-card-accent);
 }
 
+.portfolio-education-item > summary::-webkit-details-marker {
+  display: none;
+}
+
 .dark .portfolio-contact-mail {
   background-color: #d7c4ff;
   color: #1b1c27;

@@ -128,57 +128,6 @@ const education = [
     skills: ['Planejamento de eventos', 'Gestão de mudanças', 'Marketing'],
   },
 ]
-
-const careerRoadmap = [
-  {
-    company: 'OrçaFascio',
-    role: 'Assistente de vendas',
-    period: 'jan de 2019 - mai de 2019',
-    place: 'Macapá e Região, Brasil',
-    summary:
-      'Prospecção ativa de clientes, qualificação de leads estratégicos e alimentação do pipeline comercial.',
-    color: 'bg-[#bd93f9]',
-    accent: 'border border-[#8be9fd]/30 bg-[#8be9fd]/15',
-    bullets: [
-      'Prospecção ativa',
-      'Qualificação de leads',
-      'Pipeline comercial',
-    ],
-  },
-  {
-    company: 'OrçaFascio',
-    role: 'Consultor de vendas',
-    period: 'mai de 2019 - mai de 2020',
-    place: 'Macapá e Região, Brasil',
-    summary:
-      'Vendas consultivas, análise de soluções para cada cliente e acompanhamento de Churn, KPIs e NPS.',
-    color: 'bg-[#8be9fd]',
-    accent: 'border border-[#50fa7b]/30 bg-[#50fa7b]/15',
-    bullets: ['Vendas consultivas', 'Análise de soluções', 'Churn, KPIs e NPS'],
-  },
-  {
-    company: 'OrçaFascio',
-    role: 'Analista de sucesso do cliente',
-    period: 'mai de 2020 - mai de 2022',
-    place: 'Macapá, AP · Híbrido',
-    summary:
-      'Estratégias personalizadas para adoção do software, experiência do usuário, relacionamento e retenção.',
-    color: 'bg-[#ff79c6]',
-    accent: 'border border-[#8be9fd]/30 bg-[#8be9fd]/15',
-    bullets: ['Adoção do software', 'Experiência do usuário', 'Relacionamento'],
-  },
-  {
-    company: 'OrçaFascio',
-    role: 'Desenvolvedor Full Stack',
-    period: 'jun de 2022 - atual',
-    place: 'Santo André, SP',
-    summary:
-      'Ruby on Rails, APIs RESTful, testes unitários, PostgreSQL, MongoDB e evolução do Backoffice.',
-    color: 'bg-[#50fa7b]',
-    accent: 'border border-[#50fa7b]/30 bg-[#50fa7b]/15',
-    bullets: ['Ruby on Rails', 'APIs RESTful', 'Testes e Backoffice'],
-  },
-]
 ---
 
 <Base frontmatter={{ title, description, file: '' }}>
@@ -449,127 +398,71 @@ const careerRoadmap = [
         </div>
       </div>
 
-      <div
-        class="mt-12 overflow-hidden rounded-lg border border-[#6272a4]/20 bg-[#21222c] p-5 shadow-[0_28px_90px_-55px_rgba(0,0,0,0.75)] sm:p-6"
-      >
-        <div class="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <p
-              class="portfolio-pink text-sm font-semibold uppercase tracking-[0.32em]"
-            >
-              Experiência
-            </p>
-          </div>
-          <p class="portfolio-purple text-sm font-semibold">
-            jan de 2019 — atual · 7 anos 7 meses
-          </p>
-        </div>
-
-        <section
-          class="mt-10 pb-2"
-          aria-label="Linha do tempo de experiência profissional"
-        >
-          <div class="relative">
-            <div
-              class="absolute left-8 right-8 top-[4.6rem] hidden h-px bg-[#6272a4]/50 lg:block"
-              aria-hidden="true"
-            >
-            </div>
-            <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              {
-                careerRoadmap.map((item, index) => (
-                  <article class="relative flex min-h-[28rem] flex-col items-center">
-                    <p class="min-h-10 text-center text-xs font-bold leading-5 text-[#f8f8f2]">
-                      {item.period}
-                    </p>
-
-                    <div class="relative z-10 mt-4 flex h-14 w-14 items-center justify-center rounded-full border-[6px] border-[#21222c] bg-[#bd93f9] text-[#282a36] shadow-[0_16px_42px_-28px_rgba(0,0,0,0.9)]">
-                      <span class="text-base font-black">{index + 1}</span>
-                    </div>
-
-                    <span class="h-7 w-px bg-[#f8f8f2]/80" aria-hidden="true" />
-                    <span
-                      class="h-2.5 w-2.5 rounded-full bg-[#f8f8f2]"
-                      aria-hidden="true"
-                    />
-
-                    <div
-                      class={`flex h-28 w-full items-center justify-center rounded-b-[48px] rounded-t-lg px-4 text-center ${item.accent}`}
-                    >
-                      <p class="text-base font-black leading-5 text-[#f8f8f2]">
-                        {item.role}
-                      </p>
-                    </div>
-
-                    <span
-                      class="h-3 w-0 border-x-[7px] border-t-[10px] border-x-transparent border-t-[#f8f8f2]"
-                      aria-hidden="true"
-                    />
-
-                    <div class="mt-4 flex min-h-[13rem] w-[84%] flex-col rounded-md border border-[#6272a4]/25 bg-[#282a36] p-4">
-                      <p class="portfolio-green text-xs font-semibold leading-5">
-                        {item.place}
-                      </p>
-                      <ul class="portfolio-muted mt-4 space-y-2 text-sm leading-5">
-                        {item.bullets.map((bullet) => (
-                          <li class="flex gap-2">
-                            <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#8be9fd]" />
-                            <span>{bullet}</span>
-                          </li>
-                        ))}
-                      </ul>
-                      <p class="portfolio-cyan mt-6 text-xs font-semibold">
-                        {item.company}
-                      </p>
-                    </div>
-                  </article>
-                ))
-              }
-            </div>
-          </div>
-        </section>
-      </div>
-
       <div class="mt-6 rounded-lg border border-[#6272a4]/20 bg-[#21222c] p-6">
         <h3 class="text-xl font-bold text-[#f8f8f2]">Formação acadêmica</h3>
         <div class="mt-6 divide-y divide-[#6272a4]/20">
           {
             education.map((item) => (
-              <article class="grid gap-4 py-6 first:pt-0 last:pb-0 sm:grid-cols-[3rem_1fr]">
-                <img
-                  class="h-12 w-12 rounded-md border border-[#6272a4]/30 bg-[#f8f8f2] object-cover"
-                  src={item.logo}
-                  alt={`Logo ${item.school}`}
-                  width="48"
-                  height="48"
-                  loading="lazy"
-                  decoding="async"
-                />
-                <div class="min-w-0">
-                  <div class="flex flex-wrap items-start justify-between gap-3">
-                    <div>
-                      <p class="text-base font-bold leading-6 text-[#f8f8f2]">
-                        {item.school}
+              <details class="portfolio-education-item group py-5 first:pt-0 last:pb-0">
+                <summary class="grid cursor-pointer list-none gap-4 rounded-md py-1 outline-none transition focus-visible:ring-2 focus-visible:ring-[#ff79c6] focus-visible:ring-offset-2 focus-visible:ring-offset-[#21222c] sm:grid-cols-[3rem_1fr_auto] sm:items-start">
+                  <img
+                    class="h-12 w-12 rounded-md border border-[#6272a4]/30 bg-[#f8f8f2] object-cover"
+                    src={item.logo}
+                    alt={`Logo ${item.school}`}
+                    width="48"
+                    height="48"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <div class="min-w-0">
+                    <p class="text-base font-bold leading-6 text-[#f8f8f2]">
+                      {item.school}
+                    </p>
+                    <p class="portfolio-muted mt-1 text-sm leading-6">
+                      {item.title}, {item.field}
+                    </p>
+                    <p class="portfolio-purple text-sm font-medium">
+                      {item.period}
+                    </p>
+                  </div>
+                  <span
+                    class="portfolio-purple flex h-8 w-8 items-center justify-center rounded-md border border-[#6272a4]/25 transition group-open:rotate-180 sm:mt-1"
+                    aria-hidden="true"
+                  >
+                    <svg
+                      class="h-4 w-4"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                    >
+                      <path
+                        d="m6 9 6 6 6-6"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </span>
+                </summary>
+
+                <div class="grid gap-4 pt-4 sm:grid-cols-[3rem_1fr]">
+                  <div class="hidden sm:block" aria-hidden="true" />
+                  <div class="min-w-0">
+                    <div class="rounded-md border border-[#6272a4]/20 bg-[#282a36]/45 p-4">
+                      <p class="portfolio-muted max-w-4xl text-sm leading-6">
+                        {item.summary}
                       </p>
-                      <p class="portfolio-muted mt-1 text-sm leading-6">
-                        {item.title}, {item.field}
-                      </p>
-                      <p class="portfolio-purple text-sm font-medium">
-                        {item.period}
+                      <p class="portfolio-muted mt-4 text-sm leading-6">
+                        <strong class="font-bold text-[#f8f8f2]">
+                          Competências:
+                        </strong>{' '}
+                        {item.skills.join(', ')}
                       </p>
                     </div>
                   </div>
-                  <p class="portfolio-muted mt-4 max-w-4xl text-sm leading-6">
-                    {item.summary}
-                  </p>
-                  <p class="portfolio-muted mt-4 text-sm leading-6">
-                    <strong class="font-bold text-[#f8f8f2]">
-                      Competências:
-                    </strong>{' '}
-                    {item.skills.join(', ')}
-                  </p>
                 </div>
-              </article>
+              </details>
             ))
           }
         </div>
