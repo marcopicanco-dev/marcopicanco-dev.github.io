@@ -6,6 +6,9 @@ import expressiveCode from 'astro-expressive-code'
 // https://astro.build/config
 export default defineConfig({
   site: 'https://www.marcopicanco.com',
+  build: {
+    inlineStylesheets: 'always',
+  },
   markdown: {
     syntaxHighlight: false,
   },
@@ -15,11 +18,17 @@ export default defineConfig({
         "default-src 'self'",
         "font-src 'self' https://fonts.gstatic.com",
         "img-src 'self' data:",
-        "connect-src 'self'",
+        "connect-src 'self' https://cloudflareinsights.com",
         "object-src 'none'",
         "base-uri 'self'",
         "form-action 'self'",
       ],
+      scriptDirective: {
+        resources: [
+          { resource: "'self'", kind: 'element' },
+          { resource: 'https://static.cloudflareinsights.com', kind: 'element' },
+        ],
+      },
       styleDirective: {
         resources: [
           { resource: "'self'", kind: 'element' },

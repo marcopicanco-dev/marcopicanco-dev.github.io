@@ -69,6 +69,10 @@ function serializeCsp(directives) {
 
 function addDirectiveTokens(policy, extraDirectives) {
   const directives = parseCsp(policy)
+  return addTokensToDirectives(directives, extraDirectives)
+}
+
+function addTokensToDirectives(directives, extraDirectives) {
   const directiveMap = new Map(directives)
 
   for (const [name, tokens] of extraDirectives) {
@@ -80,6 +84,28 @@ function addDirectiveTokens(policy, extraDirectives) {
 
     if (!hasDirective) {
       directives.push([name, nextTokens])
+    }
+  }
+
+  return serializeCsp(
+    directives.map(([name]) => [name, directiveMap.get(name) ?? []]),
+  )
+}
+
+function mergePolicies(policies) {
+  const directives = []
+  const directiveMap = new Map()
+
+  for (const policy of policies) {
+    for (const [name, tokens] of parseCsp(policy)) {
+      const currentTokens = directiveMap.get(name) ?? []
+      const nextTokens = [...new Set([...currentTokens, ...tokens])]
+
+      if (!directiveMap.has(name)) {
+        directives.push([name, nextTokens])
+      }
+
+      directiveMap.set(name, nextTokens)
     }
   }
 
@@ -107,10 +133,4 @@ for (const htmlFile of htmlFiles) {
   policies.set(csp, [...files, htmlFile])
 }
 
-if (policies.size > 1) {
-  console.error('Multiple CSP values were generated. Use a dynamic edge layer.')
-  console.error(JSON.stringify([...policies.values()], null, 2))
-  process.exit(1)
-}
-
-console.log(addDirectiveTokens([...policies.keys()][0], edgeDirectives))
+console.log(addDirectiveTokens(mergePolicies(policies.keys()), edgeDirectives))

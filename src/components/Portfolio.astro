@@ -5,7 +5,8 @@ import { GITHUB_REPO_URL, LINKEDIN_URL } from '@/config'
 const title = 'Portfólio'
 const description =
   'Projetos, estudos e consultoria em desenvolvimento de software, dados e tecnologia.'
-const email = 'marcopicanco@live.com'
+const emailUser = 'marcopicanco'
+const emailDomain = 'live.com'
 const profileImage = '/images/perfil.png'
 
 const stats = [
@@ -740,9 +741,10 @@ const careerRoadmap = [
           </a>
           <a
             class="portfolio-contact-mail inline-flex items-center justify-center rounded-lg px-5 py-3 text-sm font-bold transition focus:outline-none focus:ring-2 focus:ring-[#ff79c6] focus:ring-offset-2 focus:ring-offset-[#21222c]"
-            href={`mailto:${email}`}
-            target="_blank"
-            rel="noopener noreferrer"
+            href="#contato"
+            data-email-link
+            data-email-user={emailUser}
+            data-email-domain={emailDomain}
           >
             E-mail
           </a>
@@ -761,7 +763,10 @@ const careerRoadmap = [
         <div class="flex items-center justify-center gap-3 md:justify-end">
           <a
             class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[#6272a4]/30 bg-[#21222c] text-[#f8f8f2] transition hover:border-[#bd93f9] hover:text-[#bd93f9] focus:outline-none focus:ring-2 focus:ring-[#ff79c6] focus:ring-offset-2 focus:ring-offset-[#282a36]"
-            href={`mailto:${email}`}
+            href="#contato"
+            data-email-link
+            data-email-user={emailUser}
+            data-email-domain={emailDomain}
             aria-label="Enviar email para Marco Picanço"
           >
             <svg
@@ -829,3 +834,24 @@ const careerRoadmap = [
     </footer>
   </main>
 </Base>
+
+<script>
+  const setupEmailLinks = () => {
+    const links = document.querySelectorAll('[data-email-link]')
+
+    links.forEach((link) => {
+      if (!(link instanceof HTMLAnchorElement)) return
+
+      const { emailUser, emailDomain } = link.dataset
+
+      if (!emailUser || !emailDomain) return
+
+      const scheme = ['mai', 'lto:'].join('')
+
+      link.href = `${scheme}${emailUser}@${emailDomain}`
+    })
+  }
+
+  setupEmailLinks()
+  document.addEventListener('astro:after-swap', setupEmailLinks)
+</script>
