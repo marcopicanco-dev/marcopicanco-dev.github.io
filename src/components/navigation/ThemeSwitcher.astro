@@ -49,13 +49,10 @@
 </div>
 
 <script>
-  import {
-    LIGHT_MODE_CODE_BLOCK_THEME,
-    DARK_MODE_CODE_BLOCK_THEME,
-  } from '@/config'
-
   type Theme = 'light' | 'dark'
 
+  const lightModeCodeBlockTheme = 'dracula'
+  const darkModeCodeBlockTheme = 'dracula'
   const themeSwitcherButtonSelector = '.theme-switcher-button'
   const themeSwitcherMenuSelector = '.theme-switcher-menu'
 
@@ -64,10 +61,10 @@
 
     if (theme === 'dark') {
       element.classList.add('dark')
-      element.setAttribute('data-theme', DARK_MODE_CODE_BLOCK_THEME as string)
+      element.setAttribute('data-theme', darkModeCodeBlockTheme)
     } else {
       element.classList.remove('dark')
-      element.setAttribute('data-theme', LIGHT_MODE_CODE_BLOCK_THEME as string)
+      element.setAttribute('data-theme', lightModeCodeBlockTheme)
     }
 
     localStorage.setItem('theme', theme)

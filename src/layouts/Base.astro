@@ -82,10 +82,8 @@ const lang: LanguageKeys = Object.prototype.hasOwnProperty.call(
 </html>
 
 <script>
-  import {
-    LIGHT_MODE_CODE_BLOCK_THEME,
-    DARK_MODE_CODE_BLOCK_THEME,
-  } from '@/config'
+  const lightModeCodeBlockTheme = 'dracula'
+  const darkModeCodeBlockTheme = 'dracula'
 
   function init() {
     document.documentElement.classList.add('scroll-smooth')
@@ -99,13 +97,13 @@ const lang: LanguageKeys = Object.prototype.hasOwnProperty.call(
       document.documentElement.classList.add('dark')
       document.documentElement.setAttribute(
         'data-theme',
-        DARK_MODE_CODE_BLOCK_THEME as string,
+        darkModeCodeBlockTheme,
       )
     } else {
       document.documentElement.classList.remove('dark')
       document.documentElement.setAttribute(
         'data-theme',
-        LIGHT_MODE_CODE_BLOCK_THEME as string,
+        lightModeCodeBlockTheme,
       )
     }
 
