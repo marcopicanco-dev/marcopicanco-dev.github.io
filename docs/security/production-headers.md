@@ -86,6 +86,8 @@ Do not wrap the header value in extra quotes. The value intentionally includes `
 
 If you do not want to allow Cloudflare Web Analytics in CSP, disable Web Analytics/Scrape Shield email obfuscation features that inject scripts at the Cloudflare edge. Otherwise Lighthouse will report blocked `beacon.min.js` requests in the browser console.
 
+The site preconnects to `https://static.cloudflareinsights.com` to reduce the Web Analytics connection cost. Lighthouse can still show `beacon.min.js` and `/cdn-cgi/rum` in the network dependency tree because those requests are injected by Cloudflare, not by the application bundle.
+
 ## Automated Production Check
 
 Run:
