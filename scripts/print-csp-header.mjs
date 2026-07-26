@@ -2,6 +2,11 @@ import { readdir, readFile } from 'node:fs/promises'
 import path from 'node:path'
 
 const target = process.argv[2] ?? 'dist'
+const edgeDirectives = [
+  ['connect-src', ['https://cloudflareinsights.com']],
+  ['script-src', ['https://static.cloudflareinsights.com']],
+  ['frame-ancestors', ["'self'"]],
+]
 
 async function collectHtmlFiles(targetPath) {
   const entries = await readdir(targetPath, { withFileTypes: true })
@@ -44,6 +49,45 @@ function extractCsp(html, htmlFile) {
   return decodeHtmlAttribute(match[2])
 }
 
+function parseCsp(policy) {
+  return policy
+    .split(';')
+    .map((directive) => directive.trim())
+    .filter(Boolean)
+    .map((directive) => {
+      const [name, ...tokens] = directive.split(/\s+/)
+
+      return [name.toLowerCase(), tokens]
+    })
+}
+
+function serializeCsp(directives) {
+  return directives
+    .map(([name, tokens]) => `${name} ${tokens.join(' ')}`.trim())
+    .join('; ')
+}
+
+function addDirectiveTokens(policy, extraDirectives) {
+  const directives = parseCsp(policy)
+  const directiveMap = new Map(directives)
+
+  for (const [name, tokens] of extraDirectives) {
+    const currentTokens = directiveMap.get(name) ?? []
+    const nextTokens = [...new Set([...currentTokens, ...tokens])]
+    const hasDirective = directiveMap.has(name)
+
+    directiveMap.set(name, nextTokens)
+
+    if (!hasDirective) {
+      directives.push([name, nextTokens])
+    }
+  }
+
+  return serializeCsp(
+    directives.map(([name]) => [name, directiveMap.get(name) ?? []]),
+  )
+}
+
 const htmlFiles = target.endsWith('.html')
   ? [target]
   : await collectHtmlFiles(target)
@@ -69,4 +113,4 @@ if (policies.size > 1) {
   process.exit(1)
 }
 
-console.log([...policies.keys()][0])
+console.log(addDirectiveTokens([...policies.keys()][0], edgeDirectives))
