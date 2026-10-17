@@ -1,70 +1,52 @@
 ---
 import Base from '@/layouts/Base.astro'
-import { DEFAULT_LANGUAGE_CODE, PROJECT_NAME, SITE } from '@/config'
-import '@/styling/blog-fonts.css'
 import {
-  formatBlogDate,
   getBlogSearchRecords,
   getBlogPosts,
   getBlogPostUrl,
   sortBlogPostsByDateDesc,
+  formatBlogDate,
 } from '@/utils/blog'
 import BlogArchive from '@/components/BlogArchive'
 import Search from '@/components/navigation/Search.astro'
-import { LANGUAGES, type LanguageKeys } from '@/i18n/ui'
 
-const sortedPosts = sortBlogPostsByDateDesc(getBlogPosts())
-const archivePosts = sortedPosts.map((post) => ({
+const archivePosts = sortBlogPostsByDateDesc(getBlogPosts()).map((post) => ({
   title: post.frontmatter.title,
   description: post.frontmatter.description,
   date: post.frontmatter.date,
   formattedDate: formatBlogDate(post.frontmatter.date),
   url: getBlogPostUrl(post.frontmatter),
 }))
-const searchItems = getBlogSearchRecords()
-const langFromURL = Astro.url.pathname.split('/')[1] || DEFAULT_LANGUAGE_CODE
-const lang: LanguageKeys = Object.prototype.hasOwnProperty.call(
-  LANGUAGES,
-  langFromURL,
-)
-  ? (langFromURL as LanguageKeys)
-  : DEFAULT_LANGUAGE_CODE
 ---
 
 <Base
   frontmatter={{
-    title: `${PROJECT_NAME} Blog`,
-    description: SITE.description,
+    title: 'Blog',
+    description:
+      'Notas sobre programação, segurança, matemática e tecnologia. Experimentos, decisões de engenharia e aprendizados de Marco Picanço.',
     file: '',
   }}
 >
-  <main class="blog-fonts mx-auto max-w-6xl px-5 py-20">
-    <section class="mb-16 text-center">
-      <span
-        class="blog-ui text-sm uppercase tracking-[0.4em] text-lightModeText/60 dark:text-darkModeText/60"
-        >Blog</span
-      >
-      <h1
-        class="mt-4 text-5xl font-bold text-lightModeText dark:text-darkModeText"
-      >
-        Os números governam o mundo.
-      </h1>
-      <p
-        class="mx-auto mt-6 max-w-3xl text-lg leading-8 text-lightModeText/80 dark:text-darkModeText/80"
-      >
-        Pitágoras
-      </p>
-      <p
-        class="mx-auto mt-6 max-w-3xl text-lg leading-8 text-lightModeText/80 dark:text-darkModeText/80"
-      >
-        🌎 💻
-      </p>
-    </section>
-
-    <section class="mx-auto mb-10 max-w-2xl">
-      <Search items={searchItems} lang={lang} />
-    </section>
-
+  <main class="site-container blog-page">
+    <header class="axis-layout blog-heading">
+      <div class="axis">
+        <span class="mono">MP /</span><span class="side-label"
+          >Caderno aberto</span
+        >
+      </div>
+      <div class="axis-content">
+        <p class="eyebrow">Programação, matemática e tecnologia</p><h1
+          class="page-title"
+        >
+          Ideias em código.<br /><span>Aprendizados em palavras.</span>
+        </h1><div class="blog-heading-bottom">
+          <p>
+            Um registro do que estudo, construo e descubro pelo caminho. Com
+            problemas reais e decisões explicadas.
+          </p><Search items={getBlogSearchRecords()} lang="pt" />
+        </div>
+      </div>
+    </header>
     <BlogArchive posts={archivePosts} client:load />
   </main>
 </Base>

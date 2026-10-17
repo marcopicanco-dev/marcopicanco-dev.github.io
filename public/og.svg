@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#f7f4ee" />
+  <path d="M88 48v534M132 495h1004" stroke="#d8d5cb" />
+  <path d="M32 78V50l14 14 14-14v28" fill="none" stroke="#b63825" stroke-width="3" />
+  <g font-family="Helvetica, Arial, sans-serif" fill="#252b2a">
+    <text x="132" y="78" font-size="24" font-weight="700" letter-spacing="-1">Marco Picanço<tspan fill="#b63825">.</tspan></text>
+    <g font-size="86" font-weight="700" letter-spacing="-5">
+      <text x="132" y="225">Boas ideias</text>
+      <text x="132" y="317">merecem software</text>
+      <text x="132" y="409" fill="#b63825">bem construído.</text>
+    </g>
+    <text x="132" y="544" font-size="17" fill="#596158">Sites, sistemas e aplicações web.</text>
+    <text x="1136" y="544" text-anchor="end" font-size="17">marcopicanco.com</text>
+  </g>
+  <g fill="#b63825">
+    <path d="M1056 48h40v40h-40zM1136 88a40 40 0 0 1-40 40V88h40Z" />
+    <path d="M1096 48a40 40 0 0 1 40 40h-40V48Z" fill="none" stroke="#b63825" />
+  </g>
+</svg>

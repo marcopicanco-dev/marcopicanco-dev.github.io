@@ -2,12 +2,28 @@ import { defineConfig } from 'astro/config'
 import mdx from '@astrojs/mdx'
 import react from '@astrojs/react'
 import expressiveCode from 'astro-expressive-code'
+import { unified } from '@astrojs/markdown-remark'
+
+// Keep wide article tables reachable for keyboard scrolling, even without JS.
+function focusableTables() {
+  return (tree) => {
+    const visit = (node) => {
+      if (node.type === 'element' && node.tagName === 'table') {
+        node.properties ??= {}
+        node.properties.tabIndex = 0
+      }
+      node.children?.forEach(visit)
+    }
+    visit(tree)
+  }
+}
 
 // https://astro.build/config
 export default defineConfig({
   site: 'https://www.marcopicanco.com',
   markdown: {
     syntaxHighlight: false,
+    processor: unified({ rehypePlugins: [focusableTables] }),
   },
   security: {
     csp: {
@@ -23,7 +39,10 @@ export default defineConfig({
       scriptDirective: {
         resources: [
           { resource: "'self'", kind: 'element' },
-          { resource: 'https://static.cloudflareinsights.com', kind: 'element' },
+          {
+            resource: 'https://static.cloudflareinsights.com',
+            kind: 'element',
+          },
         ],
       },
       styleDirective: {
@@ -38,6 +57,20 @@ export default defineConfig({
   integrations: [
     expressiveCode({
       themes: ['dracula', 'github-dark', 'github-light'],
+      plugins: [
+        {
+          name: 'Keyboard-accessible code blocks',
+          hooks: {
+            postprocessRenderedBlock: ({ renderData }) => {
+              const visit = (node) => {
+                if (node.tagName === 'pre') node.properties.tabIndex = 0
+                node.children?.forEach(visit)
+              }
+              visit(renderData.blockAst)
+            },
+          },
+        },
+      ],
       styleOverrides: {
         frames: {
           editorActiveTabIndicatorTopColor: 'transparent',
