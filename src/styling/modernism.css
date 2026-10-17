@@ -45,10 +45,6 @@ a,
 button {
   -webkit-tap-highlight-color: transparent;
 }
-button,
-input {
-  font: inherit;
-}
 button {
   cursor: pointer;
 }
@@ -64,12 +60,19 @@ img {
 svg {
   flex-shrink: 0;
 }
-h1,
-h2,
-h3,
-p,
-figure {
-  margin: 0;
+@layer base {
+  button,
+  input {
+    font: inherit;
+  }
+
+  h1,
+  h2,
+  h3,
+  p,
+  figure {
+    margin: 0;
+  }
 }
 a {
   text-decoration-thickness: 1px;
