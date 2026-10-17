@@ -19,12 +19,14 @@ const imageAlt = SITE.title
 const imageUrl = canonicalUrl.origin + '/' + OG_IMAGE
 
 const ogType = type ?? 'article'
+const description = frontmatter?.description ?? SITE.description
 ---
 
 <!-- Page Metadata -->
 <title>{formattedContentTitle}</title>
 <link rel="canonical" href={canonicalUrl} />
-<meta name="description" property="og:description" content={SITE.description} />
+<meta name="description" content={description} />
+<meta property="og:description" content={description} />
 
 <!-- OpenGraph Tags -->
 <meta property="og:title" content={formattedContentTitle} />
@@ -39,6 +41,6 @@ const ogType = type ?? 'article'
 <meta name="twitter:card" content="summary_large_image" />
 {TWITTER_USERNAME && <meta name="twitter:site" content={TWITTER_USERNAME} />}
 <meta name="twitter:title" content={formattedContentTitle} />
-<meta name="twitter:description" content={SITE.description} />
+<meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={imageUrl} />
 <meta name="twitter:image:alt" content={imageAlt} />

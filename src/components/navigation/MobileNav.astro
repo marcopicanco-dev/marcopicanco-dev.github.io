@@ -1,144 +1,91 @@
 ---
-import Search from '@/components/navigation/Search.astro'
-import { type SearchRecord } from '@/types'
-import { LANGUAGES, type LanguageKeys } from '@/i18n/ui'
-import { DEFAULT_LANGUAGE_CODE } from '@/config'
-import { getSearchRecords } from '@/utils/blog'
-
-const langFromURL = Astro.url.pathname.split('/')[1] || DEFAULT_LANGUAGE_CODE
-const lang: LanguageKeys = Object.prototype.hasOwnProperty.call(
-  LANGUAGES,
-  langFromURL,
-)
-  ? (langFromURL as LanguageKeys)
-  : DEFAULT_LANGUAGE_CODE
-
-const getPosts = async () => {
-  return getSearchRecords()
-}
-
-const posts = await getPosts()
-const searchItems: SearchRecord[] = posts.map(
-  ({ title, description, url }) => ({
-    title,
-    description,
-    url,
-  }),
-)
-
-const isPortfolioPage = Astro.url.pathname.replace(/\/$/, '') === '/portfolio'
-const portfolioSectionHref = (sectionId: string) =>
-  isPortfolioPage ? `#${sectionId}` : `/portfolio/#${sectionId}`
-
-const navLinks = [
-  { label: 'Home', href: portfolioSectionHref('inicio') },
-  { label: 'Blog', href: '/blog/' },
-  { label: 'Projetos', href: portfolioSectionHref('projetos') },
-  { label: 'Consultoria', href: portfolioSectionHref('consultoria') },
-  { label: 'Sobre', href: portfolioSectionHref('sobre') },
-  { label: 'Contato', href: portfolioSectionHref('contato') },
-]
+const { links } = Astro.props as { links: { label: string; href: string }[] }
 ---
 
 <button
-  data-active="false"
   id="hamburger-btn"
-  class="ml-6 hidden w800:inline"
+  class="menu-toggle"
+  type="button"
   aria-label="Abrir menu de navegação"
   aria-expanded="false"
   aria-controls="mobile-hamburger"
 >
   <svg
-    class="h-6 w-6"
-    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
     viewBox="0 0 24 24"
     fill="none"
-    id="hamburger"
+    aria-hidden="true"
   >
-    <path
-      d="M20 7L4 7"
-      class="stroke-lightModeIcon/80 dark:stroke-darkModeIcon/80"
-      stroke-width="1.5"
-      stroke-linecap="round"></path>
-    <path
-      d="M20 12L4 12"
-      class="stroke-lightModeIcon/80 dark:stroke-darkModeIcon/80"
-      stroke-width="1.5"
-      stroke-linecap="round"></path>
-    <path
-      d="M20 17L4 17"
-      class="stroke-lightModeIcon/80 dark:stroke-darkModeIcon/80"
-      stroke-width="1.5"
-      stroke-linecap="round"></path>
-  </svg>
-
-  <svg
-    class="hidden h-6 w-6"
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="-0.5 0 25 25"
-    fill="none"
-    id="close"
-  >
-    <path
-      d="M3 21.32L21 3.32001"
-      class="stroke-lightModeIcon/80 dark:stroke-darkModeIcon/80"
-      stroke-width="1.5"
-      stroke-linecap="round"
-      stroke-linejoin="round"></path>
-    <path
-      d="M3 3.32001L21 21.32"
-      class="stroke-lightModeIcon/80 dark:stroke-darkModeIcon/80"
-      stroke-width="1.5"
-      stroke-linecap="round"
-      stroke-linejoin="round"></path>
+    <path d="M3 8h18M3 16h18" stroke="currentColor" stroke-width="1.5"></path>
   </svg>
 </button>
-
-<div
+<dialog
   id="mobile-hamburger"
-  class="fixed left-0 top-20 z-50 hidden h-[calc(100dvh-80px)] w-full bg-lightDraculaBg bg-opacity-95 py-8 transition-colors duration-[inherit] dark:bg-darkModeBg"
+  class="mobile-menu"
+  aria-label="Menu de navegação"
 >
-  <div class="w-full px-8 w500:px-5">
-    <nav class="mb-8 grid gap-4 text-xl font-semibold" aria-label="Menu mobile">
-      {
-        navLinks.map((link) => (
-          <a
-            class="text-lightModeText hover:opacity-70 dark:text-darkModeText"
-            href={link.href}
-          >
-            {link.label}
-          </a>
-        ))
-      }
-    </nav>
-    <div class="w-full">
-      <Search items={searchItems} lang={lang} />
-    </div>
+  <div class="mobile-menu-top">
+    <span class="eyebrow">Navegação</span>
+    <button
+      class="icon-button"
+      data-menu-close
+      type="button"
+      aria-label="Fechar menu de navegação">✕</button
+    >
   </div>
-</div>
-
+  <nav aria-label="Navegação móvel">
+    {
+      links.map((link, index) => (
+        <a href={link.href}>
+          <span class="mono">0{index + 1}</span>
+          {link.label}
+          <span aria-hidden="true">↗</span>
+        </a>
+      ))
+    }
+    <a href="/blog/"
+      ><span class="mono">05</span>Blog<span aria-hidden="true">↗</span></a
+    >
+  </nav>
+  <p class="mobile-menu-note">
+    Desenvolvimento web.<br />Do problema à solução.
+  </p>
+</dialog>
 <script>
-  const init = () => {
-    const btn = document.querySelector('#hamburger-btn')
-    const mobileHamburger = document.querySelector('#mobile-hamburger')
-
-    const hamburgerIcon = document.querySelector('#hamburger-btn svg#hamburger')
-    const closeIcon = document.querySelector('#hamburger-btn svg#close')
-
-    btn!.addEventListener('click', () => {
-      const isActive = btn?.getAttribute('data-active') === 'true'
-
-      btn?.setAttribute('data-active', isActive ? 'false' : 'true')
-      btn?.setAttribute('aria-expanded', isActive ? 'false' : 'true')
-
-      document.body.style.overflow = isActive ? 'unset' : 'hidden'
-
-      mobileHamburger?.classList.toggle('hidden')
-      hamburgerIcon?.classList.toggle('hidden')
-      closeIcon?.classList.toggle('hidden')
+  const button = document.querySelector<HTMLButtonElement>('#hamburger-btn')
+  const dialog = document.querySelector<HTMLDialogElement>('#mobile-hamburger')
+  if (button && dialog) {
+    const close = () => dialog.close()
+    button.addEventListener('click', () => {
+      dialog.showModal()
+      button.setAttribute('aria-expanded', 'true')
+      document.body.style.overflow = 'hidden'
     })
+    dialog.querySelector('[data-menu-close]')?.addEventListener('click', close)
+    dialog
+      .querySelectorAll('a')
+      .forEach((link) => link.addEventListener('click', close))
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) {
+        const bounds = dialog.getBoundingClientRect()
+        if (
+          event.clientX < bounds.left ||
+          event.clientX > bounds.right ||
+          event.clientY < bounds.top ||
+          event.clientY > bounds.bottom
+        )
+          close()
+      }
+    })
+    dialog.addEventListener('close', () => {
+      button.setAttribute('aria-expanded', 'false')
+      document.body.style.overflow = ''
+    })
+    window
+      .matchMedia('(min-width: 901px)')
+      .addEventListener('change', (event) => {
+        if (event.matches && dialog.open) close()
+      })
   }
-
-  init()
-  document.addEventListener('astro:after-swap', init)
 </script>

@@ -1,0 +1,25 @@
+---
+import { CONTACT_EMAIL, GITHUB_REPO_URL, LINKEDIN_URL } from '@/config'
+---
+
+<footer class="site-footer">
+  <div class="site-container footer-grid">
+    <a class="footer-brand" href="/"
+      >Marco Picanço<span class="brand-dot">.</span></a
+    >
+    <p>Software bem construído.<br />Relações bem cuidadas.</p>
+    <nav aria-label="Links do rodapé">
+      <a href="/blog/">Blog</a>
+      <a href={GITHUB_REPO_URL} target="_blank" rel="noopener noreferrer"
+        >GitHub ↗</a
+      >
+      <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer"
+        >LinkedIn ↗</a
+      >
+      <a href={`mailto:${CONTACT_EMAIL}`}>E-mail ↗</a>
+    </nav>
+    <span class="footer-copyright"
+      >© {new Date().getFullYear()} Marco Picanço</span
+    >
+  </div>
+</footer>

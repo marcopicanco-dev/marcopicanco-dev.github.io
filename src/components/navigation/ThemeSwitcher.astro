@@ -1,7 +1,7 @@
 <div class="theme-switcher relative z-20" transition:persist>
   <button
     type="button"
-    class="theme-switcher-button inline-flex h-10 w-10 items-center justify-center rounded-base border border-draculaBorder/40 bg-draculaPanel/95 text-draculaText transition hover:border-draculaAccent hover:text-draculaAccent"
+    class="theme-switcher-button icon-button"
     aria-label="Alterar tema"
     aria-expanded="false"
   >
@@ -27,20 +27,22 @@
   </button>
 
   <div
-    class="theme-switcher-menu invisible absolute right-0 top-12 min-w-32 rounded-base border border-draculaBorder/40 bg-draculaPanel/95 py-1 opacity-0 shadow-lg transition-all"
+    class="theme-switcher-menu invisible absolute right-0 top-12 min-w-32 border py-1 opacity-0"
   >
     <button
       type="button"
-      class="theme-option flex w-full items-center justify-between px-4 py-2 text-left text-sm text-draculaText transition hover:bg-darkModeBgHover hover:text-draculaAccent"
+      class="theme-option flex w-full items-center justify-between px-4 py-3 text-left text-sm"
       data-theme-value="light"
+      aria-pressed="false"
     >
       <span>Claro</span>
       <span class="theme-check hidden">✓</span>
     </button>
     <button
       type="button"
-      class="theme-option flex w-full items-center justify-between px-4 py-2 text-left text-sm text-draculaText transition hover:bg-darkModeBgHover hover:text-draculaAccent"
+      class="theme-option flex w-full items-center justify-between px-4 py-3 text-left text-sm"
       data-theme-value="dark"
+      aria-pressed="false"
     >
       <span>Escuro</span>
       <span class="theme-check hidden">✓</span>

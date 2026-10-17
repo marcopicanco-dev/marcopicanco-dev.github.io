@@ -1,27 +1,20 @@
 ---
 import HeadSeo from '@/components/HeadSeo.astro'
 import Nav from '@/components/navigation/Nav.astro'
+import Footer from '@/components/Footer.astro'
 import { DEFAULT_LANGUAGE_CODE } from '@/config'
 import { type LanguageKeys, LANGUAGES } from '@/i18n/ui'
 import { type Frontmatter } from '@/types'
-
-import karla400Url from '@fontsource/karla/files/karla-latin-400-normal.woff2?url'
-import karla500Url from '@fontsource/karla/files/karla-latin-500-normal.woff2?url'
-import karla700Url from '@fontsource/karla/files/karla-latin-700-normal.woff2?url'
-import '@fontsource/karla/latin-400.css'
-import '@fontsource/karla/latin-500.css'
-import '@fontsource/karla/latin-700.css'
-
-// custom styling
+import interUrl from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url'
 import '@/styling/tailwind.css'
 import '@/styling/scrollbar.css'
 import '@/styling/code.css'
-import '@/styling/portfolio.css'
+import '@/styling/modernism.css'
 
-const { frontmatter } = Astro.props as {
+const { frontmatter, type = 'website' } = Astro.props as {
   frontmatter?: Frontmatter
+  type?: string
 }
-
 const langFromURL = Astro.url.pathname.split('/')[1] || DEFAULT_LANGUAGE_CODE
 const lang: LanguageKeys = Object.prototype.hasOwnProperty.call(
   LANGUAGES,
@@ -32,8 +25,13 @@ const lang: LanguageKeys = Object.prototype.hasOwnProperty.call(
 ---
 
 <style is:global>
-  body {
-    font-family: 'Karla', sans-serif;
+  @font-face {
+    font-family: 'Inter Variable';
+    font-style: normal;
+    font-display: swap;
+    font-weight: 100 900;
+    src: url('@fontsource-variable/inter/files/inter-latin-wght-normal.woff2')
+      format('woff2');
   }
 </style>
 
@@ -44,43 +42,21 @@ const lang: LanguageKeys = Object.prototype.hasOwnProperty.call(
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
-    <link rel="preconnect" href="https://static.cloudflareinsights.com" />
-    <link rel="dns-prefetch" href="https://static.cloudflareinsights.com" />
     <link
       rel="preload"
-      href={karla400Url}
+      href={interUrl}
       as="font"
       type="font/woff2"
       crossorigin
     />
-    <link
-      rel="preload"
-      href={karla500Url}
-      as="font"
-      type="font/woff2"
-      crossorigin
-    />
-    <link
-      rel="preload"
-      href={karla700Url}
-      as="font"
-      type="font/woff2"
-      crossorigin
-    />
-    <HeadSeo type="website" frontmatter={frontmatter} />
-    <script is:inline defer src="/scripts/site.js"></script>
+    <HeadSeo type={type} frontmatter={frontmatter} />
+    <script is:inline src="/scripts/site.js"></script>
     <script is:inline defer src="/scripts/theme-switcher.js"></script>
   </head>
-  <body
-    class="bg-lightModeBg text-lightModeText selection:bg-draculaAccent/30 selection:text-draculaBg dark:bg-darkModeBg dark:text-darkModeText"
-  >
+  <body>
+    <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
     <Nav />
-    <div
-      class="fixed left-0 top-0 z-[-2] h-screen w-full bg-lightModeBg bg-[radial-gradient(circle_at_top_right,_rgba(189,147,249,0.2),_transparent_25%),radial-gradient(circle_at_bottom_left,_rgba(139,233,253,0.12),_transparent_30%)] transition-colors duration-[inherit] dark:bg-darkModeBg dark:bg-[radial-gradient(circle_at_top_right,_rgba(189,147,249,0.15),_transparent_25%),radial-gradient(circle_at_bottom_left,_rgba(139,233,253,0.08),_transparent_30%)]"
-    >
-    </div>
-    <div class="pt-20">
-      <slot />
-    </div>
+    <div id="conteudo" tabindex="-1"><slot /></div>
+    <Footer />
   </body>
 </html>

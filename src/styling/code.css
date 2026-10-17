@@ -1,18 +1,12 @@
-#markdown code:not(pre)::before,
-#markdown code:not(pre)::after {
+#markdown code:not(pre code)::before,
+#markdown code:not(pre code)::after {
   content: '';
 }
-
-html.dark #markdown code:not(pre code) {
-  border: 1px solid rgba(189, 147, 249, 0.25);
-  background: rgba(79, 84, 129, 0.22);
-  padding: 2px 8px;
-  border-radius: 0.65rem;
-}
-
-html #markdown code:not(pre code) {
-  border: 1px solid rgba(0, 0, 0, 0.18);
-  background: rgba(255, 255, 255, 0.08);
-  padding: 2px 8px;
-  border-radius: 0.65rem;
+#markdown code:not(pre code) {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  padding: 2px 5px;
+  border-radius: 2px;
+  font-size: 0.85em;
 }

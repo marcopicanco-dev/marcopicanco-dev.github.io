@@ -14,15 +14,15 @@ function applyTheme(theme) {
     element.setAttribute('data-theme', 'dracula')
   }
 
-  localStorage.setItem('theme', theme)
+  try {
+    localStorage.setItem('theme', theme)
+  } catch {
+    // Changing the theme also works without browser storage.
+  }
   updateThemeChecks(theme)
 }
 
 function getCurrentTheme() {
-  if (localStorage.theme === 'dark' || localStorage.theme === 'light') {
-    return localStorage.theme
-  }
-
   return document.documentElement.classList.contains('dark') ? 'dark' : 'light'
 }
 
@@ -33,6 +33,7 @@ function updateThemeChecks(theme) {
     const isSelected = option.dataset.themeValue === theme
     const check = option.querySelector('.theme-check')
 
+    option.setAttribute('aria-pressed', String(isSelected))
     check?.classList.toggle('hidden', !isSelected)
   })
 }
@@ -84,6 +85,7 @@ function setupThemeSwitcher() {
         if (theme === 'light' || theme === 'dark') {
           applyTheme(theme)
           closeThemeMenus()
+          button?.focus()
         }
       })
     })
@@ -92,4 +94,12 @@ function setupThemeSwitcher() {
 
 setupThemeSwitcher()
 document.addEventListener('click', closeThemeMenus)
+document.addEventListener('keydown', (event) => {
+  if (event.key !== 'Escape') return
+  const expanded = document.querySelector(
+    '.theme-switcher-button[aria-expanded="true"]',
+  )
+  closeThemeMenus()
+  expanded?.focus()
+})
 document.addEventListener('astro:after-swap', setupThemeSwitcher)
