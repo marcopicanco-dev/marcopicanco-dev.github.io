@@ -1,11 +1,38 @@
 # Marco Picanço — site e blog
 
+## Tecnologias usadas no projeto
 
-**Identidade visual: Modernismo .**
+O site é gerado estaticamente com Astro, com artigos em MDX e componentes React
+para a interatividade do arquivo do blog. As tecnologias e ferramentas usadas são:
+
+| Tecnologia                             | Uso no projeto                                                                                  |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| **Astro 7**                            | Estrutura de páginas, layouts, rotas e geração do site estático.                                |
+| **React 18**                           | Componente interativo do arquivo do blog, com filtros de artigos por mês.                       |
+| **TypeScript 6**                       | Tipagem de componentes, dados e scripts, com verificação antes do build.                        |
+| **Tailwind CSS 4 e CSS personalizado** | Classes utilitárias e implementação da identidade modernista, dos temas e do layout responsivo. |
+| **MDX**                                | Escrita dos artigos em Markdown com suporte a componentes.                                      |
+| **Astro Expressive Code**              | Renderização dos blocos de código com destaque de sintaxe e controles de cópia.                 |
+| **Vite 8**                             | Servidor de desenvolvimento e processamento dos arquivos usados no build.                       |
+| **Inter Variable / Fontsource**        | Fonte variável hospedada localmente, usada na interface e na leitura dos artigos.               |
+| **Node.js e npm**                      | Execução das ferramentas, gerenciamento de dependências e scripts de desenvolvimento.           |
+| **ESLint e Prettier**                  | Análise estática e padronização da formatação do código.                                        |
+| **axe-core CLI**                       | Verificações automatizadas de acessibilidade no navegador.                                      |
+| **Node.js Test Runner e npm audit**    | Testes das regras de segurança e auditoria das dependências de produção.                        |
+| **GitHub Actions**                     | Automação de lint, verificações de segurança, build e publicação.                               |
+| **GitHub Pages**                       | Hospedagem dos arquivos estáticos gerados pelo Astro.                                           |
+| **Cloudflare**                         | Camada de entrega e segurança do domínio, incluindo cabeçalhos HTTP e CSP.                      |
+
+As dependências e versões declaradas estão em [`package.json`](package.json);
+as versões resolvidas ficam registradas em [`package-lock.json`](package-lock.json).
+As integrações e regras de build são configuradas em
+[`astro.config.mjs`](astro.config.mjs).
+
+## Identidade visual
 
 ![Página inicial no tema claro: tipografia forte, eixo lateral, fundo marfim e destaque vermelho terroso](docs/design/site-claro.png)
 
-## Por que Modernismo?
+## O motivo da escolha
 
 A direção escolhida apresenta uma marca pessoal gráfica, direta e organizada.
 O objetivo é ajudar quem chega ao site a entender o quê pode contratar, conhecer
@@ -187,6 +214,7 @@ Ao alterar uma cor, revise o par de texto e fundo nos dois temas e atualize as
 amostras e os valores desta documentação. A
 [prancha em SVG](docs/design/paletas-modernismo.svg) está disponível como fonte
 vetorial; o README usa a exportação em PNG para facilitar a visualização.
+
 
 ## Desenvolvimento
 

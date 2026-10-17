@@ -24,6 +24,11 @@ export default defineConfig({
   site: 'https://www.marcopicanco.com',
   vite: {
     plugins: [tailwindcss()],
+    // Serve small bundles from 'self' too: stale edge CSP hashes must not block
+    // navigation or search after a deployment changes the generated JavaScript.
+    build: {
+      assetsInlineLimit: 0,
+    },
   },
   markdown: {
     syntaxHighlight: false,
