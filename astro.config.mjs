@@ -3,6 +3,7 @@ import mdx from '@astrojs/mdx'
 import react from '@astrojs/react'
 import expressiveCode from 'astro-expressive-code'
 import { unified } from '@astrojs/markdown-remark'
+import tailwindcss from '@tailwindcss/vite'
 
 // Keep wide article tables reachable for keyboard scrolling, even without JS.
 function focusableTables() {
@@ -21,6 +22,9 @@ function focusableTables() {
 // https://astro.build/config
 export default defineConfig({
   site: 'https://www.marcopicanco.com',
+  vite: {
+    plugins: [tailwindcss()],
+  },
   markdown: {
     syntaxHighlight: false,
     processor: unified({ rehypePlugins: [focusableTables] }),
