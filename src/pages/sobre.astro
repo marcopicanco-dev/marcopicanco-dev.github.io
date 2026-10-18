@@ -1,6 +1,8 @@
 ---
 import Base from '@/layouts/Base.astro'
+import { Image } from 'astro:assets'
 import { CONTACT_EMAIL, GITHUB_REPO_URL, LINKEDIN_URL } from '@/config'
+import profilePhoto from '@/assets/profile/perfil-linkedin.png'
 const education = [
   {
     school: 'PUC Minas',
@@ -75,11 +77,13 @@ const education = [
         </div>
         <div class="about-grid">
           <figure class="portrait">
-            <img
-              src="/images/perfil.webp"
+            <Image
+              src={profilePhoto}
               alt="Marco Picanço"
-              width="640"
-              height="800"
+              width={640}
+              widths={[320, 640]}
+              sizes="(max-width: 600px) 76vw, 320px"
+              format="webp"
               decoding="async"
             /><figcaption class="mono">Desenvolvedor Full Stack</figcaption>
           </figure><div class="about-copy">

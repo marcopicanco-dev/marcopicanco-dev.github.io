@@ -1,6 +1,9 @@
 ---
 import Base from '@/layouts/Base.astro'
+import { Image } from 'astro:assets'
 import { CONTACT_EMAIL, GITHUB_REPO_URL, LINKEDIN_URL } from '@/config'
+import hexaAlertsScreenshot from '@/assets/projects/hexa-alerts-dashboard.png'
+import profilePhoto from '@/assets/profile/perfil-linkedin.png'
 import {
   formatBlogDate,
   getBlogPosts,
@@ -9,11 +12,29 @@ import {
 } from '@/utils/blog'
 
 const posts = sortBlogPostsByDateDesc(getBlogPosts())
-const securityPost = posts.find(
-  (post) =>
-    post.frontmatter.title ===
-    'Corrigindo headers de segurança em um site estático no GitHub Pages com Cloudflare',
-)
+const hexaAlertsUrl = `${GITHUB_REPO_URL}/hexa_alerts`
+const projectChallenges = [
+  {
+    title: 'Webhooks sem duplicação',
+    description:
+      'Receber o mesmo evento mais de uma vez sem registrar outro lance ou somar o mesmo gol novamente. Identificadores únicos, índice no banco e bloqueio da partida protegem o processamento concorrente.',
+  },
+  {
+    title: 'Uma partida, vários provedores',
+    description:
+      'Conciliar IDs e horários diferentes usando as equipes, uma janela de horário e referências externas alternativas. Eventos e assinaturas ficam vinculados à mesma partida.',
+  },
+  {
+    title: 'Filas sem travar o painel',
+    description:
+      'Responder ao webhook rapidamente e processar os eventos no Sidekiq, com Redis nas filas. Os dados ficam no PostgreSQL, e o Hotwire atualiza o navegador após a persistência.',
+  },
+  {
+    title: 'Sincronização sem perder dados',
+    description:
+      'Manter a aplicação demonstrável quando uma API fica indisponível, usando um acervo local. A importação protege os placares e estados mais recentes ao combinar dados de fontes diferentes.',
+  },
+]
 const selectedPosts = posts
   .filter((post) => !post.frontmatter.title.includes(' - Parte '))
   .slice(0, 3)
@@ -201,59 +222,81 @@ const process = [
           <article class="project-case">
             <a
               class="project-preview"
-              href={securityPost
-                ? getBlogPostUrl(securityPost.frontmatter)
-                : '/blog/'}
-              aria-label="Ler o estudo sobre segurança deste site"
+              href={hexaAlertsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Ver o projeto HexaAlerts no GitHub"
               ><div class="project-preview-bar">
-                <span class="mono">marcopicanco.com</span><span
+                <span class="mono">HexaAlerts / Ruby on Rails</span><span
                   aria-hidden="true">↗</span
                 >
-              </div><img
-                src="/images/projeto-site.webp"
-                alt="Página inicial deste site, com tipografia forte, serviços numerados e identidade modernista"
-                width="1200"
-                height="900"
+              </div><Image
+                src={hexaAlertsScreenshot}
+                alt="Painel do HexaAlerts com resultados da Copa, rankings e acesso às partidas"
+                width={1200}
+                widths={[480, 800, 1200]}
+                sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 900px) 560px, 600px"
+                format="webp"
                 loading="lazy"
                 decoding="async"
               /></a
             >
             <div class="project-info">
-              <p class="eyebrow">Projeto autoral / Site e blog</p><h3>
-                Este site.<br />Da interface à infraestrutura.
+              <p class="eyebrow">Projeto autoral / Aplicação web</p><h3>
+                HexaAlerts.<br />A Copa, lance a lance.
               </h3><p>
-                Um espaço próprio para apresentar meu trabalho e compartilhar
-                conhecimento, com código aberto e decisões documentadas.
+                A ideia surgiu para não perder nenhum lance da Copa do Mundo e
+                aproveitar o projeto para praticar conceitos importantes de
+                programação: Redis, Sidekiq, webhooks e integração entre
+                provedores de dados.
               </p><dl class="project-facts">
                 <div>
-                  <dt>O desafio</dt><dd>
-                    Publicar conteúdo e cuidar da segurança em uma hospedagem
-                    estática.
+                  <dt>A proposta</dt><dd>
+                    Reunir partidas, placares e lances em um painel, com alertas
+                    conforme as preferências de cada torcedor.
                   </dd>
                 </div><div>
-                  <dt>Minha atuação</dt><dd>
-                    Desenvolvimento com Astro, configuração de segurança e
-                    validações automatizadas.
+                  <dt>Tecnologias</dt><dd>
+                    Ruby on Rails · PostgreSQL · Redis · Sidekiq · Hotwire
                   </dd>
                 </div><div>
                   <dt>A entrega</dt><dd>
-                    Site estático, blog em MDX e verificações de segurança no
-                    fluxo de publicação.
+                    Um acervo de resultados, estatísticas e lances da Copa, com
+                    sincronização em segundo plano e atualização no navegador.
                   </dd>
                 </div>
               </dl><a
                 class="text-link"
-                href={securityPost
-                  ? getBlogPostUrl(securityPost.frontmatter)
-                  : '/blog/'}
-                >Ler as decisões do projeto <span aria-hidden="true">↗</span></a
+                href={`${hexaAlertsUrl}#arquitetura`}
+                target="_blank"
+                rel="noopener noreferrer"
+                >Conhecer a arquitetura <span aria-hidden="true">↗</span></a
               ><a
                 class="project-repository"
-                href={`${GITHUB_REPO_URL}/marcopicanco-dev.github.io`}
+                href={hexaAlertsUrl}
                 target="_blank"
                 rel="noopener noreferrer">Ver repositório ↗</a
               >
             </div>
+            <section
+              class="project-challenges"
+              aria-labelledby="project-challenges-title"
+            >
+              <h4 id="project-challenges-title">Principais desafios</h4>
+              <ol>
+                {
+                  projectChallenges.map((challenge, index) => (
+                    <li>
+                      <span class="mono" aria-hidden="true">
+                        0{index + 1}
+                      </span>
+                      <h5>{challenge.title}</h5>
+                      <p>{challenge.description}</p>
+                    </li>
+                  ))
+                }
+              </ol>
+            </section>
           </article>
         </div>
       </div>
@@ -305,11 +348,13 @@ const process = [
       </div>
       <div class="axis-content about-grid">
         <figure class="portrait">
-          <img
-            src="/images/perfil.webp"
+          <Image
+            src={profilePhoto}
             alt="Marco Picanço"
-            width="640"
-            height="800"
+            width={640}
+            widths={[320, 640]}
+            sizes="(max-width: 600px) 76vw, 320px"
+            format="webp"
             loading="lazy"
             decoding="async"
           /><figcaption class="mono">Marco Picanço / Desenvolvedor</figcaption>

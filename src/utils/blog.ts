@@ -80,12 +80,12 @@ const siteSearchRecords: SearchRecord[] = [
     keywords: 'home marco picanço desenvolvedor full stack ruby rails',
   },
   {
-    title: 'Projetos',
+    title: 'Projetos — HexaAlerts',
     description:
-      'Projeto autoral com código aberto e decisões de desenvolvimento e segurança documentadas.',
+      'Aplicação para acompanhar a Copa, com Redis, Sidekiq, webhooks idempotentes e reconciliação de partidas entre provedores.',
     url: '/#projetos',
     keywords:
-      'portfolio soluções backoffice apis integrações bugs sustentação testes confiabilidade',
+      'portfolio hexa alerts copa futebol rails redis sidekiq webhook filas idempotencia reconciliacao provedores apis testes',
   },
   {
     title: 'Serviços',

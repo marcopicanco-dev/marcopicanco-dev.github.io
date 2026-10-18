@@ -152,7 +152,10 @@ A página inicial apresenta uma sequência de avaliação e contato:
 1. **Abertura:** o que é desenvolvido, mensagem principal e  um convite para conversar.
 2. **Serviços:** sites e presença digital; sistemas e aplicações web; integrações e
    evolução, com descrição do problema atendido e contexto técnico.
-3. **Projeto selecionado:** Em fase de implementação.
+3. **Projeto selecionado:** [HexaAlerts](https://github.com/marcopicanco-dev/hexa_alerts),
+   criado para acompanhar os lances da Copa e praticar Redis, Sidekiq, webhooks
+   idempotentes e reconciliação de partidas entre provedores. A seção mostra uma
+   captura real do painel, as tecnologias e os principais desafios enfrentados.
 4. **Processo:** entender, definir, construir e acompanhar.
 5. **Sobre:** retrato e apresentação breve, com trajetória completa em `/sobre/`.
 6. **Escrita:** textos selecionados e acesso ao arquivo em `/blog/`.
