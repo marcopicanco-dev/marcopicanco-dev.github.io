@@ -1,0 +1,62 @@
+---
+import Base from '@/layouts/Base.astro'
+import {
+  formatBlogDate,
+  getBlogPostUrl,
+  getPostsByTag,
+  getTagSlug,
+  MIN_POSTS_PER_TAG_PAGE,
+  sortBlogPostsByDateDesc,
+  type BlogPostModule,
+} from '@/utils/blog'
+import { type GetStaticPaths } from 'astro'
+
+export const getStaticPaths: GetStaticPaths = () =>
+  [...getPostsByTag()]
+    .filter(([, posts]) => posts.length >= MIN_POSTS_PER_TAG_PAGE)
+    .map(([tag, posts]) => ({
+      params: { tag: getTagSlug(tag) },
+      props: { tag, posts: sortBlogPostsByDateDesc(posts) },
+    }))
+
+const { tag, posts } = Astro.props as { tag: string; posts: BlogPostModule[] }
+---
+
+<Base
+  frontmatter={{
+    title: `Artigos sobre ${tag}`,
+    description: `${posts.length} textos de Marco Picanço sobre ${tag}: estudos, experimentos e aprendizados aplicados no próprio site.`,
+    file: '',
+  }}
+>
+  <main class="post-page">
+    <header class="post-header">
+      <a class="text-link post-back" href="/blog/">← Todos os textos</a>
+      <p class="eyebrow">Tag</p>
+      <h1>{tag}</h1>
+      <p class="post-description">
+        {posts.length} textos sobre {tag}, do mais recente ao mais antigo.
+      </p>
+    </header>
+    <section class="tag-posts" aria-label={`Artigos sobre ${tag}`}>
+      {
+        posts.map((post) => (
+          <article class="archive-row">
+            <time class="mono" datetime={post.frontmatter.date}>
+              {formatBlogDate(post.frontmatter.date)}
+            </time>
+            <div>
+              <h2>
+                <a href={getBlogPostUrl(post.frontmatter)}>
+                  {post.frontmatter.title}
+                  <span aria-hidden="true">↗</span>
+                </a>
+              </h2>
+              <p>{post.frontmatter.description}</p>
+            </div>
+          </article>
+        ))
+      }
+    </section>
+  </main>
+</Base>

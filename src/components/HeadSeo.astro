@@ -49,6 +49,9 @@ const description = frontmatter?.description ?? SITE.description
       {frontmatter?.date && (
         <meta property="article:published_time" content={frontmatter.date} />
       )}
+      {frontmatter?.tags?.map((tag) => (
+        <meta property="article:tag" content={tag} />
+      ))}
     </>
   )
 }

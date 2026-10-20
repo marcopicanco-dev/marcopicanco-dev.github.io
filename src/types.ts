@@ -9,6 +9,7 @@ export type Frontmatter = {
   date?: string
   heroImage?: string
   heroImageAlt?: string
+  tags?: string[]
 } & TitleDesc
 
 export type SearchRecord = {

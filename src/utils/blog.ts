@@ -11,6 +11,8 @@ export type BlogFrontmatter = {
   heroImage?: string
   heroImageAlt?: string
   heroImageLayout?: 'logo'
+  series?: string
+  seriesLabel?: string
 }
 
 export type BlogPostModule = MarkdownInstance<BlogFrontmatter>
@@ -42,6 +44,11 @@ export const sortBlogPostsByDateDesc = (posts: BlogPostModule[]) =>
     return getSeriesPart(b) - getSeriesPart(a)
   })
 
+export const getSeriesPosts = (series: string) =>
+  getBlogPosts()
+    .filter((post) => post.frontmatter.series === series)
+    .sort((a, b) => getSeriesPart(a) - getSeriesPart(b))
+
 const slugify = (value: string) =>
   value
     .normalize('NFD')
@@ -56,6 +63,51 @@ export const getBlogPostSlug = (frontmatter: BlogFrontmatter) =>
 
 export const getBlogPostUrl = (frontmatter: BlogFrontmatter) =>
   `/${getBlogPostSlug(frontmatter)}/`
+
+// A tag page with a single post is thin content, so the tag stays plain text
+// until a second post joins it.
+export const MIN_POSTS_PER_TAG_PAGE = 2
+
+export const getTagSlug = (tag: string) => slugify(tag)
+
+export const getTagUrl = (tag: string) => `/tags/${getTagSlug(tag)}/`
+
+export const getPostsByTag = () => {
+  const postsByTag = new Map<string, BlogPostModule[]>()
+
+  for (const post of getBlogPosts()) {
+    for (const tag of post.frontmatter.tags ?? []) {
+      postsByTag.set(tag, [...(postsByTag.get(tag) ?? []), post])
+    }
+  }
+
+  return postsByTag
+}
+
+export const hasTagPage = (tag: string) =>
+  (getPostsByTag().get(tag)?.length ?? 0) >= MIN_POSTS_PER_TAG_PAGE
+
+// Series siblings are already linked by the series navigation.
+export const getRelatedPosts = (frontmatter: BlogFrontmatter, limit = 3) => {
+  const tags = new Set(frontmatter.tags ?? [])
+  const slug = getBlogPostSlug(frontmatter)
+
+  return sortBlogPostsByDateDesc(getBlogPosts())
+    .filter(
+      (post) =>
+        getBlogPostSlug(post.frontmatter) !== slug &&
+        (!frontmatter.series || post.frontmatter.series !== frontmatter.series),
+    )
+    .map((post) => ({
+      post,
+      sharedTags: (post.frontmatter.tags ?? []).filter((tag) => tags.has(tag))
+        .length,
+    }))
+    .filter(({ sharedTags }) => sharedTags > 0)
+    .sort((a, b) => b.sharedTags - a.sharedTags)
+    .slice(0, limit)
+    .map(({ post }) => post)
+}
 
 export const formatBlogDate = (date: string) =>
   new Date(`${date}T12:00:00`).toLocaleDateString('pt-BR', {
