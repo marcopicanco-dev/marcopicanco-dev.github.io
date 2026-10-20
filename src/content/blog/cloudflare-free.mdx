@@ -9,19 +9,26 @@ heroImageLayout: 'logo'
 tags: ['Cloudflare', 'Segurança', 'Infraestrutura', 'SEO', 'Web Analytics']
 ---
 
-_O que aprendi usando meu site como laboratório — e um roteiro para começar sem contratar um plano pago._
+_O que aprendi configurando meu próprio site — e um roteiro para começar sem contratar um plano pago. Até porque nem precisa disso!_
 
-Meu site é um portfólio com blog, construído com Astro e publicado no GitHub Pages. Uma estrutura simples, que acabou se tornando um laboratório para estudar infraestrutura, segurança e o caminho que uma página percorre até chegar ao navegador.
+Meu site é um portfólio com blog, construído com Astro e publicado no GitHub Pages. Uma estrutura simple e direta, que acabou se tornando um laboratório para estudar infraestrutura, segurança e o caminho que uma página percorre até chegar ao navegador.
 
-A Cloudflare entrou nessa história quando um scanner apontou a ausência de alguns headers de segurança. Como o GitHub Pages não oferece controle sobre esses headers, precisei de uma camada capaz de modificar as respostas antes de elas chegarem ao visitante.
+A Cloudflare entrou nessa história quando um scanner apontou a ausência de alguns headers de segurança. Sim, eu estava estudando sobre segurança e encontrei alguns sites que fazem um scanner na aplicação - algo bem sim, mas que pode gerar bons _insigths_. Como o GitHub Pages não oferece controle sobre esses headers, precisei de uma camada capaz de modificar as respostas antes que elas chegassem aos visitantes.
 
-Documentei esse processo em uma série de quatro artigos. Este texto reúne um roteiro para quem está começando: colocar o domínio atrás da Cloudflare, aproveitar as proteções do plano Free, acompanhar o desempenho e entender como isso se relaciona com SEO.
+Documentei esse processo em uma série de quatro artigos. Vou listá-los:
+
+1. [Corrigindo headers de segurança em um site estático no GitHub Pages com Cloudflare](https://www.marcopicanco.com/2026-07-23-corrigindo-headers-de-seguranca-em-um-site-estatico-no-github-pages-com-cloudflare/)
+2. [Corrigindo headers de segurança em um site estático no GitHub Pages com Cloudflare - Parte 2](https://www.marcopicanco.com/2026-07-23-corrigindo-headers-de-seguranca-em-um-site-estatico-no-github-pages-com-cloudflare-parte-2/)
+3. [Corrigindo headers de segurança em um site estático no GitHub Pages com Cloudflare - Parte 3](https://www.marcopicanco.com/2026-07-23-corrigindo-headers-de-seguranca-em-um-site-estatico-no-github-pages-com-cloudflare-parte-3/)
+4. [Corrigindo headers de segurança em um site estático no GitHub Pages com Cloudflare - Parte 4](https://www.marcopicanco.com/2026-07-25-corrigindo-headers-de-seguranca-em-um-site-estatico-no-github-pages-com-cloudflare-parte-4/)
+
+Este texto reúne um roteiro para quem pretende aproveitar as proteções do plano Free, colocar o domínio atrás da Cloudflare e acompanhar o desempenho para entender como isso se relaciona com SEO.
 
 As configurações aqui sugeridas precisam ser adaptadas ao site. Os recursos e limites foram conferidos na documentação oficial em 20 de outubro de 2026.
 
-No meu caso, a hospedagem continua no GitHub Pages. A Cloudflare participa como DNS autoritativo e proxy reverso para os registros web configurados com proxy. É nessa passagem pela rede da Cloudflare que entram cache, mitigação de ataques e alterações de headers. [5](https://developers.cloudflare.com/fundamentals/manage-domains/add-site/) [6](https://developers.cloudflare.com/dns/proxy-status/)
+No meu caso, a hospedagem continua no GitHub Pages, afinal de contas, ele cumpre bem o seu papel. A Cloudflare participa como DNS autoritativo e proxy reverso para os registros web configurados com proxy. É nessa passagem pela rede da Cloudflare que entram cache, mitigação de ataques e alterações de headers. [5](https://developers.cloudflare.com/fundamentals/manage-domains/add-site/) [6](https://developers.cloudflare.com/dns/proxy-status/)
 
-O plano gratuito oferece uma base útil:
+O plano gratuito oferece uma ótima base:
 
 | Recurso                   | O que está disponível no Free                                  |
 | ------------------------- | -------------------------------------------------------------- |
@@ -37,25 +44,37 @@ O plano gratuito oferece uma base útil:
 
 Esses limites pertencem a produtos diferentes. As cinco regras WAF, por exemplo, não são as dez Transform Rules. Produtos adicionais têm condições próprias e devem ser avaliados separadamente. [7](https://www.cloudflare.com/plans/free/) [8](https://developers.cloudflare.com/waf/get-started/) [9](https://developers.cloudflare.com/waf/custom-rules/) [10](https://developers.cloudflare.com/waf/rate-limiting-rules/) [11](https://developers.cloudflare.com/rules/transform/)
 
-Para começar, eu seguiria esta sequência:
+Para começar, eu segui a sequência abaixo:
 
-1. **Criar a conta e escolher o Free.** Adicionar o domínio principal, como `marcopicanco.com`, e proteger o acesso à conta com autenticação de dois fatores e códigos de recuperação.
+1. **Criar a conta e escolher o Free.** Adicionar o domínio principal, como `marcopicanco.com`, no meu caso, e proteger o acesso à conta com autenticação de dois fatores(importantíssimo) e códigos de recuperação. Não pode dar mole aqui.
 2. **Guardar e revisar o DNS existente.** Conferir os registros do site, subdomínios, e-mail e verificações de serviços. A importação automática pode deixar registros de fora.
 3. **Trocar os nameservers no registrador.** Usar exatamente os servidores atribuídos à sua zona. A mudança de DNS não exige transferir o registro do domínio para outra empresa.
 4. **Tratar o DNSSEC durante a migração.** Se já estiver ativo, seguir a orientação de desativá-lo no registrador antes da troca e reativá-lo com a configuração da Cloudflare após a zona ficar ativa.
 5. **Conferir o proxy dos registros web.** A nuvem laranja indica tráfego passando pela Cloudflare. Registros de e-mail e verificações de terceiros devem seguir as orientações dos respectivos provedores, geralmente em DNS only.
 6. **Validar certificados e HTTPS.** Conferir tanto o certificado apresentado ao visitante quanto o HTTPS da hospedagem de origem. [5](https://developers.cloudflare.com/fundamentals/manage-domains/add-site/) [6](https://developers.cloudflare.com/dns/proxy-status/) [12](https://developers.cloudflare.com/ssl/origin-configuration/ssl-modes/full-strict/)
 
-Esse ponto do proxy foi uma das minhas primeiras lições. Na configuração inicial, eu havia criado regras no painel enquanto o domínio ainda usava os nameservers anteriores. As regras existiam, mas o tráfego não passava por elas. Contei esse episódio na primeira parte da série. [1](https://www.marcopicanco.com/2026-07-23-corrigindo-headers-de-seguranca-em-um-site-estatico-no-github-pages-com-cloudflare/)
+Esse ponto do proxy foi uma das minhas primeiras lições. Na primeira configuraçãos, eu havia criado regras no painel enquanto o domínio ainda usava os nameservers anteriores. As regras existiam, mas o tráfego não passava por elas. Contei esse episódio na primeira parte da série de artigos mencionados anteriormente. [1](https://www.marcopicanco.com/2026-07-23-corrigindo-headers-de-seguranca-em-um-site-estatico-no-github-pages-com-cloudflare/)
 
 Hoje, começo a validação pelo terminal:
 
-```bash
+```bash title="Bash"
+dig +short NS marcopicanco.com
+curl -I https://www.marcopicanco.com/
+```
+
+```powershell title="PowerShell"
+(Resolve-DnsName -Name marcopicanco.com -Type NS).NameHost
+curl.exe -I https://www.marcopicanco.com/
+```
+
+```zsh title="macOS Terminal"
 dig +short NS marcopicanco.com
 curl -I https://www.marcopicanco.com/
 ```
 
 O primeiro comando ajuda a conferir os nameservers. O segundo mostra os headers recebidos nessa requisição. A presença de `cf-ray` é um dos indícios da passagem pela Cloudflare; os headers configurados precisam aparecer com os valores esperados.
+
+No PowerShell, o `.exe` em `curl.exe` faz diferença: no Windows PowerShell, `curl` é um apelido para `Invoke-WebRequest`, que não aceita a opção `-I`.
 
 Também testo páginas internas e os fluxos do site no navegador. Um `HEAD` bem-sucedido na página inicial não verifica todas as páginas nem o funcionamento dos scripts.
 
@@ -63,9 +82,9 @@ No TLS, considero as duas conexões: navegador até Cloudflare e Cloudflare até
 
 Depois de validar o HTTPS, o **Always Use HTTPS** redireciona os acessos HTTP. O HSTS pode entrar em uma etapa posterior, quando os domínios envolvidos já estiverem funcionando corretamente com HTTPS. No meu site, documentei a decisão de manter `includeSubDomains` e preload fora dessa configuração inicial. São escolhas que afetam o comportamento futuro dos navegadores e merecem uma implantação planejada. [4](https://www.marcopicanco.com/2026-07-25-corrigindo-headers-de-seguranca-em-um-site-estatico-no-github-pages-com-cloudflare-parte-4/) [13](https://developers.cloudflare.com/ssl/edge-certificates/additional-options/always-use-https/) [14](https://developers.cloudflare.com/ssl/edge-certificates/additional-options/http-strict-transport-security/)
 
-Os headers foram a configuração que motivou esse trabalho. No painel, acesso **Rules → Overview → Create rule → Response Header Transform Rule** e crio uma regra para os hostnames do site. A operação **Set static** permite definir o nome e o valor de cada header. [15](https://developers.cloudflare.com/rules/transform/response-header-modification/create-dashboard/)
+Os headers foram a configuração que motivou esse artigo. No painel, acesso **Rules → Overview → Create rule → Response Header Transform Rule** e crio uma regra para os hostnames do site. A operação **Set static** permite definir o nome e o valor de cada header. [15](https://developers.cloudflare.com/rules/transform/response-header-modification/create-dashboard/)
 
-Para um portfólio estático como o meu, estes valores formam um ponto de partida:
+Estes valores formam um ponto de partida:
 
 | Header                   | Valor usado como referência                |
 | ------------------------ | ------------------------------------------ |
@@ -92,9 +111,9 @@ O **rate limiting** pode ser útil quando existe uma rota que precisa de proteç
 
 No desempenho, a CDN ajuda a entregar conteúdo elegível a partir da rede da Cloudflare. Mas é importante conhecer o comportamento padrão: **HTML e JSON não são armazenados em cache automaticamente**. Arquivos elegíveis, como CSS, JavaScript e imagens, têm outro tratamento. [17](https://developers.cloudflare.com/cache/concepts/default-cache-behavior/)
 
-Na checagem da página inicial do meu site, o HTML respondeu com `cf-cache-status: DYNAMIC`. Esse resultado é compatível com uma página que não está sendo servida pelo cache da Cloudflare nessa requisição. Ele não demonstra, sozinho, que o cache dos demais arquivos esteja incorreto.
+Na checagem da página inicial do meu domínio, o HTML respondeu com `cf-cache-status: DYNAMIC`. Esse resultado é compatível com uma página que não está sendo servida pelo cache da Cloudflare nessa requisição. Ele não demonstra, sozinho, que o cache dos demais arquivos esteja incorreto.
 
-Começaria pelo comportamento padrão e mediria os resultados. Uma Cache Rule para HTML estático pode ser avaliada depois, com tempo de expiração e invalidação após deploy definidos. Se o site evoluir para uma aplicação com login, respostas personalizadas exigirão uma estratégia própria.
+Comecei pelo comportamento padrão e medi os resultados. Uma Cache Rule para HTML estático pode ser avaliada depois, com tempo de expiração e invalidação após deploy definidos. Se o site evoluir para uma aplicação com login, respostas personalizadas exigirão uma estratégia própria.
 
 As otimizações do build continuam relevantes: imagens dimensionadas corretamente, fontes bem escolhidas e JavaScript necessário para cada interação. Uma CDN não elimina o tempo que o navegador gasta executando código. Recursos que alteram scripts, como Rocket Loader, também precisam ser testados com a CSP e com as funcionalidades existentes. [18](https://developers.cloudflare.com/speed/optimization/content/rocket-loader/)
 
@@ -125,7 +144,7 @@ Essas permissões precisam ser incorporadas às políticas efetivamente aplicada
 
 Os relatórios incluem **visitas, visualizações de página, tempo de carregamento e Core Web Vitals**. Visitas seguem a definição da ferramenta, baseada na origem da navegação; não equivalem a uma identificação precisa de pessoas únicas. Tempo de carregamento também é diferente de tempo de permanência ou leitura. [23](https://developers.cloudflare.com/web-analytics/data-metrics/high-level-metrics/)
 
-Para o meu blog, estas são as métricas que considero mais úteis para acompanhar:
+Para o meu portifólio, estas são as métricas que considero mais úteis para acompanhar:
 
 | Métrica                | O que ajuda a investigar                            |
 | ---------------------- | --------------------------------------------------- |
@@ -141,15 +160,15 @@ A relação com **SEO** passa por esse cuidado com a experiência. A Cloudflare 
 
 No meu site, a checagem pública também encontrou URL canônica na página inicial, `robots.txt` e um índice de sitemap. São elementos que precisam continuar coerentes com as URLs publicadas. Ainda vale revisar redirecionamentos entre HTTP e HTTPS e entre o domínio com e sem `www`, preservando caminhos e parâmetros necessários.
 
-Se a versão escolhida for a com `www`, como no meu caso, uma **Single Redirect Rule** pode encaminhar o domínio raiz para ela. No painel, procuro **Rules → Overview → Create rule → Single Redirect** e uso o modelo de redirecionamento do domínio raiz para `www`, ajustando o domínio de origem, o destino HTTPS e o código permanente `301`. A regra deve preservar o caminho e a query string. Antes de criar outra regra, verifico se a hospedagem já faz o redirecionamento corretamente. [27](https://developers.cloudflare.com/rules/url-forwarding/examples/redirect-root-to-www/)
+Se a versão escolhida for a com `www`, como no meu caso, uma **Single Redirect Rule** pode encaminhar o domínio raiz para ela. No painel, procurei **Rules → Overview → Create rule → Single Redirect** e usei o modelo de redirecionamento do domínio raiz para `www`, ajustando o domínio de origem, o destino HTTPS e o código permanente `301`. A regra deve preservar o caminho e a query string. Antes de criar outra regra, verifiquei se a hospedagem já faz o redirecionamento corretamente. [27](https://developers.cloudflare.com/rules/url-forwarding/examples/redirect-root-to-www/)
 
 O Search Console permite acompanhar impressões, cliques e consultas. Isso complementa as métricas do navegador: ajuda a entender tanto como alguém encontra o artigo quanto o que acontece depois de chegar à página. [26](https://support.google.com/webmasters/answer/7576553)
 
-Para começar no Search Console, adiciono uma propriedade do tipo **Domínio**, informo o domínio sem protocolo e sigo a verificação por DNS. Quando o assistente fornece um registro TXT, copio seu valor para **DNS → Records** na Cloudflare, no nome indicado, e volto ao Google para confirmar. O registro de verificação deve ser mantido depois da confirmação. Esse passo dá acesso aos relatórios; não melhora a classificação por si só. [28](https://support.google.com/webmasters/answer/9008080)
+Para começar no Search Console, adicionei uma propriedade do tipo **Domínio**, informei o domínio sem protocolo e sigo a verificação por DNS. Quando o assistente fornece um registro TXT, copiei seu valor para **DNS → Records** na Cloudflare, no nome indicado, e voltei ao Google para confirmar. O registro de verificação deve ser mantido depois da confirmação. Esse passo dá acesso aos relatórios; não melhora a classificação por si só. [28](https://support.google.com/webmasters/answer/9008080)
 
 O controle de bots precisa respeitar esse objetivo. Regras agressivas podem bloquear rastreadores legítimos. Antes de concluir que uma proteção melhorou o site, verifico também seu impacto no acesso ao conteúdo.
 
-Para tornar esse trabalho contínuo, o roteiro que proponho é simples:
+Sugestões para manter o controle contínuo e efetivo:
 
 - Após cada deploy, conferir headers, links, interações e carregamento do analytics.
 - Semanalmente, revisar eventos de segurança, páginas mais acessadas e desempenho das páginas com dados suficientes.
