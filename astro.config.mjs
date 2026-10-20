@@ -39,8 +39,8 @@ export default defineConfig({
       directives: [
         "default-src 'self'",
         "font-src 'self' https://fonts.gstatic.com",
-        "img-src 'self' data:",
-        "connect-src 'self' https://cloudflareinsights.com",
+        "img-src 'self' data: https://www.googletagmanager.com https://*.google-analytics.com",
+        "connect-src 'self' https://cloudflareinsights.com https://www.googletagmanager.com https://*.google-analytics.com https://*.google.com",
         "object-src 'none'",
         "base-uri 'self'",
         "form-action 'self'",
@@ -50,6 +50,10 @@ export default defineConfig({
           { resource: "'self'", kind: 'element' },
           {
             resource: 'https://static.cloudflareinsights.com',
+            kind: 'element',
+          },
+          {
+            resource: 'https://www.googletagmanager.com',
             kind: 'element',
           },
         ],

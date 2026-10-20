@@ -139,8 +139,12 @@ const process = [
           <span>Visão de negócio. Cuidado com o código.</span><div>
             <a href={GITHUB_REPO_URL} target="_blank" rel="noopener noreferrer"
               >GitHub ↗</a
-            ><a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer"
-              >LinkedIn ↗</a
+            ><a
+              href={LINKEDIN_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-analytics-contact="linkedin"
+              data-analytics-location="hero">LinkedIn ↗</a
             >
           </div>
         </div>
@@ -183,6 +187,8 @@ const process = [
                     class="service-arrow"
                     href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(service.title)}`}
                     aria-label={`Conversar sobre ${service.title.toLowerCase()}`}
+                    data-analytics-contact="email"
+                    data-analytics-location={`service_${service.number}`}
                   >
                     <span aria-hidden="true">↗</span>
                   </a>
@@ -226,6 +232,8 @@ const process = [
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Ver o projeto HexaAlerts no GitHub"
+              data-analytics-project="hexa_alerts"
+              data-analytics-location="project_preview"
               ><div class="project-preview-bar">
                 <span class="mono">HexaAlerts / Ruby on Rails</span><span
                   aria-hidden="true">↗</span
@@ -270,12 +278,17 @@ const process = [
                 href={`${hexaAlertsUrl}#arquitetura`}
                 target="_blank"
                 rel="noopener noreferrer"
+                data-analytics-project="hexa_alerts"
+                data-analytics-location="project_architecture"
                 >Conhecer a arquitetura <span aria-hidden="true">↗</span></a
               ><a
                 class="project-repository"
                 href={hexaAlertsUrl}
                 target="_blank"
-                rel="noopener noreferrer">Ver repositório ↗</a
+                rel="noopener noreferrer"
+                data-analytics-project="hexa_alerts"
+                data-analytics-location="project_repository"
+                >Ver repositório ↗</a
               >
             </div>
             <section
@@ -439,18 +452,27 @@ const process = [
               Conte o que você tem em mente, o que precisa resolver ou onde o
               seu projeto parou. Vamos encontrar um caminho.
             </p><div>
-              <a class="button button-primary" href={`mailto:${CONTACT_EMAIL}`}
+              <a
+                class="button button-primary"
+                href={`mailto:${CONTACT_EMAIL}`}
+                data-analytics-contact="email"
+                data-analytics-location="contact"
                 >Conversar por e-mail <span aria-hidden="true">↗</span></a
               ><a
                 class="text-link"
                 href={LINKEDIN_URL}
                 target="_blank"
                 rel="noopener noreferrer"
+                data-analytics-contact="linkedin"
+                data-analytics-location="contact"
                 >Prefere o LinkedIn? <span aria-hidden="true">↗</span></a
               >
             </div>
-          </div><a class="contact-address" href={`mailto:${CONTACT_EMAIL}`}
-            >{CONTACT_EMAIL}</a
+          </div><a
+            class="contact-address"
+            href={`mailto:${CONTACT_EMAIL}`}
+            data-analytics-contact="email"
+            data-analytics-location="contact_address">{CONTACT_EMAIL}</a
           >
         </div>
       </div>

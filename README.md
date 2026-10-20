@@ -242,6 +242,13 @@ npm run build
 Os detalhes da atualização que corrigiu a auditoria de dependências estão em
 [docs/security/dependency-upgrade.md](docs/security/dependency-upgrade.md).
 
+## Estatísticas
+
+O Google Analytics 4 coleta acessos, engajamento e cliques em projetos e canais de
+contato no domínio de produção. Os relatórios são acessados pela conta Google.
+Veja [a configuração e a validação do Analytics](docs/analytics.md), incluindo a
+atualização necessária da CSP no Cloudflare ao publicar.
+
 ## Licença
 
 MIT. A fonte Inter segue a

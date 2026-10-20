@@ -13,10 +13,18 @@ import { CONTACT_EMAIL, GITHUB_REPO_URL, LINKEDIN_URL } from '@/config'
       <a href={GITHUB_REPO_URL} target="_blank" rel="noopener noreferrer"
         >GitHub ↗</a
       >
-      <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer"
-        >LinkedIn ↗</a
+      <a
+        href={LINKEDIN_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        data-analytics-contact="linkedin"
+        data-analytics-location="footer">LinkedIn ↗</a
       >
-      <a href={`mailto:${CONTACT_EMAIL}`}>E-mail ↗</a>
+      <a
+        href={`mailto:${CONTACT_EMAIL}`}
+        data-analytics-contact="email"
+        data-analytics-location="footer">E-mail ↗</a
+      >
     </nav>
     <span class="footer-copyright"
       >© {new Date().getFullYear()} Marco Picanço</span

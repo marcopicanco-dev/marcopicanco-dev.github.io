@@ -52,6 +52,11 @@ const lang: LanguageKeys = Object.prototype.hasOwnProperty.call(
     <HeadSeo type={type} frontmatter={frontmatter} />
     <script is:inline src="/scripts/site.js"></script>
     <script is:inline defer src="/scripts/theme-switcher.js"></script>
+    {
+      import.meta.env.PROD && (
+        <script is:inline defer src="/scripts/google-analytics.js" />
+      )
+    }
   </head>
   <body>
     <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>

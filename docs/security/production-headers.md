@@ -69,6 +69,15 @@ The value printed by `npm run security:csp` is the edge header value, not only t
 - `https://static.cloudflareinsights.com` in `script-src`, because Cloudflare Web Analytics injects `beacon.min.js`;
 - `https://cloudflareinsights.com` in `connect-src`, because the beacon reports analytics data back to Cloudflare.
 
+Google Analytics 4 also needs `https://www.googletagmanager.com` in `script-src`,
+`img-src` and `connect-src`, `https://*.google-analytics.com` in `img-src` and
+`connect-src`, and `https://*.google.com` in `connect-src`. The Astro-generated
+policy includes these sources in the applicable directives; the header generator
+also adds Google Tag Manager to the `script-src` fallback. The production check
+requires them. Update the Cloudflare header
+when deploying the analytics integration; allowing them in the HTML alone is
+insufficient. See [the analytics setup](../analytics.md).
+
 After every build that changes inline scripts or generated styles, print the current CSP value:
 
 ```bash

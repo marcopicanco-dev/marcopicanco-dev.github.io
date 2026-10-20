@@ -4,7 +4,13 @@ import path from 'node:path'
 const target = process.argv[2] ?? 'dist'
 const edgeDirectives = [
   ['connect-src', ['https://cloudflareinsights.com']],
-  ['script-src', ['https://static.cloudflareinsights.com']],
+  [
+    'script-src',
+    [
+      'https://static.cloudflareinsights.com',
+      'https://www.googletagmanager.com',
+    ],
+  ],
   ['frame-ancestors', ["'self'"]],
 ]
 

@@ -29,9 +29,21 @@ const requiredCspDirectives = [
   "frame-ancestors 'self'",
 ]
 
-const cloudflareInsightsTokens = {
-  'connect-src': ['https://cloudflareinsights.com'],
-  'script-src': ['https://static.cloudflareinsights.com'],
+const analyticsTokens = {
+  'connect-src': [
+    'https://cloudflareinsights.com',
+    'https://www.googletagmanager.com',
+    'https://*.google-analytics.com',
+    'https://*.google.com',
+  ],
+  'script-src': [
+    'https://static.cloudflareinsights.com',
+    'https://www.googletagmanager.com',
+  ],
+  'img-src': [
+    'https://www.googletagmanager.com',
+    'https://*.google-analytics.com',
+  ],
 }
 
 function normalize(value) {
@@ -135,7 +147,7 @@ function expectCsp(headers, html) {
   )
   expectDirectiveTokens(headerPolicy, 'script-src', ["'self'"])
 
-  for (const [directive, tokens] of Object.entries(cloudflareInsightsTokens)) {
+  for (const [directive, tokens] of Object.entries(analyticsTokens)) {
     expectDirectiveTokens(headerPolicy, directive, tokens)
   }
 
@@ -149,6 +161,12 @@ function expectCsp(headers, html) {
     headerPolicy,
     'script-src-elem',
   )
+  if (scriptElementTokens.length > 0) {
+    expectDirectiveTokens(headerPolicy, 'script-src-elem', [
+      "'self'",
+      ...analyticsTokens['script-src'],
+    ])
+  }
   assert.ok(
     !scriptElementTokens.includes("'unsafe-inline'"),
     "content-security-policy script-src-elem must not include 'unsafe-inline'",
