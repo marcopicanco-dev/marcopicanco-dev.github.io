@@ -6,6 +6,9 @@ type TitleDesc = {
 export type Frontmatter = {
   layout: string
   file: string
+  date?: string
+  heroImage?: string
+  heroImageAlt?: string
 } & TitleDesc
 
 export type SearchRecord = {

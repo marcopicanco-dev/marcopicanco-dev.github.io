@@ -1,20 +1,39 @@
 ---
 import Base from '@/layouts/Base.astro'
 import { formatBlogDate, type BlogFrontmatter } from '@/utils/blog'
+import { getCanonicalUrl } from '@/utils/seo'
 const { frontmatter } = Astro.props as { frontmatter: BlogFrontmatter }
+const canonicalUrl = getCanonicalUrl(Astro.url.pathname, Astro.site)
+const authorUrl = new URL('/sobre/', Astro.site)
 ---
 
 <Base frontmatter={{ ...frontmatter, file: '' }} type="article">
   <main class="post-page">
-    <article>
+    <article
+      itemscope
+      itemtype="https://schema.org/BlogPosting"
+      itemid={`${canonicalUrl.href}#article`}
+    >
+      <link itemprop="mainEntityOfPage" href={canonicalUrl} />
       <header id="post-top" class="post-header">
         <a class="text-link post-back" href="/blog/">← Todos os textos</a>
         <p class="eyebrow">Caderno de desenvolvimento</p>
-        <h1>{frontmatter.title}</h1>
-        <p class="post-description">{frontmatter.description}</p>
+        <h1 itemprop="headline">{frontmatter.title}</h1>
+        <p class="post-description" itemprop="description">
+          {frontmatter.description}
+        </p>
         <div class="post-meta">
-          <span>Por Marco Picanço</span><time
+          <span
+            itemprop="author"
+            itemscope
+            itemtype="https://schema.org/Person"
+            itemid={`${authorUrl.href}#marco-picanco`}
+            >Por <a href="/sobre/" itemprop="url"
+              ><span itemprop="name">Marco Picanço</span></a
+            ></span
+          ><time
             class="mono"
+            itemprop="datePublished"
             datetime={frontmatter.date}>{formatBlogDate(frontmatter.date)}</time
           >
         </div>
@@ -22,6 +41,7 @@ const { frontmatter } = Astro.props as { frontmatter: BlogFrontmatter }
           frontmatter.heroImage && (
             <img
               src={frontmatter.heroImage}
+              itemprop="image"
               alt={frontmatter.heroImageAlt ?? ''}
               class="post-hero"
               loading="eager"
@@ -30,7 +50,7 @@ const { frontmatter } = Astro.props as { frontmatter: BlogFrontmatter }
           )
         }
       </header>
-      <div id="markdown" class="prose"><slot /></div>
+      <div id="markdown" class="prose" itemprop="articleBody"><slot /></div>
       <footer class="post-footer">
         <a class="text-link" href="/blog/">← Voltar para o blog</a><a
           class="text-link"

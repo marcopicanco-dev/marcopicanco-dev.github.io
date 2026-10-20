@@ -3,6 +3,7 @@ import Base from '@/layouts/Base.astro'
 import { Image } from 'astro:assets'
 import { CONTACT_EMAIL, GITHUB_REPO_URL, LINKEDIN_URL } from '@/config'
 import profilePhoto from '@/assets/profile/perfil-linkedin.png'
+const profileUrl = new URL('/sobre/', Astro.site)
 const education = [
   {
     school: 'PUC Minas',
@@ -49,20 +50,31 @@ const education = [
 
 <Base
   frontmatter={{
-    title: 'Sobre',
+    title: 'Desenvolvedor Full Stack Ruby on Rails',
     description:
       'Conheça a trajetória de Marco Picanço: desenvolvimento web, Ruby on Rails, Engenharia de Software e uma visão de negócios construída com pessoas.',
     file: '',
   }}
 >
-  <main class="site-container about-page">
+  <main
+    class="site-container about-page"
+    itemscope
+    itemtype="https://schema.org/ProfilePage"
+    itemid={profileUrl.href}
+  >
     <div class="page-breadcrumb">
       <a href="/">Início</a><span aria-hidden="true">/</span><span>Sobre</span>
     </div>
     <section
       class="axis-layout section-block"
       aria-labelledby="about-page-title"
+      itemprop="mainEntity"
+      itemscope
+      itemtype="https://schema.org/Person"
+      itemid={`${profileUrl.href}#marco-picanco`}
     >
+      <meta itemprop="name" content="Marco Picanço" />
+      <link itemprop="url" href={profileUrl} />
       <div class="axis">
         <span class="mono">MP /</span><span class="side-label">Trajetória</span>
       </div>
@@ -80,12 +92,15 @@ const education = [
             <Image
               src={profilePhoto}
               alt="Marco Picanço"
+              itemprop="image"
               width={640}
               widths={[320, 640]}
               sizes="(max-width: 600px) 76vw, 320px"
               format="webp"
               decoding="async"
-            /><figcaption class="mono">Desenvolvedor Full Stack</figcaption>
+            /><figcaption class="mono" itemprop="jobTitle">
+              Desenvolvedor Full Stack
+            </figcaption>
           </figure><div class="about-copy">
             <h2>Entender o problema faz parte de escrever o código.</h2><p>
               Minha trajetória passa por Administração, vendas e sucesso do
@@ -106,11 +121,13 @@ const education = [
               <a
                 class="text-link"
                 href={GITHUB_REPO_URL}
+                itemprop="sameAs"
                 target="_blank"
                 rel="noopener noreferrer">GitHub ↗</a
               ><a
                 class="text-link"
                 href={LINKEDIN_URL}
+                itemprop="sameAs"
                 target="_blank"
                 rel="noopener noreferrer">LinkedIn ↗</a
               >

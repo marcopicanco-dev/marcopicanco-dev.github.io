@@ -1,6 +1,7 @@
 import { defineConfig } from 'astro/config'
 import mdx from '@astrojs/mdx'
 import react from '@astrojs/react'
+import sitemap from '@astrojs/sitemap'
 import expressiveCode from 'astro-expressive-code'
 import { unified } from '@astrojs/markdown-remark'
 import tailwindcss from '@tailwindcss/vite'
@@ -68,6 +69,10 @@ export default defineConfig({
     },
   },
   integrations: [
+    sitemap({
+      filter: (page) =>
+        !['/portfolio/', '/pt/', '/sr/'].includes(new URL(page).pathname),
+    }),
     expressiveCode({
       themes: ['dracula', 'github-dark', 'github-light'],
       plugins: [

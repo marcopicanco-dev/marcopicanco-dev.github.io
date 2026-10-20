@@ -249,6 +249,12 @@ contato no domínio de produção. Os relatórios são acessados pela conta Goog
 Veja [a configuração e a validação do Analytics](docs/analytics.md), incluindo a
 atualização necessária da CSP no Cloudflare ao publicar.
 
+## SEO e descoberta
+
+O build gera um sitemap com as páginas canônicas. Metadados próprios, marcação
+dos artigos e do autor e as URLs alternativas da página inicial são mantidos
+no HTML. Veja [a configuração de SEO e os próximos passos no Search Console](docs/seo.md).
+
 ## Licença
 
 MIT. A fonte Inter segue a
