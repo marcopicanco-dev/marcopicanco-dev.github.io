@@ -1,7 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <rect width="1200" height="630" fill="#f7f4ee" />
   <path d="M88 48v534M132 495h1004" stroke="#d8d5cb" />
-  <path d="M32 78V50l14 14 14-14v28" fill="none" stroke="#b63825" stroke-width="3" />
+  <g fill="#b63825">
+    <path d="M32 50h14v14H32zM60 64a14 14 0 0 1-14 14V64h14Z" />
+    <path d="M46 50a14 14 0 0 1 14 14h-3a11 11 0 0 0-11-11Z" />
+  </g>
   <g font-family="Helvetica, Arial, sans-serif" fill="#252b2a">
     <text x="132" y="78" font-size="24" font-weight="700" letter-spacing="-1">Marco Picanço<tspan fill="#b63825">.</tspan></text>
     <g font-size="86" font-weight="700" letter-spacing="-5">
