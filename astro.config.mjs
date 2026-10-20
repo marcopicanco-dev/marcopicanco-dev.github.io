@@ -71,7 +71,12 @@ export default defineConfig({
   integrations: [
     sitemap({
       filter: (page) =>
-        !['/portfolio/', '/pt/', '/sr/'].includes(new URL(page).pathname),
+        ![
+          '/portfolio/',
+          '/pt/',
+          '/sr/',
+          '/2026-06-09-revisao-de-estrutura-de-dados-usando-python/',
+        ].includes(new URL(page).pathname),
     }),
     expressiveCode({
       themes: ['dracula', 'github-dark', 'github-light'],

@@ -29,7 +29,10 @@ Console, sem estimativa de volume ou promessa de posição.
 
 A marcação usa microdata no HTML, formato aceito pelo Google, sem scripts inline
 adicionais. Ela descreve o conteúdo real; não promete resultados enriquecidos.
-As URLs dos artigos publicados foram preservadas.
+As URLs dos artigos publicados foram preservadas, com uma exceção: o roteiro de
+Python foi substituído pelo artigo Cloudflare Free, em
+`/cloudflare-free-seguranca-desempenho-metricas/`. A URL antiga redireciona para a
+nova publicação pelo HTML estático gerado pelo Astro e fica fora do sitemap.
 
 Referências: [sitemaps no Astro](https://docs.astro.build/en/guides/integrations-guide/sitemap/),
 [URLs canônicas](https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls),
@@ -64,9 +67,8 @@ e [usar Search Console com Analytics](https://developers.google.com/search/docs/
 2. Publicar um estudo de caso do HexaAlerts no próprio domínio, com as imagens,
    decisões e desafios reais já apresentados no portfólio. Relacionar o projeto
    aos serviços e à trajetória profissional.
-3. Concluir o texto de estruturas de dados em Python: hoje ele é um roteiro de
-   tópicos em desenvolvimento, sem as explicações anunciadas. Antes de tratá-lo
-   como guia, acrescentar exemplos executáveis e explicações próprias.
+3. Acompanhar as consultas e dúvidas trazidas pelo artigo Cloudflare Free para
+   orientar novos textos com exemplos práticos de DNS, cache e métricas.
 4. Continuar os temas em que há experiência demonstrável. Os artigos de
    Cloudflare, segurança e sites estáticos já partem de um problema real.
 5. Ligar artigos, projetos, serviços e Sobre quando a relação ajudar a leitura.

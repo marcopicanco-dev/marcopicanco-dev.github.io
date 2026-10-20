@@ -5,9 +5,12 @@ export type BlogFrontmatter = {
   title: string
   description: string
   date: string
+  slug?: string
+  tags?: string[]
   publishedAt?: string
   heroImage?: string
   heroImageAlt?: string
+  heroImageLayout?: 'logo'
 }
 
 export type BlogPostModule = MarkdownInstance<BlogFrontmatter>
@@ -49,7 +52,7 @@ const slugify = (value: string) =>
     .replace(/^-+|-+$/g, '')
 
 export const getBlogPostSlug = (frontmatter: BlogFrontmatter) =>
-  `${frontmatter.date}-${slugify(frontmatter.title)}`
+  frontmatter.slug ?? `${frontmatter.date}-${slugify(frontmatter.title)}`
 
 export const getBlogPostUrl = (frontmatter: BlogFrontmatter) =>
   `/${getBlogPostSlug(frontmatter)}/`
@@ -63,12 +66,13 @@ export const formatBlogDate = (date: string) =>
 
 export const getBlogPostKeywords = (frontmatter: BlogFrontmatter) => {
   const url = getBlogPostUrl(frontmatter)
+  const seriesPart = url.includes('parte-')
+    ? url.match(/parte-(\d+)/)?.[0].replace('-', ' ')
+    : frontmatter.title.includes('Corrigindo headers')
+      ? 'parte 1'
+      : ''
 
-  if (url.includes('parte-')) {
-    return url.match(/parte-(\d+)/)?.[0].replace('-', ' ')
-  }
-
-  return frontmatter.title.includes('Corrigindo headers') ? 'parte 1' : ''
+  return [...(frontmatter.tags ?? []), seriesPart].filter(Boolean).join(' ')
 }
 
 const siteSearchRecords: SearchRecord[] = [
@@ -112,9 +116,9 @@ const siteSearchRecords: SearchRecord[] = [
   {
     title: 'Blog',
     description:
-      'Artigos sobre desenvolvimento, segurança, sites estáticos, Python, Astro e tecnologia.',
+      'Artigos sobre desenvolvimento, segurança, sites estáticos, Cloudflare, Astro e tecnologia.',
     url: '/blog/',
-    keywords: 'artigos posts arquivo segurança cloudflare astro python',
+    keywords: 'artigos posts arquivo segurança cloudflare astro métricas seo',
   },
 ]
 

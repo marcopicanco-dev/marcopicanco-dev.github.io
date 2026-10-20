@@ -1,0 +1,28 @@
+---
+const destination = new URL(
+  '/cloudflare-free-seguranca-desempenho-metricas/',
+  Astro.site,
+)
+---
+
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="robots" content="noindex" />
+    <link rel="canonical" href={destination} />
+    <meta http-equiv="refresh" content={`0;url=${destination.href}`} />
+    <title>Artigo substituído - Marco Picanço</title>
+  </head>
+  <body>
+    <main>
+      <p>
+        Este artigo foi substituído por <a href={destination}
+          >Cloudflare Free na prática: segurança, desempenho e métricas</a
+        >.
+      </p>
+    </main>
+  </body>
+</html>

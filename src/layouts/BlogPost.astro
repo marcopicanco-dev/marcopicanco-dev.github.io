@@ -43,7 +43,10 @@ const authorUrl = new URL('/sobre/', Astro.site)
               src={frontmatter.heroImage}
               itemprop="image"
               alt={frontmatter.heroImageAlt ?? ''}
-              class="post-hero"
+              class:list={[
+                'post-hero',
+                { 'post-hero--logo': frontmatter.heroImageLayout === 'logo' },
+              ]}
               loading="eager"
               decoding="async"
             />
