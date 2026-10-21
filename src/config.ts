@@ -22,6 +22,15 @@ export const GITHUB_REPO_URL = 'https://github.com/marcopicanco-dev'
 export const LINKEDIN_URL = 'https://www.linkedin.com/in/marcopicanco/'
 export const CONTACT_EMAIL = 'marcopicanco@live.com'
 
+export const GISCUS = {
+  repo: 'marcopicanco-dev/giscus',
+  repoId: 'R_kgDOVRipTA',
+  category: 'Announcements',
+  // Comments stay hidden while this id is empty.
+  categoryId: 'DIC_kwDOVRipTM4DJNZM',
+}
+// comments on blog posts, stored in that repository's GitHub Discussions
+
 export const OG_IMAGE = 'og.png'
 // enter name of the og image file you put inside public folder
 // image should be 1200 X 630 pixels

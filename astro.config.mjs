@@ -45,6 +45,7 @@ export default defineConfig({
         "object-src 'none'",
         "base-uri 'self'",
         "form-action 'self'",
+        'frame-src https://giscus.app',
       ],
       scriptDirective: {
         resources: [
@@ -57,12 +58,14 @@ export default defineConfig({
             resource: 'https://www.googletagmanager.com',
             kind: 'element',
           },
+          { resource: 'https://giscus.app', kind: 'element' },
         ],
       },
       styleDirective: {
         resources: [
           { resource: "'self'", kind: 'element' },
           { resource: 'https://fonts.googleapis.com', kind: 'element' },
+          { resource: 'https://giscus.app', kind: 'element' },
           { resource: "'unsafe-inline'", kind: 'attribute' },
         ],
       },

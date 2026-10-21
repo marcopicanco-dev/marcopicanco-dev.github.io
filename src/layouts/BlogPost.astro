@@ -1,5 +1,6 @@
 ---
 import Base from '@/layouts/Base.astro'
+import Comments from '@/components/Comments.astro'
 import {
   formatBlogDate,
   getBlogPostSlug,
@@ -139,6 +140,7 @@ const relatedPosts = getRelatedPosts(frontmatter)
           </section>
         )
       }
+      <Comments />
       <footer class="post-footer">
         <a class="text-link" href="/blog/">← Voltar para o blog</a><a
           class="text-link"

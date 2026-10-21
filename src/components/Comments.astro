@@ -1,0 +1,38 @@
+---
+import { GISCUS } from '@/config'
+
+const discussionsUrl = `https://github.com/${GISCUS.repo}/discussions`
+---
+
+{
+  GISCUS.categoryId && (
+    <section class="comments" aria-labelledby="comments-title">
+      <h2 id="comments-title" class="eyebrow">
+        Comentários
+      </h2>
+      <p class="comments-note">
+        Para comentar ou reagir, entre com sua conta do GitHub. Os comentários
+        ficam públicos nas{' '}
+        <a href={discussionsUrl} target="_blank" rel="noopener noreferrer">
+          discussões do repositório
+        </a>
+        .
+      </p>
+      <div
+        class="giscus"
+        data-repo={GISCUS.repo}
+        data-repo-id={GISCUS.repoId}
+        data-category={GISCUS.category}
+        data-category-id={GISCUS.categoryId}
+        data-mapping="pathname"
+        data-strict="1"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-lang="pt"
+        data-loading="lazy"
+      />
+      <script is:inline defer src="/scripts/comments.js" />
+    </section>
+  )
+}
