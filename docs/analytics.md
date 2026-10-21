@@ -1,6 +1,6 @@
 # Estatísticas com Google Analytics 4
 
-O site usa o fluxo web `G-EELP6HSE1R`. Os relatórios ficam no
+O site usa o fluxo web `G-89409729L9`. Os relatórios ficam no
 [painel privado do Google Analytics](https://analytics.google.com/), acessível
 pela conta Google com permissão nessa propriedade.
 

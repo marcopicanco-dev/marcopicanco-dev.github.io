@@ -1,7 +1,7 @@
 /* global document, Element, window */
 
 ;(() => {
-  const measurementId = 'G-EELP6HSE1R'
+  const measurementId = 'G-89409729L9'
   const productionHosts = ['www.marcopicanco.com', 'marcopicanco.com']
 
   if (

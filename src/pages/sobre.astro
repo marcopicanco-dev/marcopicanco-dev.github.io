@@ -1,5 +1,6 @@
 ---
 import Base from '@/layouts/Base.astro'
+import ProfessionalJourney from '@/components/ProfessionalJourney.astro'
 import { Image } from 'astro:assets'
 import { CONTACT_EMAIL, GITHUB_REPO_URL, LINKEDIN_URL } from '@/config'
 import profilePhoto from '@/assets/profile/perfil-linkedin.png'
@@ -12,8 +13,25 @@ const education = [
     field: 'Ciência da Computação',
     period: 'mar de 2023 - abr de 2024',
     summary:
-      'Formação voltada a padrões, práticas e processos de Engenharia de Software para projetar, desenvolver, garantir qualidade e gerenciar soluções de software que geram valor ao negócio.',
-    skills: ['SQL', 'Resolução de problemas', 'Engenharia de Software'],
+      'Formação com base em Ciência da Computação, Matemática e Produção, voltada à construção, operação, manutenção e evolução de soluções de software de alta qualidade. Integra práticas técnicas e gerenciais, tecnologias modernas e inovação, considerando aspectos éticos, sociais, legais, econômicos e de segurança. Abrange arquitetura de software, liderança técnica, gestão de projetos, pesquisa e melhoria contínua dos processos de desenvolvimento.',
+    skills: [
+      'Análise, modelagem e especificação de software',
+      'Arquitetura e projeto de software',
+      'Programação e construção de software',
+      'Testes de software e garantia da qualidade',
+      'Gestão de projetos de software',
+      'Gerência de configuração e evolução de software',
+      'Gestão da produção e melhoria contínua de processos',
+      'Gestão de equipes e liderança técnica',
+      'Comunicação com stakeholders',
+      'Interação humano-computador',
+      'Lógica matemática e estatística aplicada',
+      'Bancos de dados',
+      'Redes de computadores e sistemas operacionais',
+      'Sistemas distribuídos',
+      'Segurança de software',
+      'Tecnologias móveis e computação em nuvem',
+    ],
   },
   {
     school: 'Descomplica Faculdade Digital',
@@ -23,7 +41,12 @@ const education = [
     period: '2020 - 2021',
     summary:
       'Estudo conceitual e prático de Big Data e Business Analytics, com foco em análise de problemas empresariais, projetos com grandes volumes de dados, qualidade e governança.',
-    skills: ['SQL', 'Resolução de problemas', 'Big Data'],
+    skills: [
+      'Conceitos fundamentais e aplicações de Big Data e Analytics',
+      'Filtragem e processamento de dados brutos para geração de informações úteis',
+      'Introdução a ferramentas do ecossistema de dados, como Hadoop, Spark e Kafka',
+      'Metodologias aplicadas à inteligência competitiva e de mercado',
+    ],
   },
   {
     school: 'Anhanguera Educacional',
@@ -33,7 +56,23 @@ const education = [
     period: '2017 - 2021',
     summary:
       'Formação em técnicas, métodos e ferramentas computacionais para automatizar processos e desenvolver sistemas, incluindo modelagem, testes, redes, bancos de dados e inteligência artificial.',
-    skills: ['SQL', 'Resolução de problemas', 'Programação'],
+    skills: [
+      'Algoritmos e estruturas de dados',
+      'Programação orientada a objetos com Java',
+      'Desenvolvimento web e mobile',
+      'Engenharia de Software',
+      'Matemática computacional',
+      'Lógica',
+      'Sistemas operacionais',
+      'Arquitetura de computadores',
+      'Computação em nuvem',
+      'Fundamentos de inteligência artificial (IA)',
+      'Machine Learning',
+      'Segurança da informação',
+      'Redes de computadores',
+      'Bancos de dados',
+      'Internet das Coisas (IoT)',
+    ],
   },
   {
     school: 'Estácio',
@@ -42,8 +81,23 @@ const education = [
     field: 'Administração, Negócios e Marketing',
     period: '2002 - 2006',
     summary:
-      'Base em Administração de empresas com foco em Marketing, mundo corporativo, estudos, pesquisas e visão prática sobre negócios.',
-    skills: ['Planejamento de eventos', 'Gestão de mudanças', 'Marketing'],
+      'Formação em Administração com foco em gestão estratégica, empreendedorismo, finanças, contabilidade, marketing e negociação. Abrange gestão de pessoas, logística e cadeia de suprimentos, além de direito empresarial, cenários econômicos e estatística aplicada ao planejamento e à tomada de decisão nos negócios.',
+    skills: [
+      'Teoria Geral da Administração',
+      'Planejamento estratégico',
+      'Empreendedorismo',
+      'Administração financeira',
+      'Contabilidade geral',
+      'Orçamentos e custos',
+      'Administração de marketing',
+      'Comportamento do consumidor',
+      'Negociação',
+      'Gestão de recursos humanos',
+      'Logística e cadeia de suprimentos',
+      'Direito empresarial',
+      'Cenários econômicos',
+      'Estatística aplicada',
+    ],
   },
 ]
 ---
@@ -179,6 +233,7 @@ const education = [
             }
           </div>
         </section>
+        <ProfessionalJourney />
         <div class="about-invitation">
           <h2>Vamos conversar sobre o seu projeto?</h2><a
             class="button button-primary"
