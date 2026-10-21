@@ -712,26 +712,152 @@ a {
   font-size: 11px;
   color: var(--muted);
 }
-.footer-grid nav {
+.footer-grid > nav {
   display: flex;
   flex-wrap: wrap;
   gap: 24px;
   font-size: 11px;
 }
-.footer-grid nav a {
+.footer-grid > nav a {
   min-height: 32px;
   display: inline-flex;
   align-items: center;
 }
-.footer-grid nav a:hover {
+.footer-grid > nav a:hover {
   color: var(--accent);
 }
-.footer-copyright {
+.footer-bottom {
   grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 24px;
   border-top: 1px solid var(--line);
   padding-top: 20px;
   font-size: 10px;
   color: var(--muted);
+}
+.footer-bottom nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+}
+.footer-bottom :where(a, button) {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+}
+.footer-bottom :where(a, button):hover {
+  color: var(--accent);
+}
+.cookie-banner {
+  position: fixed;
+  inset: auto 0 0;
+  z-index: 60;
+  padding-block: 20px;
+  border-top: 1px solid var(--line);
+  background: var(--paper);
+  box-shadow: 0 -12px 32px rgb(0 0 0 / 0.08);
+}
+.cookie-banner-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px 32px;
+}
+.cookie-banner p {
+  max-width: 72ch;
+  margin-top: 8px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+:where(.cookie-banner, .cookie-dialog) a {
+  color: var(--accent);
+  text-decoration: underline;
+}
+.cookie-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+.cookie-actions .button {
+  min-height: 44px;
+  padding: 10px 20px;
+}
+.cookie-actions .button:not(.button-primary):hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.cookie-dialog {
+  width: min(560px, calc(100% - 32px));
+  max-height: calc(100dvh - 32px);
+  margin: auto;
+  padding: 28px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+}
+.cookie-dialog::backdrop {
+  background: rgb(0 0 0 / 0.45);
+}
+.cookie-dialog-header,
+.cookie-category-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.cookie-dialog h2 {
+  font-size: 22px;
+  font-weight: 550;
+  letter-spacing: -0.035em;
+}
+.cookie-dialog-close {
+  min-width: 44px;
+  min-height: 44px;
+  font-size: 24px;
+  line-height: 1;
+}
+.cookie-dialog-intro,
+.cookie-categories p {
+  margin-top: 8px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.cookie-categories {
+  margin-block: 20px 24px;
+  padding: 0;
+  list-style: none;
+}
+.cookie-categories li {
+  border-top: 1px solid var(--line);
+  padding-block: 16px;
+}
+.cookie-category-header :where(h3, label) {
+  font-size: 15px;
+  font-weight: 600;
+}
+.cookie-category-header .mono {
+  color: var(--muted);
+}
+.cookie-category-header input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--accent);
+}
+@media (max-width: 720px) {
+  .cookie-banner-inner {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .cookie-actions .button {
+    flex: 1;
+    justify-content: center;
+  }
 }
 .mobile-menu {
   width: min(100%, 480px);
@@ -1413,7 +1539,7 @@ dialog::backdrop {
   .footer-grid {
     grid-template-columns: 1fr 1fr;
   }
-  .footer-grid nav {
+  .footer-grid > nav {
     grid-column: 1 / -1;
   }
   .blog-heading-bottom {
@@ -1626,7 +1752,7 @@ dialog::backdrop {
   .footer-grid > p {
     font-size: 10px;
   }
-  .footer-grid nav {
+  .footer-grid > nav {
     gap: 22px;
   }
   .page-title,

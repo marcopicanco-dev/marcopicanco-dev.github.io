@@ -1,0 +1,26 @@
+---
+import Base from '@/layouts/Base.astro'
+import { formatBlogDate } from '@/utils/blog'
+
+const { frontmatter } = Astro.props as {
+  frontmatter: { title: string; description: string; updated: string }
+}
+---
+
+<Base frontmatter={{ ...frontmatter, layout: '', file: '' }}>
+  <main class="post-page">
+    <header class="post-header">
+      <p class="eyebrow">Informações legais</p>
+      <h1>{frontmatter.title}</h1>
+      <p class="post-description">{frontmatter.description}</p>
+      <div class="post-meta">
+        <span>Última atualização</span><time
+          class="mono"
+          datetime={frontmatter.updated}
+          >{formatBlogDate(frontmatter.updated)}</time
+        >
+      </div>
+    </header>
+    <div id="markdown" class="prose"><slot /></div>
+  </main>
+</Base>

@@ -17,6 +17,14 @@
   }
   window.gtag = gtag
 
+  // consent.js only loads this file after the reader accepts analytics;
+  // advertising stays denied because the site runs no ads.
+  gtag('consent', 'default', {
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+    analytics_storage: 'granted',
+  })
   gtag('js', new Date())
   gtag('config', measurementId, {
     allow_google_signals: false,
@@ -27,6 +35,15 @@
   script.async = true
   script.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`
   document.head.append(script)
+
+  document.addEventListener('cookie-consent', (event) => {
+    const granted = event.detail.analytics === true
+
+    window[`ga-disable-${measurementId}`] = !granted
+    gtag('consent', 'update', {
+      analytics_storage: granted ? 'granted' : 'denied',
+    })
+  })
 
   document.addEventListener('click', (event) => {
     if (!(event.target instanceof Element)) return

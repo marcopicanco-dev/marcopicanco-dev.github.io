@@ -26,8 +26,15 @@ import { CONTACT_EMAIL, GITHUB_REPO_URL, LINKEDIN_URL } from '@/config'
         data-analytics-location="footer">E-mail ↗</a
       >
     </nav>
-    <span class="footer-copyright"
-      >© {new Date().getFullYear()} Marco Picanço</span
-    >
+    <div class="footer-bottom">
+      <span>© {new Date().getFullYear()} Marco Picanço</span>
+      <nav aria-label="Privacidade e termos">
+        <a href="/privacidade/">Privacidade</a>
+        <a href="/termos/">Termos de uso</a>
+        <button type="button" data-cookie-action="preferences"
+          >Preferências de cookies</button
+        >
+      </nav>
+    </div>
   </div>
 </footer>
