@@ -47,6 +47,8 @@ jobs:
         uses: actions/upload-pages-artifact@v5
         with:
           path: ./dist
+          # A v5 ignora pastas ocultas por padrão; sem isso /.well-known/security.txt não é publicado.
+          include-hidden-files: true
 
   deploy:
     needs: build

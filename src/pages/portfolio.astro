@@ -1,5 +1,7 @@
 ---
-import PortfolioPage from '@/components/Portfolio.astro'
+import Redirect from '@/layouts/Redirect.astro'
 ---
 
-<PortfolioPage />
+<Redirect to="/" title="Página movida">
+  Esta página agora fica na <a href="/">página inicial</a>.
+</Redirect>

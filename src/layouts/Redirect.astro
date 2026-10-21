@@ -1,0 +1,29 @@
+---
+// Static redirect for retired URLs: GitHub Pages cannot send HTTP 301s, and
+// Google treats an immediate meta refresh as a permanent redirect.
+type Props = {
+  to: string
+  title: string
+}
+
+const { to, title } = Astro.props
+const destination = new URL(to, Astro.site)
+---
+
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="robots" content="noindex" />
+    <link rel="canonical" href={destination} />
+    <meta http-equiv="refresh" content={`0;url=${destination.href}`} />
+    <title>{title} - Marco Picanço</title>
+  </head>
+  <body>
+    <main>
+      <p><slot /></p>
+    </main>
+  </body>
+</html>

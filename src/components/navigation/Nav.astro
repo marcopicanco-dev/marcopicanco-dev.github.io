@@ -3,15 +3,7 @@ import { PROJECT_NAME } from '@/config'
 import ThemeSwitcher from '@/components/navigation/ThemeSwitcher.astro'
 import MobileNav from '@/components/navigation/MobileNav.astro'
 
-const isHome = [
-  '/',
-  '/portfolio/',
-  '/portfolio',
-  '/pt/',
-  '/pt',
-  '/sr/',
-  '/sr',
-].includes(Astro.url.pathname)
+const isHome = Astro.url.pathname === '/'
 const sectionHref = (id: string) => (isHome ? `#${id}` : `/#${id}`)
 const navLinks = [
   { label: 'Projetos', href: sectionHref('projetos') },
