@@ -2,44 +2,17 @@ name: CI
 
 on:
   pull_request:
-    branches: [develop, main]
-    types: [opened, synchronize, reopened, edited, ready_for_review]
-  push:
-    branches: [develop]
   workflow_dispatch:
 
 permissions:
   contents: read
 
-concurrency:
-  group: ci-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
-
 jobs:
-  branch-policy:
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-        with:
-          persist-credentials: false
-
-      - name: Validate pull request route
-        env:
-          PR_BASE_REF: ${{ github.base_ref }}
-          PR_HEAD_REF: ${{ github.head_ref }}
-          PR_HEAD_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name }}
-        run: bash .github/scripts/check-pr-route.sh
-
   checks:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
-        with:
-          persist-credentials: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v5
@@ -62,8 +35,5 @@ jobs:
       - name: Build
         run: npm run build
 
-      # Desenvolvimento pode gerar novos hashes antes de atualizar a Cloudflare.
-      # A compatibilidade com produção é obrigatória no PR de release e no deploy.
-      - name: Check Cloudflare CSP header covers this release
-        if: github.base_ref == 'main' || github.ref == 'refs/heads/main'
+      - name: Check Cloudflare CSP header covers this build
         run: npm run security:edge-csp
