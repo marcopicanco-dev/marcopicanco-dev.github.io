@@ -42,6 +42,11 @@ jobs:
       - name: Build Astro
         run: npm run build
 
+      # Bloqueia o deploy se o header CSP da Cloudflare ainda não permitir os
+      # hashes deste build; o resumo do job traz o valor para colar na Cloudflare.
+      - name: Check Cloudflare CSP header covers this build
+        run: npm run security:edge-csp
+
       - name: Upload artifact
         # Atualizado para v5 (resolve a dependência interna do upload-artifact@v4)
         uses: actions/upload-pages-artifact@v5
@@ -93,7 +98,6 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Validate production security headers
-        continue-on-error: true
         env:
           SITE_URL: https://www.marcopicanco.com
         run: |

@@ -1,0 +1,29 @@
+name: Production security check
+
+# Pega mudanças feitas direto no painel da Cloudflare, que nenhum deploy dispara.
+on:
+  schedule:
+    # Segundas-feiras às 09:00 (horário de Brasília).
+    - cron: '0 12 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  headers:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+
+      # O script só usa módulos nativos do Node, então não precisa de npm ci.
+      - name: Validate production security headers
+        env:
+          SITE_URL: https://www.marcopicanco.com
+        run: node scripts/check-production-headers.mjs

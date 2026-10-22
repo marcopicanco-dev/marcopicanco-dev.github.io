@@ -34,3 +34,6 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Check Cloudflare CSP header covers this build
+        run: npm run security:edge-csp

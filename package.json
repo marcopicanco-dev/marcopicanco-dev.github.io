@@ -15,8 +15,9 @@
     "lint": "eslint .",
     "security:audit": "npm audit --audit-level=moderate --omit=dev",
     "security:csp": "node scripts/print-csp-header.mjs",
+    "security:edge-csp": "node scripts/check-edge-csp.mjs",
     "security:headers": "node scripts/check-production-headers.mjs",
-    "security:test": "node --test tests/security.test.mjs",
+    "security:test": "node --test tests/security.test.mjs tests/csp-policy.test.mjs",
     "security": "npm run typecheck && npm run security:test && npm run security:audit",
     "typecheck": "astro sync && tsc --noEmit"
   },

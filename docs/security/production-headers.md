@@ -78,7 +78,22 @@ requires them. Update the Cloudflare header
 when deploying the analytics integration; allowing them in the HTML alone is
 insufficient. See [the analytics setup](../analytics.md).
 
-After every build that changes inline scripts or generated styles, print the current CSP value:
+The deploy workflow detects when a build needs a new header. After building, it
+runs `npm run security:edge-csp`, which compares the live Cloudflare header with
+the policies of every built page. If the header would block anything the build
+needs, the job fails before deploying, and its summary shows the value to paste:
+the live tokens plus the new ones, so pages from the previous deploy keep working
+during the switch. Paste it, then re-run the workflow.
+
+To check a local build before pushing:
+
+```bash
+npm run build
+npm run security:edge-csp
+```
+
+To print the header for the current build without the old tokens, for example to
+drop hashes no longer in use once the new deploy is live:
 
 ```bash
 npm run build
@@ -129,7 +144,7 @@ Run:
 npm run security:headers
 ```
 
-The command sends production requests to `https://www.marcopicanco.com` and fails on missing or invalid edge headers.
+The command sends production requests to `https://www.marcopicanco.com` and fails on missing or invalid edge headers. It also reads the sitemap and fails if the CSP header of any page blocks a token that page's `<meta>` policy allows, which is how a stale hash breaks scripts in production.
 
 To check another environment:
 
@@ -157,8 +172,16 @@ npm run security
 npm run build
 ```
 
+Before uploading the build, it runs `npm run security:edge-csp` and stops the
+deploy if the Cloudflare header must be updated first. Pull requests run the same
+check in `ci.yml`.
+
 After deploy, it waits briefly for the edge and runs:
 
 ```bash
 npm run security:headers
 ```
+
+A failure marks the workflow as failed. The `production-check.yml` workflow runs
+the same check every Monday, to catch changes made directly in the Cloudflare
+dashboard.

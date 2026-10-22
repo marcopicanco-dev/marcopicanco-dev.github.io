@@ -1,8 +1,10 @@
 import assert from 'node:assert/strict'
+import { extractCspMeta, findUncoveredTokens, parseCsp } from './csp-policy.mjs'
 
 const target = new URL(
   process.env.SITE_URL ?? process.argv[2] ?? 'https://www.marcopicanco.com',
 )
+const userAgent = 'marcopicanco-security-header-check/1.0'
 
 function reportFailure(error) {
   console.error(`Production security header check failed for ${target.href}`)
@@ -83,39 +85,8 @@ function expectHeaderIncludes(headers, name, expectedTokens) {
   )
 }
 
-function decodeHtmlAttribute(value) {
-  return value
-    .replaceAll('&amp;', '&')
-    .replaceAll('&quot;', '"')
-    .replaceAll('&#39;', "'")
-}
-
-function extractCspMeta(html) {
-  const match = html.match(
-    /<meta\s+http-equiv=["']content-security-policy["']\s+content=(["'])([\s\S]*?)\1\s*\/?>/i,
-  )
-
-  assert.ok(match, 'HTML must include the generated CSP meta tag')
-
-  return decodeHtmlAttribute(match[2])
-}
-
-function parseCsp(policy) {
-  return new Map(
-    policy
-      .split(';')
-      .map((directive) => directive.trim())
-      .filter(Boolean)
-      .map((directive) => {
-        const [name, ...tokens] = directive.split(/\s+/)
-
-        return [name.toLowerCase(), tokens]
-      }),
-  )
-}
-
 function getDirectiveTokens(policy, directive) {
-  return parseCsp(policy).get(directive) ?? []
+  return new Map(parseCsp(policy)).get(directive) ?? []
 }
 
 function expectDirectiveTokens(policy, directive, expectedTokens) {
@@ -218,12 +189,73 @@ function expectCloudflare(headers) {
   )
 }
 
+async function fetchSitemapPages() {
+  const locations = (xml) =>
+    [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map(([, url]) => url)
+  const fetchText = async (url) => {
+    const response = await fetch(url, { headers: { 'user-agent': userAgent } })
+    assert.equal(
+      response.status,
+      200,
+      `${url} returned HTTP ${response.status}`,
+    )
+
+    return response.text()
+  }
+
+  const index = await fetchText(new URL('/sitemap-index.xml', target))
+  const pages = []
+
+  for (const sitemap of locations(index)) {
+    const xml = await fetchText(new URL(new URL(sitemap).pathname, target))
+    pages.push(
+      ...locations(xml).map((url) => new URL(new URL(url).pathname, target)),
+    )
+  }
+
+  return pages
+}
+
+// A stale hash in the Cloudflare header silently breaks any inline script that
+// changed since the header was last updated, so check every published page.
+async function expectEdgeCspCoversPages() {
+  const failures = []
+
+  for (const page of await fetchSitemapPages()) {
+    const response = await fetch(page, { headers: { 'user-agent': userAgent } })
+    const headerPolicy = normalize(
+      response.headers.get('content-security-policy'),
+    )
+    const pagePolicy = extractCspMeta(await response.text())
+
+    if (response.status !== 200 || !headerPolicy || !pagePolicy) {
+      failures.push(
+        `${page.pathname}: HTTP ${response.status}, CSP header ${headerPolicy ? 'present' : 'missing'}, CSP meta ${pagePolicy ? 'present' : 'missing'}`,
+      )
+      continue
+    }
+
+    for (const [directive, tokens] of findUncoveredTokens(
+      headerPolicy,
+      pagePolicy,
+    )) {
+      failures.push(`${page.pathname}: ${directive} blocks ${tokens.join(' ')}`)
+    }
+  }
+
+  assert.deepEqual(
+    failures,
+    [],
+    `The Cloudflare CSP header blocks what these pages allow:\n${failures.join('\n')}\nRun "npm run build && npm run security:csp" and paste the output into the Cloudflare Response Header Transform Rule.`,
+  )
+}
+
 async function fetchHead() {
   const response = await fetch(target, {
     method: 'HEAD',
     redirect: 'follow',
     headers: {
-      'user-agent': 'marcopicanco-security-header-check/1.0',
+      'user-agent': userAgent,
     },
   })
 
@@ -240,7 +272,7 @@ async function fetchHtml() {
   const response = await fetch(target, {
     redirect: 'follow',
     headers: {
-      'user-agent': 'marcopicanco-security-header-check/1.0',
+      'user-agent': userAgent,
     },
   })
 
@@ -283,4 +315,8 @@ assert.match(
   'HTML must keep the strict-origin-when-cross-origin referrer meta tag',
 )
 
-console.log(`Production security headers passed for ${target.href}`)
+await expectEdgeCspCoversPages()
+
+console.log(
+  `Production security headers passed for ${target.href}, and the CSP header covers every page in the sitemap`,
+)
