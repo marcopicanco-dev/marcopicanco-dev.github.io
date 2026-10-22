@@ -221,6 +221,10 @@ vetorial; o README usa a exportação em PNG para facilitar a visualização.
 
 ## Desenvolvimento
 
+O fluxo de alterações é **branch de trabalho → PR para `develop` → PR para `main` → deploy**.
+Somente `main` publica o site. Veja o [guia de desenvolvimento, proteção de branches,
+publicação e rollback](docs/deployment.md) antes de começar uma alteração.
+
 Use Node.js 22.22.2 ou uma versão compatível indicada em `package.json`, com npm 12.2 ou superior. O CI utiliza as versões de `.nvmrc` e `packageManager`.
 
 ```sh
