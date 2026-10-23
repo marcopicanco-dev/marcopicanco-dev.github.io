@@ -1,0 +1,47 @@
+---
+import stats from '@/data/public-visitor-count.json'
+
+const { totalUsers, updatedAt, throughDate } = stats as {
+  totalUsers: number | null
+  updatedAt: string | null
+  throughDate: string | null
+}
+const available =
+  typeof totalUsers === 'number' &&
+  Number.isSafeInteger(totalUsers) &&
+  totalUsers >= 0 &&
+  typeof updatedAt === 'string' &&
+  Number.isFinite(Date.parse(updatedAt)) &&
+  typeof throughDate === 'string' &&
+  /^\d{4}-\d{2}-\d{2}$/.test(throughDate) &&
+  Number.isFinite(Date.parse(`${throughDate}T12:00:00Z`))
+
+const formattedCount = available
+  ? new Intl.NumberFormat('pt-BR').format(totalUsers as number)
+  : ''
+const formattedDate = available
+  ? new Intl.DateTimeFormat('pt-BR', { timeZone: 'UTC' }).format(
+      new Date(`${throughDate}T12:00:00Z`),
+    )
+  : ''
+---
+
+{
+  available && (
+    <a
+      class="footer-visitors"
+      href="/privacidade/#contador-de-visitantes"
+      title={`Estimativa acumulada do Google Analytics até ${formattedDate}. Atualização diária.`}
+    >
+      <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+        <path d="M10 10h40v40H10z M90 50a40 40 0 0 1-40 40V50h40Z M50 10a40 40 0 0 1 40 40h-8a32 32 0 0 0-32-32Z" />
+      </svg>
+      <strong>{formattedCount}</strong>
+      <span>visitantes únicos</span>
+      <span class="sr-only">
+        estimados, com dados até {formattedDate}. Saiba como o total é
+        calculado.
+      </span>
+    </a>
+  )
+}

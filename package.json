@@ -17,6 +17,8 @@
     "security:csp": "node scripts/print-csp-header.mjs",
     "security:edge-csp": "node scripts/check-edge-csp.mjs",
     "security:headers": "node scripts/check-production-headers.mjs",
+    "stats:update": "node scripts/update-public-visitor-count.mjs",
+    "test:visitor-count": "node --test tests/visitor-count.test.mjs",
     "security:test": "node --test tests/security.test.mjs tests/csp-policy.test.mjs",
     "security": "npm run typecheck && npm run security:test && npm run security:audit",
     "typecheck": "astro sync && tsc --noEmit"

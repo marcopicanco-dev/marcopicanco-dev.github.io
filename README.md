@@ -249,6 +249,10 @@ contato no domínio de produção. Os relatórios são acessados pela conta Goog
 Veja [a configuração e a validação do Analytics](docs/analytics.md), incluindo a
 atualização necessária da CSP no Cloudflare ao publicar.
 
+O rodapé pode exibir uma estimativa pública de visitantes únicos, atualizada
+diariamente a partir do GA4. Veja [como ativar o contador](docs/public-visitor-counter.md)
+com acesso somente de leitura e credenciais restritas ao GitHub Actions.
+
 ## SEO e descoberta
 
 O build gera um sitemap com as páginas canônicas. Metadados próprios, marcação

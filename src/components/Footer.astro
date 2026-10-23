@@ -1,5 +1,6 @@
 ---
 import { CONTACT_EMAIL, GITHUB_REPO_URL, LINKEDIN_URL } from '@/config'
+import VisitorCounter from '@/components/VisitorCounter.astro'
 ---
 
 <footer class="site-footer">
@@ -28,6 +29,7 @@ import { CONTACT_EMAIL, GITHUB_REPO_URL, LINKEDIN_URL } from '@/config'
     </nav>
     <div class="footer-bottom">
       <span>© {new Date().getFullYear()} Marco Picanço</span>
+      <VisitorCounter />
       <nav aria-label="Privacidade e termos">
         <a href="/privacidade/">Privacidade</a>
         <a href="/termos/">Termos de uso</a>

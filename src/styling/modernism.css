@@ -751,6 +751,24 @@ a {
 .footer-bottom :where(a, button):hover {
   color: var(--accent);
 }
+.footer-visitors {
+  gap: 6px;
+  font-variant-numeric: tabular-nums;
+}
+.footer-visitors svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  fill: var(--accent);
+}
+.footer-visitors strong {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.footer-visitors:hover strong {
+  color: var(--accent);
+}
 .cookie-banner {
   position: fixed;
   inset: auto 0 0;

@@ -4,6 +4,9 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  schedule:
+    # Atualiza a estimativa diariamente, por volta de 06:17 em São Paulo.
+    - cron: '17 9 * * *'
 
 permissions:
   contents: read
@@ -38,6 +41,16 @@ jobs:
 
       - name: Security checks
         run: npm run security
+
+      - name: Visitor counter tests
+        run: npm run test:visitor-count
+
+      - name: Update public visitor count
+        if: github.ref == 'refs/heads/main'
+        env:
+          GA4_PROPERTY_ID: ${{ vars.GA4_PROPERTY_ID }}
+          GA4_SERVICE_ACCOUNT_JSON: ${{ secrets.GA4_SERVICE_ACCOUNT_JSON }}
+        run: npm run stats:update
 
       - name: Build Astro
         run: npm run build
