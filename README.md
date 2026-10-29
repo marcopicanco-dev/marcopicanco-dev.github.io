@@ -209,14 +209,15 @@ vendas ou posição em buscadores para esta proposta.
 
 ## Onde manter a identidade
 
-| Arquivo                                                                      | Responsabilidade                                                 |
-| ---------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| [`src/styling/modernism.css`](src/styling/modernism.css)                     | Paletas, tipografia, malha, componentes e adaptações responsivas |
-| [`src/layouts/Base.astro`](src/layouts/Base.astro)                           | Estrutura comum e carregamento da Inter                          |
-| [`src/components/Portfolio.astro`](src/components/Portfolio.astro)           | Conteúdo e sequência da página inicial                           |
-| [`src/components/navigation/Nav.astro`](src/components/navigation/Nav.astro) | Marca e navegação principal                                      |
-| [`public/favicon.svg`](public/favicon.svg)                                   | Assinatura geométrica no ícone do site                           |
-| [`docs/design/`](docs/design/)                                               | Brief arquivado, prancha de cores e capturas da interface        |
+| Arquivo                                                                        | Responsabilidade                                                 |
+| ------------------------------------------------------------------------------ | ---------------------------------------------------------------- |
+| [`src/styling/modernism.css`](src/styling/modernism.css)                       | Paletas, tipografia, malha, componentes e adaptações responsivas |
+| [`src/layouts/Base.astro`](src/layouts/Base.astro)                             | Estrutura comum e carregamento da Inter                          |
+| [`src/components/Portfolio.astro`](src/components/Portfolio.astro)             | Conteúdo e sequência da página inicial                           |
+| [`src/components/ProjectCarousel.astro`](src/components/ProjectCarousel.astro) | Projetos do carrossel, com textos, capturas e desafios           |
+| [`src/components/navigation/Nav.astro`](src/components/navigation/Nav.astro)   | Marca e navegação principal                                      |
+| [`public/favicon.svg`](public/favicon.svg)                                     | Assinatura geométrica no ícone do site                           |
+| [`docs/design/`](docs/design/)                                                 | Brief arquivado, prancha de cores e capturas da interface        |
 
 Ao alterar uma cor, revise o par de texto e fundo nos dois temas e atualize as
 amostras e os valores desta documentação. A
