@@ -22,7 +22,7 @@ Os cliques identificados no HTML usam os seguintes eventos:
 | Evento          | Quando ocorre                                              | Parâmetros                        |
 | --------------- | ---------------------------------------------------------- | --------------------------------- |
 | `contact_click` | Clique em um canal de contato por e-mail ou LinkedIn       | `contact_method`, `link_location` |
-| `project_click` | Clique na imagem, arquitetura ou repositório do HexaAlerts | `project_id`, `link_location`     |
+| `project_click` | Clique na imagem, arquitetura ou repositório de um projeto | `project_id`, `link_location`     |
 
 Os parâmetros dos eventos personalizados contêm apenas identificadores definidos
 no código. Não incluem o endereço de e-mail, assunto da mensagem, texto do link
@@ -33,6 +33,8 @@ Para instrumentar novos links, use `data-analytics-contact="email"` ou
 `data-analytics-contact="linkedin"` para contato, ou
 `data-analytics-project="identificador_do_projeto"` para projetos. Defina também
 `data-analytics-location` com um identificador do local do link na página.
+No carrossel de projetos, o identificador vem do campo `analyticsId` de cada
+item (`hexa_alerts`, `brasil_eleitoral`).
 
 ## Publicação e CSP do Cloudflare
 
@@ -67,7 +69,7 @@ rtk npm run security:headers
 1. Abra o site publicado em uma janela sem bloqueadores de analytics.
 2. No Google Analytics, abra o relatório **Tempo real** da propriedade.
 3. Visite a página inicial, o blog e um artigo; confira os eventos `page_view`.
-4. Clique em um link de contato e em um link do HexaAlerts; confira
+4. Clique em um link de contato e em um link de projeto; confira
    `contact_click` e `project_click`.
 
 Para analisar os parâmetros personalizados nos relatórios e explorações, crie

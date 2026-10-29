@@ -435,6 +435,85 @@ a {
 .project-section {
   background: var(--surface);
 }
+.project-carousel-controls {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 36px;
+  border-bottom: 1px solid var(--line);
+}
+.project-carousel-pager {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 32px;
+}
+.project-carousel-pager a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-width: 44px;
+  min-height: 48px;
+  margin-bottom: -1px;
+  border-bottom: 2px solid transparent;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 550;
+}
+.project-carousel-pager a:hover,
+.project-carousel-pager a[aria-current] {
+  color: var(--ink);
+}
+.project-carousel-pager a[aria-current] {
+  border-bottom-color: var(--accent);
+}
+.project-carousel-pager .mono {
+  color: var(--accent);
+}
+.project-carousel-arrows {
+  display: flex;
+  gap: 8px;
+  padding-bottom: 8px;
+}
+.project-carousel-arrows[hidden] {
+  display: none;
+}
+.project-carousel-arrows button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  font-size: 19px;
+}
+.project-carousel-arrows button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+/* The negative margin and slide padding leave room for focus outlines,
+   which the scrolling track would otherwise clip. */
+.project-track {
+  display: flex;
+  margin: -8px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.project-track::-webkit-scrollbar {
+  display: none;
+}
+.project-slide {
+  flex: 0 0 100%;
+  padding: 8px;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  /* Keeps the pager in view when the search opens a project by its anchor. */
+  scroll-margin-top: 100px;
+}
 .project-case {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -458,7 +537,7 @@ a {
   width: 100%;
   aspect-ratio: 4 / 3;
   object-fit: cover;
-  object-position: top;
+  object-position: left top;
 }
 .project-info h3 {
   margin-top: 18px;
@@ -1697,6 +1776,18 @@ dialog::backdrop {
   .service-row .service-detail {
     font-size: 10px;
   }
+  .project-carousel-pager {
+    gap: 0 12px;
+  }
+  /* Only the numbers fit beside the arrows; names stay as the link text. */
+  .project-carousel-name {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
   .project-case {
     gap: 30px;
   }
@@ -1836,7 +1927,8 @@ dialog::backdrop {
   }
 }
 @media (prefers-reduced-motion: no-preference) {
-  html {
+  html,
+  .project-track {
     scroll-behavior: smooth;
   }
   a,

@@ -149,13 +149,18 @@ identifica a abertura e complementa essa assinatura geométrica.
 
 A página inicial apresenta uma sequência de avaliação e contato:
 
-1. **Abertura:** o que é desenvolvido, mensagem principal e  um convite para conversar.
+1. **Abertura:** o que é desenvolvido, mensagem principal e um convite para conversar.
 2. **Serviços:** sites e presença digital; sistemas e aplicações web; integrações e
    evolução, com descrição do problema atendido e contexto técnico.
-3. **Projeto selecionado:** [HexaAlerts](https://github.com/marcopicanco-dev/hexa_alerts),
+3. **Projetos:** um carrossel com [HexaAlerts](https://github.com/marcopicanco-dev/hexa_alerts),
    criado para acompanhar os lances da Copa e praticar Redis, Sidekiq, webhooks
-   idempotentes e reconciliação de partidas entre provedores. A seção mostra uma
-   captura real do painel, as tecnologias e os principais desafios enfrentados.
+   idempotentes e reconciliação de partidas entre provedores, e
+   [Brasil Eleitoral](https://github.com/marcopicanco-dev/brasil-eleitoral), um
+   dashboard dos governos desde 1985 com dados rastreáveis até fontes oficiais.
+   Cada projeto mostra uma captura real, as tecnologias e os principais desafios.
+   Os projetos ficam em `src/components/ProjectCarousel.astro`; para incluir
+   outro, acrescente um item à lista `projects` e a captura em
+   `src/assets/projects/`.
 4. **Processo:** entender, definir, construir e acompanhar.
 5. **Sobre:** retrato e apresentação breve, com trajetória completa em `/sobre/`.
 6. **Escrita:** textos selecionados e acesso ao arquivo em `/blog/`.
@@ -217,7 +222,6 @@ Ao alterar uma cor, revise o par de texto e fundo nos dois temas e atualize as
 amostras e os valores desta documentação. A
 [prancha em SVG](docs/design/paletas-modernismo.svg) está disponível como fonte
 vetorial; o README usa a exportação em PNG para facilitar a visualização.
-
 
 ## Desenvolvimento
 

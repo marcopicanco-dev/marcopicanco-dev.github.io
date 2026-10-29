@@ -139,9 +139,17 @@ const siteSearchRecords: SearchRecord[] = [
     title: 'Projetos — HexaAlerts',
     description:
       'Aplicação para acompanhar a Copa, com Redis, Sidekiq, webhooks idempotentes e reconciliação de partidas entre provedores.',
-    url: '/#projetos',
+    url: '/#projeto-hexa-alerts',
     keywords:
       'portfolio hexa alerts copa futebol rails redis sidekiq webhook filas idempotencia reconciliacao provedores apis testes',
+  },
+  {
+    title: 'Projetos — Brasil Eleitoral',
+    description:
+      'Dashboard dos presidentes desde 1985, com eleições do TSE, IPCA do IBGE, comparação de governos e dados rastreáveis até a fonte.',
+    url: '/#projeto-brasil-eleitoral',
+    keywords:
+      'portfolio brasil eleitoral presidentes governos eleicoes tse ibge ipca dashboard dados abertos rails postgresql tailwind hotwire',
   },
   {
     title: 'Serviços',
