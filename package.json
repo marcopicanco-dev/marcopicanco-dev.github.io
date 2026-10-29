@@ -63,6 +63,9 @@
   "overrides": {
     "@expressive-code/core": {
       "postcss-nested": "^7.0.2"
+    },
+    "@tailwindcss/typography": {
+      "postcss-selector-parser": "^6.1.5"
     }
   },
   "packageManager": "npm@12.2.0"
