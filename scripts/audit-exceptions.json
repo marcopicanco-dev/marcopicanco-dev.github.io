@@ -1,0 +1,8 @@
+[
+  {
+    "id": "GHSA-fc5q-39xc-vjpf",
+    "package": "picomatch",
+    "expires": "2026-12-17",
+    "reason": "ReDoS needs attacker-supplied glob patterns. picomatch only runs at build time (Astro, Vite, tinyglobby) with globs written in this repository, and the published site is static HTML. No patched release exists yet: the advisory covers <=4.0.7, the latest version."
+  }
+]

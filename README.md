@@ -245,7 +245,9 @@ npm run build
 ```
 
 Os detalhes da atualização que corrigiu a auditoria de dependências estão em
-[docs/security/dependency-upgrade.md](docs/security/dependency-upgrade.md).
+[docs/security/dependency-upgrade.md](docs/security/dependency-upgrade.md). As
+regras da auditoria e as exceções com prazo estão em
+[docs/security/npm-audit.md](docs/security/npm-audit.md).
 
 ## Estatísticas
 
