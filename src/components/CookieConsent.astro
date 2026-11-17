@@ -1,5 +1,10 @@
 ---
 // Markup only: public/scripts/consent.js shows the banner and stores the choice.
+import { getLang, getTranslations, localizePath } from '@/i18n/utils'
+
+const lang = getLang(Astro.currentLocale)
+const t = getTranslations(lang)
+const privacyHref = localizePath('/privacidade/', lang)
 ---
 
 <section
@@ -10,27 +15,27 @@
 >
   <div class="site-container cookie-banner-inner">
     <div>
-      <h2 id="cookie-banner-title" class="eyebrow">Cookies e privacidade</h2>
+      <h2 id="cookie-banner-title" class="eyebrow">
+        {t('cookies.bannerTitle')}
+      </h2>
       <p>
-        Uso cookies necessários para o site funcionar com segurança. Com a sua
-        permissão, também uso o Google Analytics para saber quais páginas são
-        lidas. Você pode mudar a escolha quando quiser, em “Preferências de
-        cookies”, no rodapé. <a href="/privacidade/">Política de privacidade</a>
+        {t('cookies.bannerText')}{' '}
+        <a href={privacyHref}>{t('cookies.privacyPolicy')}</a>
       </p>
     </div>
     <div class="cookie-actions">
       <button type="button" class="button" data-cookie-action="reject">
-        Recusar
+        {t('cookies.reject')}
       </button>
       <button type="button" class="button" data-cookie-action="accept">
-        Aceitar
+        {t('cookies.accept')}
       </button>
       <button
         type="button"
         class="text-link cookie-customize"
         data-cookie-action="preferences"
       >
-        Personalizar
+        {t('cookies.customize')}
       </button>
     </div>
   </div>
@@ -42,33 +47,31 @@
   data-cookie-dialog
 >
   <div class="cookie-dialog-header">
-    <h2 id="cookie-dialog-title">Preferências de cookies</h2>
+    <h2 id="cookie-dialog-title">{t('cookies.preferences')}</h2>
     <button
       type="button"
       class="cookie-dialog-close"
-      aria-label="Fechar sem salvar"
+      aria-label={t('cookies.closeWithoutSaving')}
       data-cookie-action="close">×</button
     >
   </div>
   <p class="cookie-dialog-intro">
-    Escolha o que pode ser usado neste navegador. Detalhes de cada item estão na{
-      ' '
-    }<a href="/privacidade/#cookies">política de privacidade</a>.
+    {t('cookies.dialogIntro')}{' '}
+    <a href={`${privacyHref}#cookies`}>{t('cookies.dialogIntroLink')}</a>.
   </p>
   <ul class="cookie-categories">
     <li>
       <div class="cookie-category-header">
-        <h3>Necessários</h3>
-        <span class="mono">Sempre ativos</span>
+        <h3>{t('cookies.necessary')}</h3>
+        <span class="mono">{t('cookies.alwaysOn')}</span>
       </div>
       <p>
-        Proteção contra bots da Cloudflare, tema claro ou escuro, sua escolha
-        sobre cookies e a sessão dos comentários quando você entra com o GitHub.
+        {t('cookies.necessaryText')}
       </p>
     </li>
     <li>
       <div class="cookie-category-header">
-        <label for="cookie-analytics">Estatísticas</label>
+        <label for="cookie-analytics">{t('cookies.analytics')}</label>
         <input
           id="cookie-analytics"
           type="checkbox"
@@ -77,26 +80,27 @@
         />
       </div>
       <p>
-        Google Analytics 4: páginas visitadas, origem do acesso e cliques em
-        links de contato e projetos. Cookies <code>_ga</code> e <code
-          >_ga_*</code
-        >. Não é usado para publicidade.
+        {t('cookies.analyticsText')}{' '}{t('cookies.analyticsCookies')}{
+          ' '
+        }<code>_ga</code>{' '}{t('common.and')}{' '}<code>_ga_*</code>.{' '}{
+          t('cookies.analyticsNoAds')
+        }
       </p>
     </li>
   </ul>
   <div class="cookie-actions">
     <button type="button" class="button" data-cookie-action="reject">
-      Recusar tudo
+      {t('cookies.rejectAll')}
     </button>
     <button type="button" class="button" data-cookie-action="accept">
-      Aceitar tudo
+      {t('cookies.acceptAll')}
     </button>
     <button
       type="button"
       class="button button-primary"
       data-cookie-action="save"
     >
-      Salvar escolha
+      {t('cookies.save')}
     </button>
   </div>
 </dialog>

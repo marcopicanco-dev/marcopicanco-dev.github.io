@@ -6,11 +6,8 @@ export const PROJECT_NAME = 'Marco Picanço'
 
 export const SITE = {
   title: 'Marco Picanço',
-  description:
-    'Desenvolvimento de sites, aplicações web e integrações. Conheça o trabalho de Marco Picanço e seus artigos sobre software e tecnologia.',
-  defaultLanguage: 'pt_BR', // locale used in meta tags
 }
-// used for meta tags
+// used for meta tags; the per-language description and og:locale live in src/i18n
 
 export const DEFAULT_LANGUAGE_CODE: LanguageKeys = 'pt'
 // when user is on '/' path, this will be the default language

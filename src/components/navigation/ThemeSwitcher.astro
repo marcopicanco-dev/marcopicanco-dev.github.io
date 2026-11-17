@@ -1,8 +1,14 @@
+---
+import { getLang, getTranslations } from '@/i18n/utils'
+
+const t = getTranslations(getLang(Astro.currentLocale))
+---
+
 <div class="theme-switcher relative z-20" transition:persist>
   <button
     type="button"
     class="theme-switcher-button icon-button"
-    aria-label="Alterar tema"
+    aria-label={t('theme.change')}
     aria-expanded="false"
   >
     <svg
@@ -35,7 +41,7 @@
       data-theme-value="light"
       aria-pressed="false"
     >
-      <span>Claro</span>
+      <span>{t('theme.light')}</span>
       <span class="theme-check hidden">✓</span>
     </button>
     <button
@@ -44,7 +50,7 @@
       data-theme-value="dark"
       aria-pressed="false"
     >
-      <span>Escuro</span>
+      <span>{t('theme.dark')}</span>
       <span class="theme-check hidden">✓</span>
     </button>
   </div>

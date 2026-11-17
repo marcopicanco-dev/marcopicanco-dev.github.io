@@ -1,0 +1,10 @@
+---
+import LegalDocument from '@/components/LegalDocument.astro'
+import { getLanguageStaticPaths } from '@/i18n/utils'
+import { type GetStaticPaths } from 'astro'
+
+export const getStaticPaths = (() =>
+  getLanguageStaticPaths()) satisfies GetStaticPaths
+---
+
+<LegalDocument name="termos" />

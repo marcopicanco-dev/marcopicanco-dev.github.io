@@ -1,17 +1,19 @@
 ---
 import { type SearchRecord } from '@/types'
-import { type LanguageKeys, SEARCH } from '@/i18n/ui'
-const { items, lang } = Astro.props as {
-  items: SearchRecord[]
-  lang: LanguageKeys
-}
+import { getLang, getTranslations } from '@/i18n/utils'
+
+const { items } = Astro.props as { items: SearchRecord[] }
+const t = getTranslations(getLang(Astro.currentLocale))
 const serializedItems = JSON.stringify(items).replace(/</g, '\\u003c')
 ---
 
 <div
   data-search-root
   data-search-items={serializedItems}
-  data-no-results={SEARCH[lang].noResults}
+  data-min-chars={t('search.minChars')}
+  data-found-one={t('search.found.one')}
+  data-found-other={t('search.found.other')}
+  data-no-results={t('search.noResults')}
 >
   <button
     type="button"
@@ -33,7 +35,7 @@ const serializedItems = JSON.stringify(items).replace(/</g, '\\u003c')
         d="m16 16 5 5"
         stroke="currentColor"
         stroke-width="1.5"></path></svg
-    >Buscar nos textos</button
+    >{t('search.open')}</button
   >
   <dialog
     data-search-overlay
@@ -41,26 +43,26 @@ const serializedItems = JSON.stringify(items).replace(/</g, '\\u003c')
     aria-labelledby="search-title"
   >
     <div class="search-header">
-      <h2 id="search-title" class="eyebrow">Buscar no blog</h2><button
+      <h2 id="search-title" class="eyebrow">{t('search.title')}</h2><button
         data-search-close
         class="icon-button"
         type="button"
-        aria-label="Fechar busca">✕</button
+        aria-label={t('search.close')}>✕</button
       >
     </div>
     <label class="search-label" for="blog-search-input"
-      >O que você está procurando?</label
+      >{t('search.label')}</label
     >
     <input
       id="blog-search-input"
       data-search-input
       type="search"
-      placeholder="Tente Rails, Astro, segurança…"
+      placeholder={t('search.placeholder')}
       autocomplete="off"
       aria-describedby="search-feedback"
     />
     <p id="search-feedback" data-search-count role="status">
-      Digite pelo menos 3 caracteres.
+      {t('search.minChars')}
     </p>
     <div data-search-list class="search-list"></div>
   </dialog>

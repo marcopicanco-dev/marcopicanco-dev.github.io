@@ -3,8 +3,8 @@ import HeadSeo from '@/components/HeadSeo.astro'
 import Nav from '@/components/navigation/Nav.astro'
 import Footer from '@/components/Footer.astro'
 import CookieConsent from '@/components/CookieConsent.astro'
-import { DEFAULT_LANGUAGE_CODE } from '@/config'
-import { type LanguageKeys, LANGUAGES } from '@/i18n/ui'
+import { LOCALE_INFO } from '@/i18n/ui'
+import { getLang, getTranslations } from '@/i18n/utils'
 import { type Frontmatter } from '@/types'
 import interUrl from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url'
 import '@/styling/tailwind.css'
@@ -16,13 +16,8 @@ const { frontmatter, type = 'website' } = Astro.props as {
   frontmatter?: Frontmatter
   type?: string
 }
-const langFromURL = Astro.url.pathname.split('/')[1] || DEFAULT_LANGUAGE_CODE
-const lang: LanguageKeys = Object.prototype.hasOwnProperty.call(
-  LANGUAGES,
-  langFromURL,
-)
-  ? (langFromURL as LanguageKeys)
-  : DEFAULT_LANGUAGE_CODE
+const lang = getLang(Astro.currentLocale)
+const t = getTranslations(lang)
 ---
 
 <style is:global>
@@ -36,7 +31,7 @@ const lang: LanguageKeys = Object.prototype.hasOwnProperty.call(
   }
 </style>
 
-<html data-theme="dracula" lang={lang}>
+<html data-theme="dracula" lang={LOCALE_INFO[lang].htmlLang}>
   <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -56,7 +51,7 @@ const lang: LanguageKeys = Object.prototype.hasOwnProperty.call(
     <script is:inline defer src="/scripts/consent.js"></script>
   </head>
   <body>
-    <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+    <a class="skip-link" href="#conteudo">{t('a11y.skipToContent')}</a>
     <Nav />
     <div id="conteudo" tabindex="-1"><slot /></div>
     <Footer />

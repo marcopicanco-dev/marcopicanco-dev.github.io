@@ -1,6 +1,8 @@
 ---
 import { SITE, TWITTER_USERNAME, OG_IMAGE } from '@/config'
 import { type Frontmatter } from '@/types'
+import { LOCALE_INFO } from '@/i18n/ui'
+import { getLang, getTranslations, localizePath } from '@/i18n/utils'
 import { getCanonicalUrl } from '@/utils/seo'
 
 type Props = {
@@ -9,6 +11,8 @@ type Props = {
 }
 
 const { frontmatter, type } = Astro.props as Props
+const lang = getLang(Astro.currentLocale)
+const t = getTranslations(lang)
 
 const canonicalUrl = getCanonicalUrl(Astro.url.pathname, Astro.site)
 
@@ -20,7 +24,7 @@ const imageAlt = frontmatter?.heroImageAlt ?? SITE.title
 const imageUrl = new URL(frontmatter?.heroImage ?? OG_IMAGE, Astro.site)
 
 const ogType = type ?? 'website'
-const description = frontmatter?.description ?? SITE.description
+const description = frontmatter?.description ?? t('site.description')
 ---
 
 <!-- Page Metadata -->
@@ -34,7 +38,7 @@ const description = frontmatter?.description ?? SITE.description
 <meta property="og:title" content={formattedContentTitle} />
 <meta property="og:type" content={ogType} />
 <meta property="og:url" content={canonicalUrl} />
-<meta property="og:locale" content={SITE.defaultLanguage} />
+<meta property="og:locale" content={LOCALE_INFO[lang].ogLocale} />
 <meta property="og:image" content={imageUrl} />
 <meta property="og:image:alt" content={imageAlt} />
 <meta property="og:site_name" content={SITE.title} />
@@ -44,7 +48,7 @@ const description = frontmatter?.description ?? SITE.description
       <meta name="author" content={SITE.title} />
       <meta
         property="article:author"
-        content={new URL('/sobre/', Astro.site)}
+        content={new URL(localizePath('/sobre/', lang), Astro.site)}
       />
       {frontmatter?.date && (
         <meta property="article:published_time" content={frontmatter.date} />

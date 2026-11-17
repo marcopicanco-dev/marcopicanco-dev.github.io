@@ -1,0 +1,77 @@
+---
+import Base from '@/layouts/Base.astro'
+import {
+  getBlogSearchRecords,
+  getBlogPosts,
+  getBlogPostUrl,
+  sortBlogPostsByDateDesc,
+  formatBlogDate,
+} from '@/utils/blog'
+import BlogArchive from '@/components/BlogArchive'
+import Search from '@/components/navigation/Search.astro'
+import { LOCALE_INFO } from '@/i18n/ui'
+import { getLang, getTranslations } from '@/i18n/utils'
+
+const lang = getLang(Astro.currentLocale)
+const t = getTranslations(lang)
+
+const archivePosts = sortBlogPostsByDateDesc(getBlogPosts(lang)).map(
+  (post) => ({
+    title: post.frontmatter.title,
+    description: post.frontmatter.description,
+    date: post.frontmatter.date,
+    formattedDate: formatBlogDate(post.frontmatter.date, lang),
+    url: getBlogPostUrl(post.frontmatter),
+  }),
+)
+---
+
+<Base
+  frontmatter={{
+    title: t('blog.metaTitle'),
+    description: t('blog.metaDescription'),
+    file: '',
+  }}
+>
+  <main class="site-container blog-page">
+    <header class="axis-layout blog-heading">
+      <div class="axis">
+        <span class="mono">MP /</span><span class="side-label"
+          >{t('blog.sideLabel')}</span
+        >
+      </div>
+      <div class="axis-content">
+        <p class="eyebrow">{t('blog.eyebrow')}</p><h1 class="page-title">
+          {t('blog.titleLine1')}<br /><span>{t('blog.titleLine2')}</span>
+        </h1><div class="blog-heading-bottom">
+          <p>
+            {t('blog.intro')}
+          </p><Search items={getBlogSearchRecords(lang)} />
+        </div>
+      </div>
+    </header>
+    {
+      archivePosts.length > 0 ? (
+        <BlogArchive
+          posts={archivePosts}
+          locale={LOCALE_INFO[lang].htmlLang}
+          labels={{
+            title: t('archive.title'),
+            filterByMonth: t('archive.filterByMonth'),
+            all: t('archive.all'),
+            countOne: t('archive.count.one'),
+            countOther: t('archive.count.other'),
+            clearFilter: t('archive.clearFilter'),
+            featured: t('archive.featured'),
+            readLabel: t('archive.readLabel'),
+            readArticle: t('archive.readArticle'),
+            more: t('archive.more'),
+          }}
+          client:load
+        />
+      ) : (
+        <p class="archive-empty">{t('archive.empty')}</p>
+      )
+    }
+  </main>
+</Base>

@@ -16,6 +16,13 @@ roots.forEach((root) => {
   const list = root.querySelector<HTMLElement>('[data-search-list]')
   const count = root.querySelector<HTMLElement>('[data-search-count]')
   const items = JSON.parse(root.dataset.searchItems ?? '[]') as SearchItem[]
+  // Translated messages come from data attributes set by Search.astro.
+  const {
+    minChars = '',
+    foundOne = '',
+    foundOther = '',
+    noResults = '',
+  } = root.dataset
   if (!dialog || !input || !list || !count) return
   root.querySelector('[data-search-open]')?.addEventListener('click', () => {
     dialog.showModal()
@@ -50,7 +57,7 @@ roots.forEach((root) => {
     list.replaceChildren()
     const query = normalize(input.value.trim())
     if (query.length < 3) {
-      count.textContent = 'Digite pelo menos 3 caracteres.'
+      count.textContent = minChars
       return
     }
     const words = query.split(/\s+/)
@@ -64,8 +71,11 @@ roots.forEach((root) => {
       )
     })
     count.textContent = results.length
-      ? `${results.length} ${results.length === 1 ? 'texto encontrado' : 'textos encontrados'}`
-      : (root.dataset.noResults ?? 'Nenhum resultado')
+      ? (results.length === 1 ? foundOne : foundOther).replace(
+          '{count}',
+          String(results.length),
+        )
+      : noResults
     results.forEach((item) => {
       const link = document.createElement('a')
       link.href = item.url

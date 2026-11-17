@@ -1,150 +1,104 @@
 ---
+import { LOCALE_INFO } from '@/i18n/ui'
+import { CAREER, type ExperienceId } from '@/i18n/pages/career'
+import { getLang } from '@/i18n/utils'
+
 type Experience = {
+  id: ExperienceId
   company: string
-  role: string
   startedAt: string
-  startLabel: string
   endedAt?: string
-  endLabel?: string
-  summary: string
-  highlights?: string[]
-  technologies?: string[]
 }
 
-const experiences: Experience[] = [
+const lang = getLang(Astro.currentLocale)
+const c = CAREER[lang]
+
+// Labels such as "ago. de 2009" come from the dates, in the page language.
+const formatMonth = (yearMonth: string) => {
+  const [year, month] = yearMonth.split('-').map(Number)
+
+  return new Date(year, month - 1, 1, 12).toLocaleDateString(
+    LOCALE_INFO[lang].htmlLang,
+    { month: 'short', year: 'numeric' },
+  )
+}
+
+const baseExperiences: Experience[] = [
   {
+    id: 'telensino',
     company: 'Rede Amapaense de Telensino — Anhanguera S.A. / LFG Macapá',
-    role: 'Professor',
     startedAt: '2009-08',
-    startLabel: 'ago. de 2009',
     endedAt: '2011-02',
-    endLabel: 'fev. de 2011',
-    summary:
-      'Ministrei aulas no curso de Tecnologia em Recursos Humanos, abordando matemática financeira, empreendedorismo, recursos humanos, rotinas administrativas, treinamento e desenvolvimento pessoal.',
   },
   {
+    id: 'monaco',
     company: 'Grupo Mônaco',
-    role: 'Assistente administrativo de recursos humanos',
     startedAt: '2010-09',
-    startLabel: 'set. de 2010',
     endedAt: '2011-03',
-    endLabel: 'mar. de 2011',
-    summary:
-      'Monitorei ponto eletrônico, folha de pagamento e férias. Também participei do planejamento de treinamentos e de ações de conscientização sobre o uso de EPI e a prevenção ao assédio moral e sexual.',
   },
   {
+    id: 'anglo',
     company: 'RH Executiva — Anglo American',
-    role: 'Auxiliar administrativo',
     startedAt: '2012-01',
-    startLabel: 'jan. de 2012',
     endedAt: '2012-05',
-    endLabel: 'mai. de 2012',
-    summary:
-      'Participei de um processo de auditoria, realizando a digitação e a migração de documentos físicos para arquivos digitais.',
   },
   {
+    id: 'speed',
     company: 'Speed Treinamentos',
-    role: 'Professor',
     startedAt: '2017-08',
-    startLabel: 'ago. de 2017',
     endedAt: '2018-02',
-    endLabel: 'fev. de 2018',
-    summary:
-      'Ministrei disciplinas em cursos técnicos de Administração, incluindo matemática financeira, marketing, recursos humanos e empreendedorismo. Planejei aulas e atividades práticas para aproximar conceitos de gestão e finanças de situações do trabalho, fortalecendo a comunicação com diferentes públicos.',
   },
+  { id: 'proesc', company: 'Proesc', startedAt: '2018-10', endedAt: '2019-02' },
   {
-    company: 'Proesc',
-    role: 'Consultor de implantação',
-    startedAt: '2018-10',
-    startLabel: 'out. de 2018',
-    endedAt: '2019-02',
-    endLabel: 'fev. de 2019',
-    summary:
-      'Atuei na implantação do sistema Proesc, conduzindo treinamentos estruturados e rotinas semanais de acompanhamento. Monitorei indicadores de desempenho da implantação e ajudei as equipes a superar dificuldades durante a adoção do sistema.',
-  },
-  {
+    id: 'orca-sales-assistant',
     company: 'OrçaFascio',
-    role: 'Assistente de vendas',
     startedAt: '2019-01',
-    startLabel: 'jan. de 2019',
     endedAt: '2019-05',
-    endLabel: 'mai. de 2019',
-    summary:
-      'Realizei prospecção ativa e qualificação de leads, levantando necessidades e registrando informações para a equipe comercial. Organizei oportunidades no pipeline de vendas e encaminhei leads qualificados para abordagens alinhadas ao perfil de cada potencial cliente.',
   },
   {
+    id: 'orca-sales-consultant',
     company: 'OrçaFascio',
-    role: 'Consultor de vendas',
     startedAt: '2019-05',
-    startLabel: 'mai. de 2019',
     endedAt: '2020-05',
-    endLabel: 'mai. de 2020',
-    summary:
-      'Conduzi vendas consultivas de software, investigando os objetivos e desafios de cada cliente para apresentar soluções adequadas à sua operação. Acompanhei indicadores como churn e NPS e traduzi recursos do produto em benefícios práticos para orientar propostas e ações de relacionamento.',
   },
   {
+    id: 'orca-customer-success',
     company: 'OrçaFascio',
-    role: 'Analista de sucesso do cliente',
     startedAt: '2020-05',
-    startLabel: 'mai. de 2020',
     endedAt: '2022-05',
-    endLabel: 'mai. de 2022',
-    summary:
-      'Acompanhei clientes na adoção e no uso da plataforma, identificando necessidades e obstáculos em seus processos. Analisei demandas e feedbacks para propor melhorias e apoiei estratégias de relacionamento e venda cruzada. Esse contato direto com os usuários construiu a visão de negócio que hoje aplico ao desenvolvimento do Backoffice.',
   },
-  {
-    company: 'OrçaFascio',
-    role: 'Desenvolvedor Full Stack',
-    startedAt: '2022-06',
-    startLabel: 'jun. de 2022',
-    summary:
-      'Lidero o desenvolvimento e a evolução do Backoffice da OrçaFascio, da sustentação à entrega de novas funcionalidades. Meu trabalho conecta necessidades das equipes a soluções web desenvolvidas com Ruby on Rails.',
-    highlights: [
-      'Modernizei o sistema financeiro e o fluxo de notas fiscais para adequação ao CNPJ alfanumérico. Integrei a Focus para emissão de múltiplas notas e desenvolvi um dashboard de indicadores financeiros para apoiar decisões.',
-      'Projetei e desenvolvi um orquestrador de eventos para integrar leads, CRM, cobranças, módulos e métricas de uso à RD Station e a parceiros. A solução usa APIs e webhooks, com monitoramento e reprocessamento de falhas, ampliando o controle sobre as integrações e reduzindo custos de automação em relação ao Make.',
-      'Atuo na sustentação do sistema legado com refatoração, otimização e manutenção contínua, garantindo estabilidade e desempenho.',
-      'Crio, testo e documento APIs RESTful e desenvolvo testes automatizados com RSpec e Minitest, aplicando práticas de TDD/BDD na evolução do sistema.',
-    ],
-    technologies: [
-      'Ruby',
-      'Ruby on Rails',
-      'MongoDB',
-      'PostgreSQL',
-      'JavaScript',
-      'HTML',
-      'CSS',
-      'RSpec',
-      'Minitest',
-      'APIs RESTful',
-      'webhooks',
-    ],
-  },
+  { id: 'orca-developer', company: 'OrçaFascio', startedAt: '2022-06' },
 ]
+
+const experiences = baseExperiences.map((experience) => ({
+  ...experience,
+  ...c.experiences[experience.id],
+  startLabel: formatMonth(experience.startedAt),
+  endLabel: experience.endedAt && formatMonth(experience.endedAt),
+}))
 ---
 
 <section id="trajetoria" class="career-section" aria-labelledby="career-title">
   <div class="career-intro">
-    <p class="eyebrow">Experiência profissional</p>
-    <h2 id="career-title">Antes do<br />código,<br />o contexto.</h2>
+    <p class="eyebrow">{c.eyebrow}</p>
+    <h2 id="career-title">
+      {c.titleLines[0]}<br />{c.titleLines[1]}<br />{c.titleLines[2]}
+    </h2>
     <p class="career-lead">
-      Minha trajetória começou ouvindo pessoas. Hoje, transformo esse
-      entendimento em software.
+      {c.lead}
     </p>
     <div class="career-company">
       <p class="career-company-name">OrçaFascio</p>
-      <p>De vendas e sucesso do cliente ao desenvolvimento de sistemas.</p>
+      <p>{c.companyText}</p>
     </div>
   </div>
-  <ol
-    class="career-timeline"
-    aria-label="Experiências profissionais em ordem cronológica"
-  >
+  <ol class="career-timeline" aria-label={c.timelineLabel}>
     {
       experiences.map((experience) => (
         <li class:list={['career-item', { 'is-current': !experience.endedAt }]}>
           <p class="career-company-label eyebrow">
             {experience.company}
-            {!experience.endedAt && <span> · Atual</span>}
+            {!experience.endedAt && <span> · {c.current}</span>}
           </p>
           <h3>{experience.role}</h3>
           <p class="career-period mono">
@@ -153,13 +107,13 @@ const experiences: Experience[] = [
             {experience.endedAt ? (
               <time datetime={experience.endedAt}>{experience.endLabel}</time>
             ) : (
-              <span>atual</span>
+              <span>{c.present}</span>
             )}
           </p>
           <p class="career-summary">{experience.summary}</p>
           {experience.highlights && (
             <div class="career-highlights">
-              <h4>Principais entregas</h4>
+              <h4>{c.highlightsTitle}</h4>
               <ul>
                 {experience.highlights.map((highlight) => (
                   <li>{highlight}</li>
@@ -169,7 +123,7 @@ const experiences: Experience[] = [
           )}
           {experience.technologies && (
             <p class="career-technologies">
-              <strong>Tecnologias:</strong>{' '}
+              <strong>{c.technologiesLabel}</strong>{' '}
               {`${experience.technologies.join(', ')}.`}
             </p>
           )}

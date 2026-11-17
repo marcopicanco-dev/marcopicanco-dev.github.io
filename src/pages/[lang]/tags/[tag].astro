@@ -1,0 +1,18 @@
+---
+import TagPage from '@/components/TagPage.astro'
+import { getLanguageStaticPaths } from '@/i18n/utils'
+import { getTagStaticPaths, type BlogPostModule } from '@/utils/blog'
+import { type GetStaticPaths } from 'astro'
+
+export const getStaticPaths = (() =>
+  getLanguageStaticPaths().flatMap(({ params }) =>
+    getTagStaticPaths(params.lang).map((path) => ({
+      params: { ...params, ...path.params },
+      props: path.props,
+    })),
+  )) satisfies GetStaticPaths
+
+const { tag, posts } = Astro.props as { tag: string; posts: BlogPostModule[] }
+---
+
+<TagPage tag={tag} posts={posts} />

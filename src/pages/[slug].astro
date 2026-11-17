@@ -1,24 +1,11 @@
 ---
 import BlogPost from '@/layouts/BlogPost.astro'
-import {
-  getBlogPosts,
-  getBlogPostSlug,
-  type BlogPostModule,
-} from '@/utils/blog'
+import { DEFAULT_LANGUAGE_CODE } from '@/config'
+import { getPostStaticPaths, type BlogPostModule } from '@/utils/blog'
 import { type GetStaticPaths } from 'astro'
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const posts = getBlogPosts()
-
-  return posts.map((post) => ({
-    params: {
-      slug: getBlogPostSlug(post.frontmatter),
-    },
-    props: {
-      post,
-    },
-  }))
-}
+export const getStaticPaths = (() =>
+  getPostStaticPaths(DEFAULT_LANGUAGE_CODE)) satisfies GetStaticPaths
 
 const { post } = Astro.props as { post: BlogPostModule }
 const { Content } = post

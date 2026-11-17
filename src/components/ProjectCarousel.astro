@@ -2,6 +2,8 @@
 import { Image } from 'astro:assets'
 import type { ImageMetadata } from 'astro'
 import { GITHUB_REPO_URL } from '@/config'
+import { PROJECTS, type ProjectId } from '@/i18n/pages/projects'
+import { formatMessage, getLang } from '@/i18n/utils'
 import hexaAlertsScreenshot from '@/assets/projects/hexa-alerts-dashboard.png'
 import brasilEleitoralScreenshot from '@/assets/projects/brasil-eleitoral-dashboard.png'
 
@@ -9,124 +11,62 @@ type Project = {
   // Slide id, also used by the site search to open a specific project.
   anchor: string
   // Value sent as project_id in the project_click analytics event.
-  analyticsId: string
+  analyticsId: ProjectId
   name: string
-  tagline: string
   stack: string
-  category: string
-  description: string
-  proposal: string
   technologies: string
-  delivery: string
   repositoryUrl: string
   architectureUrl: string
   screenshot: ImageMetadata
-  screenshotAlt: string
-  challenges: { title: string; description: string }[]
 }
 
 const hexaAlertsUrl = `${GITHUB_REPO_URL}/hexa_alerts`
 const brasilEleitoralUrl = `${GITHUB_REPO_URL}/brasil-eleitoral`
 
-const projects: Project[] = [
+const lang = getLang(Astro.currentLocale)
+const c = PROJECTS[lang]
+
+const baseProjects: Project[] = [
   {
     anchor: 'projeto-hexa-alerts',
     analyticsId: 'hexa_alerts',
     name: 'HexaAlerts',
-    tagline: 'A Copa, lance a lance.',
     stack: 'Ruby on Rails',
-    category: 'Projeto autoral / Aplicação web',
-    description:
-      'A ideia surgiu para não perder nenhum lance da Copa do Mundo e aproveitar o projeto para praticar conceitos importantes de programação: Redis, Sidekiq, webhooks e integração entre provedores de dados.',
-    proposal:
-      'Reunir partidas, placares e lances em um painel, com alertas conforme as preferências de cada torcedor.',
     technologies: 'Ruby on Rails · PostgreSQL · Redis · Sidekiq · Hotwire',
-    delivery:
-      'Um acervo de resultados, estatísticas e lances da Copa, com sincronização em segundo plano e atualização no navegador.',
     repositoryUrl: hexaAlertsUrl,
     architectureUrl: `${hexaAlertsUrl}#arquitetura`,
     screenshot: hexaAlertsScreenshot,
-    screenshotAlt:
-      'Painel do HexaAlerts com resultados da Copa, rankings e acesso às partidas',
-    challenges: [
-      {
-        title: 'Webhooks sem duplicação',
-        description:
-          'Receber o mesmo evento mais de uma vez sem registrar outro lance ou somar o mesmo gol novamente. Identificadores únicos, índice no banco e bloqueio da partida protegem o processamento concorrente.',
-      },
-      {
-        title: 'Uma partida, vários provedores',
-        description:
-          'Conciliar IDs e horários diferentes usando as equipes, uma janela de horário e referências externas alternativas. Eventos e assinaturas ficam vinculados à mesma partida.',
-      },
-      {
-        title: 'Filas sem travar o painel',
-        description:
-          'Responder ao webhook rapidamente e processar os eventos no Sidekiq, com Redis nas filas. Os dados ficam no PostgreSQL, e o Hotwire atualiza o navegador após a persistência.',
-      },
-      {
-        title: 'Sincronização sem perder dados',
-        description:
-          'Manter a aplicação demonstrável quando uma API fica indisponível, usando um acervo local. A importação protege os placares e estados mais recentes ao combinar dados de fontes diferentes.',
-      },
-    ],
   },
   {
     anchor: 'projeto-brasil-eleitoral',
     analyticsId: 'brasil_eleitoral',
     name: 'Brasil Eleitoral',
-    tagline: 'O país, governo a governo.',
     stack: 'Ruby on Rails',
-    category: 'Projeto autoral / Dashboard de dados',
-    description:
-      'Um dashboard sobre os presidentes que governaram o país desde a redemocratização, em 1985, com contexto político, economia, políticas e resultados eleitorais. Cada número exibido pode ser rastreado até a fonte oficial.',
-    proposal:
-      'Reunir em um só lugar como cada presidente chegou ao poder e o que marcou cada gestão, com comparação lado a lado entre governos.',
     technologies:
       'Ruby on Rails · PostgreSQL · Tailwind CSS · Hotwire · Docker',
-    delivery:
-      'Uma linha do tempo com 8 presidentes, 9 governos e 10 eleições, com filtros, gráfico do IPCA, página de metodologia e exportação em CSV.',
     repositoryUrl: brasilEleitoralUrl,
     architectureUrl: `${brasilEleitoralUrl}#coleta-de-dados`,
     screenshot: brasilEleitoralScreenshot,
-    screenshotAlt:
-      'Dashboard do Brasil Eleitoral com indicadores e a linha do tempo dos governos desde 1985',
-    challenges: [
-      {
-        title: 'Números que podem ser conferidos',
-        description:
-          'Votos, inflação e leis vêm de fontes oficiais, como TSE, IBGE e Planalto. Cada registro guarda a URL, o arquivo e a data da consulta, para que qualquer pessoa refaça a conta e chegue ao mesmo resultado.',
-      },
-      {
-        title: 'Uma base por eleição',
-        description:
-          'Somar a votação por turno e candidatura nos arquivos do TSE sem duplicar totais nem misturar consolidações diferentes. Os percentuais são recalculados sobre os votos válidos da mesma fonte.',
-      },
-      {
-        title: 'Navegação sem depender de APIs',
-        description:
-          'Os dados ficam em arquivos versionados e são importados para o PostgreSQL em uma única transação. A carga é idempotente, e o dashboard continua funcionando quando uma fonte externa fica fora do ar.',
-      },
-      {
-        title: 'Critérios editoriais à vista',
-        description:
-          'Posições políticas e seleção de políticas são sínteses editoriais, identificadas como tal. Lacunas das fontes aparecem no perfil em vez de serem preenchidas com outra base, e a metodologia explica cada escolha.',
-      },
-    ],
   },
 ]
+
+const projects = baseProjects.map((project) => ({
+  ...project,
+  ...c.items[project.analyticsId],
+}))
 
 const pad = (number: number) => String(number).padStart(2, '0')
 ---
 
 <section
   class="project-carousel"
-  aria-roledescription="carrossel"
-  aria-label="Projetos em destaque"
+  aria-roledescription={c.carouselRole}
+  aria-label={c.carouselLabel}
   data-carousel
+  data-carousel-status-template={c.status}
 >
   <div class="project-carousel-controls">
-    <nav class="project-carousel-pager" aria-label="Escolher projeto">
+    <nav class="project-carousel-pager" aria-label={c.pagerLabel}>
       {
         projects.map((project, index) => (
           <a
@@ -141,10 +81,10 @@ const pad = (number: number) => String(number).padStart(2, '0')
       }
     </nav>
     <div class="project-carousel-arrows" data-carousel-arrows hidden>
-      <button type="button" aria-label="Projeto anterior" data-carousel-prev>
+      <button type="button" aria-label={c.previous} data-carousel-prev>
         <span aria-hidden="true">←</span>
       </button>
-      <button type="button" aria-label="Próximo projeto" data-carousel-next>
+      <button type="button" aria-label={c.next} data-carousel-next>
         <span aria-hidden="true">→</span>
       </button>
     </div>
@@ -164,7 +104,11 @@ const pad = (number: number) => String(number).padStart(2, '0')
           class="project-slide"
           role="group"
           aria-roledescription="slide"
-          aria-label={`${project.name}, ${index + 1} de ${projects.length}`}
+          aria-label={formatMessage(c.slideLabel, {
+            name: project.name,
+            current: index + 1,
+            total: projects.length,
+          })}
           data-carousel-slide
           data-carousel-name={project.name}
         >
@@ -174,7 +118,10 @@ const pad = (number: number) => String(number).padStart(2, '0')
               href={project.repositoryUrl}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label={`${project.name} / ${project.stack}: ver o projeto no GitHub`}
+              aria-label={formatMessage(c.previewLabel, {
+                name: project.name,
+                stack: project.stack,
+              })}
               data-analytics-project={project.analyticsId}
               data-analytics-location="project_preview"
             >
@@ -204,15 +151,15 @@ const pad = (number: number) => String(number).padStart(2, '0')
               <p>{project.description}</p>
               <dl class="project-facts">
                 <div>
-                  <dt>A proposta</dt>
+                  <dt>{c.proposal}</dt>
                   <dd>{project.proposal}</dd>
                 </div>
                 <div>
-                  <dt>Tecnologias</dt>
+                  <dt>{c.technologies}</dt>
                   <dd>{project.technologies}</dd>
                 </div>
                 <div>
-                  <dt>A entrega</dt>
+                  <dt>{c.delivery}</dt>
                   <dd>{project.delivery}</dd>
                 </div>
               </dl>
@@ -224,7 +171,7 @@ const pad = (number: number) => String(number).padStart(2, '0')
                 data-analytics-project={project.analyticsId}
                 data-analytics-location="project_architecture"
               >
-                Conhecer a arquitetura <span aria-hidden="true">↗</span>
+                {c.architecture} <span aria-hidden="true">↗</span>
               </a>
               <a
                 class="project-repository"
@@ -234,14 +181,14 @@ const pad = (number: number) => String(number).padStart(2, '0')
                 data-analytics-project={project.analyticsId}
                 data-analytics-location="project_repository"
               >
-                Ver repositório ↗
+                {c.repository}
               </a>
             </div>
             <section
               class="project-challenges"
               aria-labelledby={`${project.anchor}-desafios`}
             >
-              <h4 id={`${project.anchor}-desafios`}>Principais desafios</h4>
+              <h4 id={`${project.anchor}-desafios`}>{c.challenges}</h4>
               <ol>
                 {project.challenges.map((challenge, challengeIndex) => (
                   <li>
@@ -276,6 +223,8 @@ const pad = (number: number) => String(number).padStart(2, '0')
       ...carousel.querySelectorAll<HTMLAnchorElement>('[data-carousel-link]'),
     ]
     const status = carousel.querySelector<HTMLElement>('[data-carousel-status]')
+    // Translated on the server, e.g. "Projeto {current} de {total}: {name}".
+    const statusTemplate = carousel.dataset.carouselStatusTemplate ?? ''
     let current = -1
 
     const visibleIndex = () =>
@@ -297,7 +246,10 @@ const pad = (number: number) => String(number).padStart(2, '0')
         else link.removeAttribute('aria-current')
       })
       if (announce && status) {
-        status.textContent = `Projeto ${index + 1} de ${slides.length}: ${slides[index].dataset.carouselName}`
+        status.textContent = statusTemplate
+          .replace('{current}', String(index + 1))
+          .replace('{total}', String(slides.length))
+          .replace('{name}', slides[index].dataset.carouselName ?? '')
       }
     }
 

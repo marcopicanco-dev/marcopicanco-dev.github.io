@@ -1,0 +1,27 @@
+---
+import LegalPage from '@/layouts/LegalPage.astro'
+import { getLang } from '@/i18n/utils'
+import { type MarkdownInstance } from 'astro'
+
+// Legal texts live in src/content/legal/<lang>/<name>.mdx.
+type LegalFrontmatter = { title: string; description: string; updated: string }
+
+const documents = import.meta.glob<MarkdownInstance<LegalFrontmatter>>(
+  '/src/content/legal/*/*.mdx',
+  { eager: true },
+)
+
+const { name } = Astro.props as { name: 'privacidade' | 'termos' }
+const lang = getLang(Astro.currentLocale)
+const document = documents[`/src/content/legal/${lang}/${name}.mdx`]
+
+if (!document) {
+  throw new Error(`Missing src/content/legal/${lang}/${name}.mdx`)
+}
+
+const { Content, frontmatter } = document
+---
+
+<LegalPage frontmatter={frontmatter}>
+  <Content />
+</LegalPage>

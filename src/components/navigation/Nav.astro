@@ -2,20 +2,30 @@
 import { PROJECT_NAME } from '@/config'
 import ThemeSwitcher from '@/components/navigation/ThemeSwitcher.astro'
 import MobileNav from '@/components/navigation/MobileNav.astro'
+import LanguageFlags from '@/components/navigation/LanguageFlags.astro'
+import { getLang, getTranslations, localizePath } from '@/i18n/utils'
 
-const isHome = Astro.url.pathname === '/'
-const sectionHref = (id: string) => (isHome ? `#${id}` : `/#${id}`)
+const lang = getLang(Astro.currentLocale)
+const t = getTranslations(lang)
+const homeHref = localizePath('/', lang)
+const blogHref = localizePath('/blog/', lang)
+const isHome = Astro.url.pathname === homeHref
+const sectionHref = (id: string) => (isHome ? `#${id}` : `${homeHref}#${id}`)
 const navLinks = [
-  { label: 'Projetos', href: sectionHref('projetos') },
-  { label: 'Serviços', href: sectionHref('servicos') },
-  { label: 'Sobre', href: '/sobre/' },
-  { label: 'Contato', href: sectionHref('contato') },
+  { label: t('nav.projects'), href: sectionHref('projetos') },
+  { label: t('nav.services'), href: sectionHref('servicos') },
+  { label: t('nav.about'), href: localizePath('/sobre/', lang) },
+  { label: t('nav.contact'), href: sectionHref('contato') },
 ]
 ---
 
 <header class="site-header">
   <div class="site-container header-inner">
-    <a class="brand" href="/" aria-label={`${PROJECT_NAME} — início`}>
+    <a
+      class="brand"
+      href={homeHref}
+      aria-label={t('nav.homeLabel', { name: PROJECT_NAME })}
+    >
       <svg
         class="brand-symbol"
         width="28"
@@ -29,7 +39,7 @@ const navLinks = [
       </svg>
       <span>{PROJECT_NAME}<span class="brand-dot">.</span></span>
     </a>
-    <nav class="desktop-nav" aria-label="Navegação principal">
+    <nav class="desktop-nav" aria-label={t('nav.main')}>
       {
         navLinks.map((link) => (
           <a
@@ -44,10 +54,11 @@ const navLinks = [
     <div class="header-tools">
       <a
         class="header-blog"
-        href="/blog/"
-        aria-current={Astro.url.pathname === '/blog/' ? 'page' : undefined}
-        >Blog <span aria-hidden="true">↗</span></a
+        href={blogHref}
+        aria-current={Astro.url.pathname === blogHref ? 'page' : undefined}
+        >{t('nav.blog')} <span aria-hidden="true">↗</span></a
       >
+      <LanguageFlags class="header-languages" />
       <ThemeSwitcher />
       <MobileNav links={navLinks} />
     </div>

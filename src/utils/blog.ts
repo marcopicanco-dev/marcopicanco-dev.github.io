@@ -1,7 +1,12 @@
 import { type MarkdownInstance } from 'astro'
 import { type SearchRecord } from '@/types'
+import { DEFAULT_LANGUAGE_CODE } from '@/config'
+import { LOCALE_INFO, type LanguageKeys } from '@/i18n/ui'
+import { isLanguage, localizePath } from '@/i18n/utils'
 
-export type BlogFrontmatter = {
+// Portuguese posts live in src/content/blog/; translations go in
+// src/content/blog/<lang>/ with the same file name and keep its URL slug.
+type BlogSourceFrontmatter = {
   title: string
   description: string
   date: string
@@ -15,22 +20,70 @@ export type BlogFrontmatter = {
   seriesLabel?: string
 }
 
+export type BlogFrontmatter = BlogSourceFrontmatter & {
+  slug: string
+  lang: LanguageKeys
+}
+
 export type BlogPostModule = MarkdownInstance<BlogFrontmatter>
 
-const blogPostModules = import.meta.glob<BlogPostModule>(
-  '/src/content/blog/*.mdx',
-  {
-    eager: true,
-  },
+const blogPostModules = import.meta.glob<
+  MarkdownInstance<BlogSourceFrontmatter>
+>('/src/content/blog/**/*.mdx', { eager: true })
+
+const slugify = (value: string) =>
+  value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/&/g, ' e ')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+
+const getSourceSlug = (frontmatter: BlogSourceFrontmatter) =>
+  frontmatter.slug ?? `${frontmatter.date}-${slugify(frontmatter.title)}`
+
+const blogPostFiles = Object.entries(blogPostModules).map(([path, module]) => {
+  const [folder, fileName] = path.split('/').slice(-2)
+
+  return {
+    module,
+    fileName,
+    lang: isLanguage(folder) ? folder : DEFAULT_LANGUAGE_CODE,
+  }
+})
+
+const defaultSlugsByFile = new Map(
+  blogPostFiles
+    .filter(({ lang }) => lang === DEFAULT_LANGUAGE_CODE)
+    .map(({ fileName, module }) => [
+      fileName,
+      getSourceSlug(module.frontmatter),
+    ]),
 )
 
-export const getBlogPosts = () => Object.values(blogPostModules)
+const allBlogPosts: BlogPostModule[] = blogPostFiles.map(
+  ({ module, fileName, lang }) => ({
+    ...module,
+    frontmatter: {
+      ...module.frontmatter,
+      lang,
+      slug:
+        module.frontmatter.slug ??
+        defaultSlugsByFile.get(fileName) ??
+        getSourceSlug(module.frontmatter),
+    },
+  }),
+)
+
+export const getBlogPosts = (lang: LanguageKeys = DEFAULT_LANGUAGE_CODE) =>
+  allBlogPosts.filter((post) => post.frontmatter.lang === lang)
 
 const getPublishedTime = (post: BlogPostModule) =>
   new Date(`${post.frontmatter.publishedAt ?? post.frontmatter.date}`).getTime()
 
-const getSeriesPart = (post: BlogPostModule) => {
-  const match = post.frontmatter.title.match(/parte\s+(\d+)/i)
+export const getSeriesPart = (post: BlogPostModule) => {
+  const match = post.frontmatter.title.match(/(?:parte|partie|part)\s+(\d+)/i)
 
   return match ? Number(match[1]) : 1
 }
@@ -44,25 +97,16 @@ export const sortBlogPostsByDateDesc = (posts: BlogPostModule[]) =>
     return getSeriesPart(b) - getSeriesPart(a)
   })
 
-export const getSeriesPosts = (series: string) =>
-  getBlogPosts()
+export const getSeriesPosts = (series: string, lang: LanguageKeys) =>
+  getBlogPosts(lang)
     .filter((post) => post.frontmatter.series === series)
     .sort((a, b) => getSeriesPart(a) - getSeriesPart(b))
 
-const slugify = (value: string) =>
-  value
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .replace(/&/g, ' e ')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-
 export const getBlogPostSlug = (frontmatter: BlogFrontmatter) =>
-  frontmatter.slug ?? `${frontmatter.date}-${slugify(frontmatter.title)}`
+  frontmatter.slug
 
 export const getBlogPostUrl = (frontmatter: BlogFrontmatter) =>
-  `/${getBlogPostSlug(frontmatter)}/`
+  localizePath(`/${frontmatter.slug}/`, frontmatter.lang)
 
 // A tag page with a single post is thin content, so the tag stays plain text
 // until a second post joins it.
@@ -70,12 +114,13 @@ export const MIN_POSTS_PER_TAG_PAGE = 2
 
 export const getTagSlug = (tag: string) => slugify(tag)
 
-export const getTagUrl = (tag: string) => `/tags/${getTagSlug(tag)}/`
+export const getTagUrl = (tag: string, lang: LanguageKeys) =>
+  localizePath(`/tags/${getTagSlug(tag)}/`, lang)
 
-export const getPostsByTag = () => {
+export const getPostsByTag = (lang: LanguageKeys = DEFAULT_LANGUAGE_CODE) => {
   const postsByTag = new Map<string, BlogPostModule[]>()
 
-  for (const post of getBlogPosts()) {
+  for (const post of getBlogPosts(lang)) {
     for (const tag of post.frontmatter.tags ?? []) {
       postsByTag.set(tag, [...(postsByTag.get(tag) ?? []), post])
     }
@@ -84,15 +129,36 @@ export const getPostsByTag = () => {
   return postsByTag
 }
 
-export const hasTagPage = (tag: string) =>
-  (getPostsByTag().get(tag)?.length ?? 0) >= MIN_POSTS_PER_TAG_PAGE
+export const hasTagPage = (tag: string, lang: LanguageKeys) =>
+  (getPostsByTag(lang).get(tag)?.length ?? 0) >= MIN_POSTS_PER_TAG_PAGE
+
+export const hasTagSlugPage = (tagSlug: string, lang: LanguageKeys) =>
+  [...getPostsByTag(lang)].some(
+    ([tag, posts]) =>
+      getTagSlug(tag) === tagSlug && posts.length >= MIN_POSTS_PER_TAG_PAGE,
+  )
+
+// Tags come from each language's posts, so their pages differ per language.
+export const getTagStaticPaths = (lang: LanguageKeys) =>
+  [...getPostsByTag(lang)]
+    .filter(([, posts]) => posts.length >= MIN_POSTS_PER_TAG_PAGE)
+    .map(([tag, posts]) => ({
+      params: { tag: getTagSlug(tag) },
+      props: { tag, posts: sortBlogPostsByDateDesc(posts) },
+    }))
+
+export const getPostStaticPaths = (lang: LanguageKeys) =>
+  getBlogPosts(lang).map((post) => ({
+    params: { slug: post.frontmatter.slug },
+    props: { post },
+  }))
 
 // Series siblings are already linked by the series navigation.
 export const getRelatedPosts = (frontmatter: BlogFrontmatter, limit = 3) => {
   const tags = new Set(frontmatter.tags ?? [])
   const slug = getBlogPostSlug(frontmatter)
 
-  return sortBlogPostsByDateDesc(getBlogPosts())
+  return sortBlogPostsByDateDesc(getBlogPosts(frontmatter.lang))
     .filter(
       (post) =>
         getBlogPostSlug(post.frontmatter) !== slug &&
@@ -109,8 +175,11 @@ export const getRelatedPosts = (frontmatter: BlogFrontmatter, limit = 3) => {
     .map(({ post }) => post)
 }
 
-export const formatBlogDate = (date: string) =>
-  new Date(`${date}T12:00:00`).toLocaleDateString('pt-BR', {
+export const formatBlogDate = (
+  date: string,
+  lang: LanguageKeys = DEFAULT_LANGUAGE_CODE,
+) =>
+  new Date(`${date}T12:00:00`).toLocaleDateString(LOCALE_INFO[lang].htmlLang, {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
@@ -127,68 +196,10 @@ export const getBlogPostKeywords = (frontmatter: BlogFrontmatter) => {
   return [...(frontmatter.tags ?? []), seriesPart].filter(Boolean).join(' ')
 }
 
-const siteSearchRecords: SearchRecord[] = [
-  {
-    title: 'Desenvolvimento web',
-    description:
-      'Sites, sistemas e aplicações web para facilitar o dia a dia do seu negócio.',
-    url: '/',
-    keywords: 'home marco picanço desenvolvedor full stack ruby rails',
-  },
-  {
-    title: 'Projetos — HexaAlerts',
-    description:
-      'Aplicação para acompanhar a Copa, com Redis, Sidekiq, webhooks idempotentes e reconciliação de partidas entre provedores.',
-    url: '/#projeto-hexa-alerts',
-    keywords:
-      'portfolio hexa alerts copa futebol rails redis sidekiq webhook filas idempotencia reconciliacao provedores apis testes',
-  },
-  {
-    title: 'Projetos — Brasil Eleitoral',
-    description:
-      'Dashboard dos presidentes desde 1985, com eleições do TSE, IPCA do IBGE, comparação de governos e dados rastreáveis até a fonte.',
-    url: '/#projeto-brasil-eleitoral',
-    keywords:
-      'portfolio brasil eleitoral presidentes governos eleicoes tse ibge ipca dashboard dados abertos rails postgresql tailwind hotwire',
-  },
-  {
-    title: 'Serviços',
-    description:
-      'Sites e presença digital, sistemas e aplicações web, integrações, manutenção e evolução.',
-    url: '/#servicos',
-    keywords: 'consultoria rails api webhooks testes backoffice',
-  },
-  {
-    title: 'Sobre Marco Picanço',
-    description:
-      'Desenvolvedor Full Stack com experiência em Ruby on Rails, APIs, testes, Backoffice, Engenharia de Software e Big Data.',
-    url: '/sobre/',
-    keywords:
-      'sobre experiência formação carreira engenharia software big data administração',
-  },
-  {
-    title: 'Contato',
-    description:
-      'Canais para conversar sobre projetos, consultoria, desenvolvimento e colaboração.',
-    url: '/#contato',
-    keywords: 'contato email linkedin github contratar projeto',
-  },
-  {
-    title: 'Blog',
-    description:
-      'Artigos sobre desenvolvimento, segurança, sites estáticos, Cloudflare, Astro e tecnologia.',
-    url: '/blog/',
-    keywords: 'artigos posts arquivo segurança cloudflare astro métricas seo',
-  },
-]
-
-export const getSearchRecords = (): SearchRecord[] => [
-  ...siteSearchRecords,
-  ...getBlogSearchRecords(),
-]
-
-export const getBlogSearchRecords = (): SearchRecord[] =>
-  sortBlogPostsByDateDesc(getBlogPosts()).map((post) => ({
+export const getBlogSearchRecords = (
+  lang: LanguageKeys = DEFAULT_LANGUAGE_CODE,
+): SearchRecord[] =>
+  sortBlogPostsByDateDesc(getBlogPosts(lang)).map((post) => ({
     title: post.frontmatter.title,
     description: post.frontmatter.description,
     url: getBlogPostUrl(post.frontmatter),

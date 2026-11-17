@@ -23,6 +23,13 @@ function focusableTables() {
 // https://astro.build/config
 export default defineConfig({
   site: 'https://www.marcopicanco.com',
+  // Portuguese stays at the root; English and French live under /en/ and /fr/.
+  // Keep in sync with LANGUAGES in src/i18n/ui.ts.
+  i18n: {
+    defaultLocale: 'pt',
+    locales: ['pt', 'en', 'fr'],
+    routing: { prefixDefaultLocale: false },
+  },
   vite: {
     plugins: [tailwindcss()],
     // Serve small bundles from 'self' too: stale edge CSP hashes must not block

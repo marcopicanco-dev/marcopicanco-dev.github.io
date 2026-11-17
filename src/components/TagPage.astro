@@ -1,0 +1,55 @@
+---
+import Base from '@/layouts/Base.astro'
+import {
+  formatBlogDate,
+  getBlogPostUrl,
+  type BlogPostModule,
+} from '@/utils/blog'
+import { getLang, getTranslations, localizePath } from '@/i18n/utils'
+
+const { tag, posts } = Astro.props as { tag: string; posts: BlogPostModule[] }
+const lang = getLang(Astro.currentLocale)
+const t = getTranslations(lang)
+const pageTitle = t('tag.metaTitle', { tag })
+---
+
+<Base
+  frontmatter={{
+    title: pageTitle,
+    description: t('tag.metaDescription', { count: posts.length, tag }),
+    file: '',
+  }}
+>
+  <main class="post-page">
+    <header class="post-header">
+      <a class="text-link post-back" href={localizePath('/blog/', lang)}
+        >{t('post.allPosts')}</a
+      >
+      <p class="eyebrow">{t('tag.eyebrow')}</p>
+      <h1>{tag}</h1>
+      <p class="post-description">
+        {t('tag.description', { count: posts.length, tag })}
+      </p>
+    </header>
+    <section class="tag-posts" aria-label={pageTitle}>
+      {
+        posts.map((post) => (
+          <article class="archive-row">
+            <time class="mono" datetime={post.frontmatter.date}>
+              {formatBlogDate(post.frontmatter.date, lang)}
+            </time>
+            <div>
+              <h2>
+                <a href={getBlogPostUrl(post.frontmatter)}>
+                  {post.frontmatter.title}
+                  <span aria-hidden="true">↗</span>
+                </a>
+              </h2>
+              <p>{post.frontmatter.description}</p>
+            </div>
+          </article>
+        ))
+      }
+    </section>
+  </main>
+</Base>

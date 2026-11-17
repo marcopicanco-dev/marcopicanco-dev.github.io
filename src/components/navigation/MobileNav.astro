@@ -1,12 +1,17 @@
 ---
+import LanguageFlags from '@/components/navigation/LanguageFlags.astro'
+import { getLang, getTranslations, localizePath } from '@/i18n/utils'
+
 const { links } = Astro.props as { links: { label: string; href: string }[] }
+const lang = getLang(Astro.currentLocale)
+const t = getTranslations(lang)
 ---
 
 <button
   id="hamburger-btn"
   class="menu-toggle"
   type="button"
-  aria-label="Abrir menu de navegação"
+  aria-label={t('nav.openMenu')}
   aria-expanded="false"
   aria-controls="mobile-hamburger"
 >
@@ -20,21 +25,17 @@ const { links } = Astro.props as { links: { label: string; href: string }[] }
     <path d="M3 8h18M3 16h18" stroke="currentColor" stroke-width="1.5"></path>
   </svg>
 </button>
-<dialog
-  id="mobile-hamburger"
-  class="mobile-menu"
-  aria-label="Menu de navegação"
->
+<dialog id="mobile-hamburger" class="mobile-menu" aria-label={t('nav.menu')}>
   <div class="mobile-menu-top">
-    <span class="eyebrow">Navegação</span>
+    <span class="eyebrow">{t('nav.menuTitle')}</span>
     <button
       class="icon-button"
       data-menu-close
       type="button"
-      aria-label="Fechar menu de navegação">✕</button
+      aria-label={t('nav.closeMenu')}>✕</button
     >
   </div>
-  <nav aria-label="Navegação móvel">
+  <nav aria-label={t('nav.mobile')}>
     {
       links.map((link, index) => (
         <a href={link.href}>
@@ -44,12 +45,15 @@ const { links } = Astro.props as { links: { label: string; href: string }[] }
         </a>
       ))
     }
-    <a href="/blog/"
-      ><span class="mono">05</span>Blog<span aria-hidden="true">↗</span></a
+    <a href={localizePath('/blog/', lang)}
+      ><span class="mono">05</span>{t('nav.blog')}<span aria-hidden="true"
+        >↗</span
+      ></a
     >
   </nav>
+  <LanguageFlags class="mobile-menu-languages" />
   <p class="mobile-menu-note">
-    Desenvolvimento web.<br />Do problema à solução.
+    {t('nav.menuNoteLine1')}<br />{t('nav.menuNoteLine2')}
   </p>
 </dialog>
 <script>

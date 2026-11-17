@@ -1,23 +1,33 @@
 ---
 import { GISCUS } from '@/config'
+import { getLang, getTranslations, localizePath } from '@/i18n/utils'
+
+const lang = getLang(Astro.currentLocale)
+const t = getTranslations(lang)
 
 const discussionsUrl = `https://github.com/${GISCUS.repo}/discussions`
+// Discussions are keyed by pathname, so each language version of a post
+// (/slug/, /en/slug/, /fr/slug/) keeps its own conversation.
 ---
 
 {
   GISCUS.categoryId && (
     <section class="comments" aria-labelledby="comments-title">
       <h2 id="comments-title" class="eyebrow">
-        Comentários
+        {t('comments.title')}
       </h2>
       <p class="comments-note">
-        Para comentar ou reagir, entre com sua conta do GitHub. Os comentários
-        ficam públicos nas{' '}
+        {t('comments.intro')}{' '}
         <a href={discussionsUrl} target="_blank" rel="noopener noreferrer">
-          discussões do repositório
+          {t('comments.discussions')}
         </a>
-        . Veja as <a href="/termos/">regras</a> e a{' '}
-        <a href="/privacidade/">política de privacidade</a>.
+        . {t('comments.see')}{' '}
+        <a href={localizePath('/termos/', lang)}>{t('comments.rules')}</a>{' '}
+        {t('comments.andThe')}{' '}
+        <a href={localizePath('/privacidade/', lang)}>
+          {t('comments.privacy')}
+        </a>
+        .
       </p>
       <div
         class="giscus"
@@ -30,7 +40,7 @@ const discussionsUrl = `https://github.com/${GISCUS.repo}/discussions`
         data-reactions-enabled="1"
         data-emit-metadata="0"
         data-input-position="bottom"
-        data-lang="pt"
+        data-lang={lang}
         data-loading="lazy"
       />
       <script is:inline defer src="/scripts/comments.js" />

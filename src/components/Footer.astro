@@ -1,15 +1,19 @@
 ---
 import { CONTACT_EMAIL, GITHUB_REPO_URL, LINKEDIN_URL } from '@/config'
+import { getLang, getTranslations, localizePath } from '@/i18n/utils'
+
+const lang = getLang(Astro.currentLocale)
+const t = getTranslations(lang)
 ---
 
 <footer class="site-footer">
   <div class="site-container footer-grid">
-    <a class="footer-brand" href="/"
+    <a class="footer-brand" href={localizePath('/', lang)}
       >Marco Picanço<span class="brand-dot">.</span></a
     >
-    <p>Software bem construído.<br />Relações bem cuidadas.</p>
-    <nav aria-label="Links do rodapé">
-      <a href="/blog/">
+    <p>{t('footer.taglineLine1')}<br />{t('footer.taglineLine2')}</p>
+    <nav aria-label={t('footer.links')}>
+      <a href={localizePath('/blog/', lang)}>
         <svg
           viewBox="0 0 24 24"
           fill="none"
@@ -23,7 +27,7 @@ import { CONTACT_EMAIL, GITHUB_REPO_URL, LINKEDIN_URL } from '@/config'
           <rect x="4" y="3" width="16" height="18" rx="2"></rect>
           <path d="M8 7h8M8 11h8M8 15h5"></path>
         </svg>
-        <span>Blog</span>
+        <span>{t('nav.blog')}</span>
       </a>
       <a href={GITHUB_REPO_URL} target="_blank" rel="noopener noreferrer">
         <svg
@@ -75,16 +79,16 @@ import { CONTACT_EMAIL, GITHUB_REPO_URL, LINKEDIN_URL } from '@/config'
           <rect x="3" y="5" width="18" height="14" rx="2"></rect>
           <path d="m3 7 9 6 9-6"></path>
         </svg>
-        <span>E-mail ↗</span>
+        <span>{t('footer.email')} ↗</span>
       </a>
     </nav>
     <div class="footer-bottom">
       <span>© {new Date().getFullYear()} Marco Picanço</span>
-      <nav aria-label="Privacidade e termos">
-        <a href="/privacidade/">Privacidade</a>
-        <a href="/termos/">Termos de uso</a>
+      <nav aria-label={t('footer.legal')}>
+        <a href={localizePath('/privacidade/', lang)}>{t('footer.privacy')}</a>
+        <a href={localizePath('/termos/', lang)}>{t('footer.terms')}</a>
         <button type="button" data-cookie-action="preferences"
-          >Preferências de cookies</button
+          >{t('cookies.preferences')}</button
         >
       </nav>
     </div>
