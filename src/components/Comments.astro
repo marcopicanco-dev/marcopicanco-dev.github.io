@@ -1,5 +1,6 @@
 ---
 import { GISCUS } from '@/config'
+import NewTabNote from '@/components/NewTabNote.astro'
 import { getLang, getTranslations, localizePath } from '@/i18n/utils'
 
 const lang = getLang(Astro.currentLocale)
@@ -20,6 +21,7 @@ const discussionsUrl = `https://github.com/${GISCUS.repo}/discussions`
         {t('comments.intro')}{' '}
         <a href={discussionsUrl} target="_blank" rel="noopener noreferrer">
           {t('comments.discussions')}
+          <NewTabNote />
         </a>
         . {t('comments.see')}{' '}
         <a href={localizePath('/termos/', lang)}>{t('comments.rules')}</a>{' '}

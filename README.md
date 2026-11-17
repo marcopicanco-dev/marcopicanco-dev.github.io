@@ -28,6 +28,69 @@ as versões resolvidas ficam registradas em [`package-lock.json`](package-lock.j
 As integrações e regras de build são configuradas em
 [`astro.config.mjs`](astro.config.mjs).
 
+## Atualizações recentes
+
+Mudanças de 16 e 17 de novembro de 2026, da chegada dos novos idiomas à
+declaração de acessibilidade.
+
+### Inglês e francês (16/11)
+
+- Português continua na raiz; inglês fica em `/en/` e francês em `/fr/`, com a
+  configuração de idiomas do Astro.
+- Bandeiras **Br**, **En** e **Fr** ao lado do Blog levam à mesma página no outro
+  idioma. Quando um artigo ainda não tem tradução, levam ao blog daquele idioma.
+- Os textos da interface ficam em dicionários tipados em `src/i18n/`; o conteúdo
+  das páginas, em `src/i18n/pages/`.
+- Cada idioma tem sua própria discussão de comentários.
+- O `security.txt` passou a indicar português, inglês e francês.
+
+### Astro 7.4.8 e Node.js 22.23.5 (16/11)
+
+- O Astro 7.4.8 corrigiu o alerta GHSA-mh32-jxcr-mh9f da auditoria de dependências.
+- O `.nvmrc` passou para o Node.js 22.23.5, porque o Astro exige no mínimo a 22.23.4.
+
+### Traduções publicadas (17/11)
+
+- Os seis artigos ganharam versões em inglês e francês, com diagramas e imagem
+  de compartilhamento próprios de cada idioma.
+- Privacidade e termos foram traduzidos, com aviso de que vale a versão em
+  português em caso de divergência.
+- Todas as páginas indicam suas versões nos outros idiomas (`hreflang` e
+  `x-default`), e o sitemap repete essas ligações.
+
+### SEO conforme o guia do Google (17/11)
+
+- Os artigos “Jekyll vs Astro” e “Cloudflare Free” foram reorganizados em seções
+  com subtítulos, nos três idiomas, e o texto em português recebeu correções.
+- O campo opcional `seoTitle` encurta o título exibido na busca. A série de
+  headers de segurança usa esse campo para que o número da parte não seja cortado.
+- [docs/seo.md](docs/seo.md) registra como o site atende a cada recomendação do
+  [guia de SEO do Google](https://developers.google.com/search/docs/fundamentals/seo-starter-guide).
+
+### Auditoria de dependências com exceções com prazo (17/11)
+
+- Um alerta de ReDoS no `picomatch` (GHSA-fc5q-39xc-vjpf) ainda não tem
+  correção. O pacote só roda no build, com padrões do próprio repositório.
+- A auditoria do CI passou a aceitar apenas exceções com pacote, motivo e data de
+  validade. Esta vale até 17/12/2026; os demais alertas continuam bloqueando.
+  Detalhes em [docs/security/npm-audit.md](docs/security/npm-audit.md).
+
+### Acessibilidade e WCAG 2.2 (17/11)
+
+- Nova declaração de acessibilidade em `/acessibilidade/`, nos três idiomas,
+  inspirada na página do Mercado Livre: padrão adotado, recursos, testes,
+  limitações conhecidas e canal para relatar problemas.
+- O segundo atalho do topo de cada página, **Relatar problema de
+  acessibilidade**, e um link no rodapé levam a esse canal.
+- As bandeiras de idioma e os links “Ler artigo” do blog passaram a ter nome
+  acessível que começa pelo texto visível, o que ajuda quem usa comando de voz.
+- O aviso de cookies deixou de encobrir o elemento em foco: enquanto está
+  aberto, a página reserva o espaço dele.
+- Links que abrem nova aba avisam isso aos leitores de tela.
+- A revisão usou axe-core com os critérios A e AA das WCAG 2.0 a 2.2 nas 54
+  páginas, nos temas claro e escuro, sem violações. Incluiu também navegação
+  completa pelo teclado e telas de 320 px de largura.
+
 ## Identidade visual
 
 ![Página inicial no tema claro: tipografia forte, eixo lateral, fundo marfim e destaque vermelho terroso](docs/design/site-claro.png)
@@ -166,8 +229,8 @@ A página inicial apresenta uma sequência de avaliação e contato:
 6. **Escrita:** textos selecionados e acesso ao arquivo em `/blog/`.
 7. **Contato:** e-mail e LinkedIn como canais concretos para iniciar uma conversa.
 
-O cabeçalho prioriza Projetos, Serviços, Sobre e Contato. O blog tem acesso próprio,
-com busca e filtros dentro do arquivo. Os serviços descrevem aplicações web e
+O cabeçalho prioriza Projetos, Serviços, Sobre e Contato, seguidos do Blog e do
+seletor de idioma. O blog tem acesso próprio, com busca e filtros dentro do arquivo. Os serviços descrevem aplicações web e
 sistemas usados pelo navegador, de acordo com o escopo apresentado no conteúdo.
 
 HTML semântico, link para pular ao conteúdo, foco visível, controles com rótulos,
@@ -175,6 +238,14 @@ menu móvel acessível por teclado e respeito a movimento reduzido fazem parte
 da implementação. A leitura e as ações essenciais estão disponíveis sem depender
 de passar o mouse. A validação com pessoas representativas do público continua
 sendo uma etapa de evolução do projeto.
+
+A declaração de acessibilidade, em `/acessibilidade/` nos três idiomas, segue a
+estrutura da página do Mercado Livre: padrão adotado (WCAG 2.2 AA), recursos
+para teclado e leitores de tela, como o site é testado, limitações conhecidas e
+um canal para relatar problemas. O segundo atalho do topo de cada página,
+"Relatar problema de acessibilidade", leva a esse canal. Os textos ficam em
+`src/content/legal/<idioma>/acessibilidade.mdx`; ao mudar algo que a declaração
+descreve, revise o texto e a data `updated` das três versões.
 
 ## Referências e sua aplicação no design
 
@@ -224,6 +295,15 @@ amostras e os valores desta documentação. A
 [prancha em SVG](docs/design/paletas-modernismo.svg) está disponível como fonte
 vetorial; o README usa a exportação em PNG para facilitar a visualização.
 
+## Idiomas
+
+O site existe em português (`/`), inglês (`/en/`) e francês (`/fr/`). Os textos
+da interface ficam em `src/i18n/`, os artigos traduzidos em
+`src/content/blog/<idioma>/` e os textos legais e de acessibilidade em
+`src/content/legal/<idioma>/`. Uma tradução usa o mesmo nome de arquivo do
+original em português e herda a mesma URL, com o prefixo do idioma. Veja
+[onde fica cada texto e como traduzir um artigo](docs/i18n.md).
+
 ## Desenvolvimento
 
 Use Node.js 22.23.4 ou uma versão compatível indicada em `package.json` (o Astro exige no mínimo essa versão), com npm 12.2 ou superior. O CI utiliza as versões de `.nvmrc` e `packageManager`.
@@ -258,9 +338,10 @@ atualização necessária da CSP no Cloudflare ao publicar.
 
 ## SEO e descoberta
 
-O build gera um sitemap com as páginas canônicas. Metadados próprios, marcação
-dos artigos e do autor e as URLs alternativas da página inicial são mantidos
-no HTML. Veja [a configuração de SEO e os próximos passos no Search Console](docs/seo.md).
+O build gera um sitemap com as páginas canônicas dos três idiomas. Cada página
+traz metadados próprios e as versões nos outros idiomas (`hreflang`); os artigos
+e o autor têm marcação estruturada. Veja
+[a configuração de SEO, o checklist do guia do Google e o Search Console](docs/seo.md).
 
 ## Licença
 

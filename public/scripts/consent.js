@@ -1,4 +1,4 @@
-/* global document, Element, localStorage, window */
+/* global document, Element, localStorage, ResizeObserver, window */
 // Cookie consent (LGPD): Google Analytics only loads after the reader opts in,
 // and the choice can be changed at any time from the footer.
 const storageKey = 'cookie-consent'
@@ -102,8 +102,32 @@ document.addEventListener('click', (event) => {
   if (dialog?.open) dialog.close()
 })
 
+// While open, the fixed banner covers the bottom of the viewport. Publishing
+// its height lets the CSS reserve that space, so keyboard focus scrolls above
+// the banner (WCAG 2.4.11) and the footer stays reachable.
+function trackBannerHeight() {
+  if (!banner || typeof ResizeObserver === 'undefined') return
+
+  const root = document.documentElement
+  const update = () => {
+    if (banner.hidden) {
+      root.style.removeProperty('--cookie-banner-height')
+    } else {
+      root.style.setProperty(
+        '--cookie-banner-height',
+        `${banner.offsetHeight}px`,
+      )
+    }
+  }
+
+  // Also fires when `hidden` collapses the banner to zero height.
+  new ResizeObserver(update).observe(banner)
+  update()
+}
+
 if (consent?.analytics) {
   loadAnalytics()
 } else if (!consent) {
   banner?.removeAttribute('hidden')
 }
+trackBannerHeight()

@@ -1,0 +1,66 @@
+---
+title: 'Accessibility'
+eyebrow: 'Accessibility statement'
+description: 'The standard this site follows, what already works with a keyboard and screen readers, known limitations and how to report a problem.'
+updated: '2026-11-17'
+---
+
+This site should work for everyone, however they browse: keyboard, screen reader, magnification, voice control, touch or mouse. This page explains what has been done, what is still missing and how to let me know when something gets in the way.
+
+## Standard
+
+The reference is the W3C [Web Content Accessibility Guidelines (WCAG) 2.2](https://www.w3.org/TR/WCAG22/), level AA. I also take into account the [Brazilian Inclusion Law](https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm) (Law 13,146/2015), which covers website accessibility.
+
+The site is **partially conformant**. Its pages meet the criteria that were checked, but some parts depend on third-party services and some tests have not been done yet. Details are under “Known limitations”, below.
+
+## Browsing without a mouse
+
+- The whole site can be used with the keyboard alone: Tab and Shift+Tab move through links and buttons; Enter and Space activate them.
+- The first Tab on every page reveals **Skip to content**, which goes straight to the main text. The second reveals **Report an accessibility problem**, which brings you to the contact section of this page.
+- The focused item gets an outline in the accent color, the same across the site and clearly visible in both themes.
+- Neither the fixed header nor the cookie notice covers the focused item: the page scrolls to keep it in view.
+- Search, the mobile menu and cookie preferences open as dialogs that close with Esc and return focus to the button that opened them.
+- Code blocks and wide tables can take focus, so the arrow keys scroll them horizontally.
+
+## Screen readers
+
+- Each page declares its language (Portuguese, English or French), and the language names in the switcher are marked in their own language, so they are pronounced correctly.
+- Pages have labeled regions (header, navigation, main content and footer) and headings in order, so you can jump from section to section.
+- Images that carry information have alternative text; decorative icons and illustrations are ignored.
+- Links that open another tab say so; the ↗ arrow next to them is visual only.
+- Buttons without visible text, such as those in the project carousel, have an accessible name. On other controls, the name starts with the text shown on screen, which helps voice control users.
+
+## Reading and visuals
+
+- Body text has a contrast of 13.12:1 in the light theme and 14.95:1 in the dark one. Among the color pairs measured, the lowest contrast is 5.34:1, above the WCAG minimum of 4.5:1.
+- There is a light and a dark theme. Until you pick one, the site follows your system setting.
+- If your system asks for reduced motion, animations, transitions and smooth scrolling are turned off.
+- Content fits screens 320 px wide without horizontal scrolling, which is the same as zooming the page to 400% on a regular monitor.
+- Links inside articles are underlined, so they do not rely on color alone.
+
+## How the site is tested
+
+The latest review, on November 17, 2026, included:
+
+- automated checks with [axe-core](https://github.com/dequelabs/axe-core) on every page, in the light and dark themes, against the A and AA criteria of WCAG 2.0 to 2.2;
+- full keyboard walkthroughs of representative pages, on desktop and mobile screens, with and without the cookie notice;
+- a check of every page on a screen 320 px wide.
+
+Automated tools find only some problems. That is why reports from people who use the site matter so much.
+
+## Known limitations
+
+- **Comments:** the comments section uses [Giscus](https://giscus.app/), loaded from another site, and requires a GitHub account. The accessibility of that part depends on those services. If you prefer, comment by email.
+- **Article diagrams:** the alternative text summarizes each diagram, and the article explains the same content in text. Fine visual details may not be described.
+- **Numbered citations:** some articles cite sources with numbered links. The full list, with descriptive names, is at the end of each article.
+- **Screen readers:** I have not yet tested the site systematically with NVDA, JAWS, VoiceOver or TalkBack.
+
+<h2 id="contato">How to report a problem</h2>
+
+If something makes the site hard to use, email [marcopicanco@live.com](mailto:marcopicanco@live.com?subject=Accessibility) with the subject “Accessibility”. It helps to include:
+
+- the page address;
+- what you were trying to do and what happened;
+- your browser and, if you use one, your assistive technology (screen reader, magnifier, voice control).
+
+If you need any content in another format, such as plain text, ask in the same email. I review every report, and this page is updated whenever something changes.

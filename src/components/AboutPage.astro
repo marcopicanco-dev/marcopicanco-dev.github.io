@@ -5,6 +5,7 @@ import { Image } from 'astro:assets'
 import { CONTACT_EMAIL, GITHUB_REPO_URL, LINKEDIN_URL } from '@/config'
 import profilePhoto from '@/assets/profile/perfil-linkedin.png'
 import { ABOUT, type EducationId } from '@/i18n/pages/about'
+import NewTabNote from '@/components/NewTabNote.astro'
 import { getLang, localizePath } from '@/i18n/utils'
 
 const lang = getLang(Astro.currentLocale)
@@ -107,13 +108,15 @@ const education = schools.map((item) => ({ ...item, ...c.education[item.id] }))
                 href={GITHUB_REPO_URL}
                 itemprop="sameAs"
                 target="_blank"
-                rel="noopener noreferrer">GitHub ↗</a
+                rel="noopener noreferrer"
+                >GitHub <span aria-hidden="true">↗</span><NewTabNote /></a
               ><a
                 class="text-link"
                 href={LINKEDIN_URL}
                 itemprop="sameAs"
                 target="_blank"
-                rel="noopener noreferrer">LinkedIn ↗</a
+                rel="noopener noreferrer"
+                >LinkedIn <span aria-hidden="true">↗</span><NewTabNote /></a
               >
             </div>
           </div>

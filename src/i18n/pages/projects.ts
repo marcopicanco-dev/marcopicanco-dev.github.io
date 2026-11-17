@@ -45,7 +45,7 @@ export const PROJECTS: Record<LanguageKeys, ProjectsContent> = {
     technologies: 'Tecnologias',
     delivery: 'A entrega',
     architecture: 'Conhecer a arquitetura',
-    repository: 'Ver repositório ↗',
+    repository: 'Ver repositório',
     challenges: 'Principais desafios',
     items: {
       hexa_alerts: {
@@ -131,7 +131,7 @@ export const PROJECTS: Record<LanguageKeys, ProjectsContent> = {
     technologies: 'Technologies',
     delivery: 'The result',
     architecture: 'Explore the architecture',
-    repository: 'View repository ↗',
+    repository: 'View repository',
     challenges: 'Main challenges',
     items: {
       hexa_alerts: {
@@ -217,7 +217,7 @@ export const PROJECTS: Record<LanguageKeys, ProjectsContent> = {
     technologies: 'Technologies',
     delivery: 'Le résultat',
     architecture: 'Découvrir l’architecture',
-    repository: 'Voir le dépôt ↗',
+    repository: 'Voir le dépôt',
     challenges: 'Principaux défis',
     items: {
       hexa_alerts: {

@@ -3,7 +3,8 @@ import { Image } from 'astro:assets'
 import type { ImageMetadata } from 'astro'
 import { GITHUB_REPO_URL } from '@/config'
 import { PROJECTS, type ProjectId } from '@/i18n/pages/projects'
-import { formatMessage, getLang } from '@/i18n/utils'
+import NewTabNote from '@/components/NewTabNote.astro'
+import { formatMessage, getLang, getTranslations } from '@/i18n/utils'
 import hexaAlertsScreenshot from '@/assets/projects/hexa-alerts-dashboard.png'
 import brasilEleitoralScreenshot from '@/assets/projects/brasil-eleitoral-dashboard.png'
 
@@ -25,6 +26,7 @@ const brasilEleitoralUrl = `${GITHUB_REPO_URL}/brasil-eleitoral`
 
 const lang = getLang(Astro.currentLocale)
 const c = PROJECTS[lang]
+const t = getTranslations(lang)
 
 const baseProjects: Project[] = [
   {
@@ -118,10 +120,10 @@ const pad = (number: number) => String(number).padStart(2, '0')
               href={project.repositoryUrl}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label={formatMessage(c.previewLabel, {
+              aria-label={`${formatMessage(c.previewLabel, {
                 name: project.name,
                 stack: project.stack,
-              })}
+              })} (${t('a11y.newTab')})`}
               data-analytics-project={project.analyticsId}
               data-analytics-location="project_preview"
             >
@@ -171,7 +173,11 @@ const pad = (number: number) => String(number).padStart(2, '0')
                 data-analytics-project={project.analyticsId}
                 data-analytics-location="project_architecture"
               >
-                {c.architecture} <span aria-hidden="true">↗</span>
+                {c.architecture}{' '}
+                <>
+                  <span aria-hidden="true">↗</span>
+                  <NewTabNote />
+                </>
               </a>
               <a
                 class="project-repository"
@@ -181,7 +187,11 @@ const pad = (number: number) => String(number).padStart(2, '0')
                 data-analytics-project={project.analyticsId}
                 data-analytics-location="project_repository"
               >
-                {c.repository}
+                {c.repository}{' '}
+                <>
+                  <span aria-hidden="true">↗</span>
+                  <NewTabNote />
+                </>
               </a>
             </div>
             <section

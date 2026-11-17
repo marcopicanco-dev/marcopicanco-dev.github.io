@@ -1,0 +1,9 @@
+---
+// Tells screen reader users that a link opens a new tab; sighted readers get
+// the ↗ arrow. Place it as the last child of a target="_blank" link.
+import { getLang, getTranslations } from '@/i18n/utils'
+
+const t = getTranslations(getLang(Astro.currentLocale))
+---
+
+<span class="sr-only"> ({t('a11y.newTab')})</span>

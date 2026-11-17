@@ -3,7 +3,10 @@ import { type UiStrings } from '@/i18n/pt'
 export const en: UiStrings = {
   'site.description':
     'Websites, web applications and integrations. Explore the work and articles of Marco Picanço on software and technology.',
+  'a11y.shortcuts': 'Shortcuts',
   'a11y.skipToContent': 'Skip to content',
+  'a11y.reportProblem': 'Report an accessibility problem',
+  'a11y.newTab': 'opens in a new tab',
 
   'nav.main': 'Main navigation',
   'nav.homeLabel': '{name} — home',
@@ -31,9 +34,10 @@ export const en: UiStrings = {
   'footer.taglineLine2': 'Well-kept relationships.',
   'footer.links': 'Footer links',
   'footer.email': 'Email',
-  'footer.legal': 'Privacy and terms',
+  'footer.legal': 'Privacy, terms and accessibility',
   'footer.privacy': 'Privacy',
   'footer.terms': 'Terms of use',
+  'footer.accessibility': 'Accessibility',
 
   'cookies.preferences': 'Cookie preferences',
   'cookies.bannerTitle': 'Cookies and privacy',
@@ -88,7 +92,7 @@ export const en: UiStrings = {
   'archive.count.other': '{count} published articles',
   'archive.clearFilter': 'Clear filter ×',
   'archive.featured': 'Featured articles',
-  'archive.readLabel': 'Read: {title}',
+  'archive.readLabel': 'Read article: {title}',
   'archive.readArticle': 'Read article',
   'archive.more': 'More articles',
   'archive.empty': 'No articles have been published in English yet.',

@@ -4,7 +4,12 @@ import { formatBlogDate } from '@/utils/blog'
 import { getLang, getTranslations } from '@/i18n/utils'
 
 const { frontmatter } = Astro.props as {
-  frontmatter: { title: string; description: string; updated: string }
+  frontmatter: {
+    title: string
+    description: string
+    updated: string
+    eyebrow?: string
+  }
 }
 const lang = getLang(Astro.currentLocale)
 const t = getTranslations(lang)
@@ -13,7 +18,7 @@ const t = getTranslations(lang)
 <Base frontmatter={{ ...frontmatter, layout: '', file: '' }}>
   <main class="post-page">
     <header class="post-header">
-      <p class="eyebrow">{t('legal.eyebrow')}</p>
+      <p class="eyebrow">{frontmatter.eyebrow ?? t('legal.eyebrow')}</p>
       <h1>{frontmatter.title}</h1>
       <p class="post-description">{frontmatter.description}</p>
       <div class="post-meta">

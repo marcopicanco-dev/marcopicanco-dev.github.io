@@ -23,9 +23,13 @@
 }
 html {
   scroll-padding-top: calc(var(--header-height) + 24px);
+  /* Set by consent.js while the cookie banner covers the bottom edge, so
+     focused elements scroll above it and the footer stays reachable. */
+  scroll-padding-bottom: var(--cookie-banner-height, 0px);
 }
 body {
   margin: 0;
+  padding-bottom: var(--cookie-banner-height, 0px);
   background: var(--paper);
   color: var(--ink);
   font-family: 'Inter Variable', 'Helvetica Neue', Arial, sans-serif;
@@ -539,6 +543,9 @@ a {
 /* The negative margin and slide padding leave room for focus outlines,
    which the scrolling track would otherwise clip. */
 .project-track {
+  /* Contains the absolutely positioned screen-reader text of off-screen
+     slides, which would otherwise widen the page. */
+  position: relative;
   display: flex;
   margin: -8px;
   overflow-x: auto;

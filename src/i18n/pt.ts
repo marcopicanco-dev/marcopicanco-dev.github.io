@@ -3,7 +3,10 @@
 export const pt = {
   'site.description':
     'Desenvolvimento de sites, aplicações web e integrações. Conheça o trabalho de Marco Picanço e seus artigos sobre software e tecnologia.',
+  'a11y.shortcuts': 'Atalhos',
   'a11y.skipToContent': 'Pular para o conteúdo',
+  'a11y.reportProblem': 'Relatar problema de acessibilidade',
+  'a11y.newTab': 'abre em nova aba',
 
   'nav.main': 'Navegação principal',
   'nav.homeLabel': '{name} — início',
@@ -31,9 +34,10 @@ export const pt = {
   'footer.taglineLine2': 'Relações bem cuidadas.',
   'footer.links': 'Links do rodapé',
   'footer.email': 'E-mail',
-  'footer.legal': 'Privacidade e termos',
+  'footer.legal': 'Privacidade, termos e acessibilidade',
   'footer.privacy': 'Privacidade',
   'footer.terms': 'Termos de uso',
+  'footer.accessibility': 'Acessibilidade',
 
   'cookies.preferences': 'Preferências de cookies',
   'cookies.bannerTitle': 'Cookies e privacidade',
@@ -88,7 +92,7 @@ export const pt = {
   'archive.count.other': '{count} textos publicados',
   'archive.clearFilter': 'Limpar filtro ×',
   'archive.featured': 'Artigos em destaque',
-  'archive.readLabel': 'Ler: {title}',
+  'archive.readLabel': 'Ler artigo: {title}',
   'archive.readArticle': 'Ler artigo',
   'archive.more': 'Mais textos',
   'archive.empty': 'Ainda não há textos publicados neste idioma.',

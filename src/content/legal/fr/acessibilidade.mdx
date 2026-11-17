@@ -1,0 +1,66 @@
+---
+title: 'Accessibilité'
+eyebrow: 'Déclaration d’accessibilité'
+description: 'La norme suivie par ce site, ce qui fonctionne déjà au clavier et avec les lecteurs d’écran, les limites connues et comment signaler un problème.'
+updated: '2026-11-17'
+---
+
+Ce site doit fonctionner pour tout le monde, quelle que soit la façon de naviguer : clavier, lecteur d’écran, agrandissement, commande vocale, écran tactile ou souris. Cette page explique ce qui a été fait, ce qui manque encore et comment me prévenir quand quelque chose vous gêne.
+
+## Norme suivie
+
+La référence est le [référentiel WCAG 2.2](https://www.w3.org/TR/WCAG22/) (Règles pour l’accessibilité des contenus Web) du W3C, niveau AA. Je tiens aussi compte de la [loi brésilienne d’inclusion](https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm) (loi n° 13.146/2015), qui traite de l’accessibilité des sites.
+
+Le site est **partiellement conforme**. Ses pages respectent les critères vérifiés, mais certaines parties dépendent de services tiers et certains tests n’ont pas encore été faits. Les détails figurent plus bas, dans « Limites connues ».
+
+## Naviguer sans souris
+
+- Tout le site peut s’utiliser au clavier seul : Tab et Maj+Tab parcourent les liens et les boutons ; Entrée et Espace les activent.
+- La première pression sur Tab affiche **Aller au contenu**, qui mène directement au texte principal. La deuxième affiche **Signaler un problème d’accessibilité**, qui conduit à la section contact de cette page.
+- L’élément qui a le focus reçoit un contour de la couleur d’accent, identique sur tout le site et bien visible dans les deux thèmes.
+- Ni l’en-tête fixe ni le bandeau des cookies ne masquent l’élément qui a le focus : la page défile pour le garder visible.
+- La recherche, le menu mobile et les préférences de cookies s’ouvrent dans des fenêtres qui se ferment avec Échap et rendent le focus au bouton qui les a ouvertes.
+- Les blocs de code et les tableaux larges peuvent recevoir le focus, pour que les flèches du clavier les fassent défiler horizontalement.
+
+## Lecteurs d’écran
+
+- Chaque page indique sa langue (portugais, anglais ou français), et les noms des langues dans le sélecteur sont balisés dans leur propre langue, pour être prononcés correctement.
+- Les pages ont des régions identifiées (en-tête, navigation, contenu principal et pied de page) et des titres dans l’ordre, ce qui permet d’aller de section en section.
+- Les images porteuses d’information ont un texte alternatif ; les icônes et illustrations décoratives sont ignorées.
+- Les liens qui ouvrent un autre onglet l’annoncent ; la flèche ↗ affichée à côté est purement visuelle.
+- Les boutons sans texte visible, comme ceux du carrousel de projets, ont un nom accessible. Pour les autres commandes, le nom commence par le texte affiché, ce qui aide les personnes qui utilisent la commande vocale.
+
+## Lecture et affichage
+
+- Le texte principal a un contraste de 13,12:1 en thème clair et de 14,95:1 en thème sombre. Parmi les paires de couleurs mesurées, le contraste le plus faible est de 5,34:1, au-dessus du minimum de 4,5:1 des WCAG.
+- Il existe un thème clair et un thème sombre. Tant que vous n’en choisissez pas, le site suit le réglage du système.
+- Si le système demande de réduire les animations, les animations, les transitions et le défilement fluide sont désactivés.
+- Le contenu s’adapte aux écrans de 320 px de large sans défilement horizontal, ce qui équivaut à agrandir la page à 400 % sur un écran courant.
+- Les liens dans les articles sont soulignés, sans dépendre de la seule couleur.
+
+## Comment le site est testé
+
+La dernière revue, le 17 novembre 2026, comprenait :
+
+- une vérification automatique avec [axe-core](https://github.com/dequelabs/axe-core) sur toutes les pages, en thème clair et sombre, selon les critères A et AA des WCAG 2.0 à 2.2 ;
+- un parcours complet au clavier de pages représentatives, sur ordinateur et sur mobile, avec et sans le bandeau des cookies ;
+- un contrôle de toutes les pages sur un écran de 320 px de large.
+
+Les outils automatiques ne trouvent qu’une partie des problèmes. C’est pourquoi les retours des personnes qui utilisent le site comptent autant.
+
+## Limites connues
+
+- **Commentaires :** la section des commentaires utilise [Giscus](https://giscus.app/), chargé depuis un autre site, et demande un compte GitHub. Son accessibilité dépend de ces services. Si vous préférez, commentez par e-mail.
+- **Schémas des articles :** le texte alternatif résume chaque schéma, et l’article explique le même contenu en texte. Certains détails visuels peuvent ne pas être décrits.
+- **Citations numérotées :** certains articles citent leurs sources avec des liens numérotés. La liste complète, avec des noms descriptifs, se trouve à la fin de chaque article.
+- **Lecteurs d’écran :** je n’ai pas encore testé le site de manière systématique avec NVDA, JAWS, VoiceOver ou TalkBack.
+
+<h2 id="contato">Comment signaler un problème</h2>
+
+Si quelque chose vous empêche d’utiliser le site, écrivez à [marcopicanco@live.com](mailto:marcopicanco@live.com?subject=Accessibilite) avec l’objet « Accessibilité ». Il est utile d’indiquer :
+
+- l’adresse de la page ;
+- ce que vous essayiez de faire et ce qui s’est passé ;
+- votre navigateur et, le cas échéant, votre technologie d’assistance (lecteur d’écran, loupe, commande vocale).
+
+Si vous avez besoin d’un contenu dans un autre format, comme du texte brut, demandez-le dans le même e-mail. J’examine chaque signalement, et cette page est mise à jour à chaque changement.

@@ -1,0 +1,66 @@
+---
+title: 'Acessibilidade'
+eyebrow: 'Declaração de acessibilidade'
+description: 'O padrão que este site segue, o que já funciona com teclado e leitores de tela, as limitações conhecidas e como relatar um problema.'
+updated: '2026-11-17'
+---
+
+Este site deve funcionar para qualquer pessoa, seja qual for a forma de navegar: teclado, leitor de tela, ampliação, comando de voz, toque ou mouse. Aqui explico o que já foi feito, o que ainda falta e como me avisar quando algo atrapalhar.
+
+## Padrão adotado
+
+A referência são as [Diretrizes de Acessibilidade para Conteúdo Web (WCAG) 2.2](https://www.w3.org/TR/WCAG22/), do W3C, no nível AA. Também considero a [Lei Brasileira de Inclusão](https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm) (Lei nº 13.146/2015), que trata da acessibilidade em sites.
+
+O site está **parcialmente conforme**. As páginas atendem aos critérios verificados, mas algumas partes dependem de serviços de terceiros e há testes que ainda não fiz. Os detalhes estão em “Limitações conhecidas”, mais abaixo.
+
+## Navegação sem mouse
+
+- O site inteiro pode ser usado só com o teclado: Tab e Shift+Tab percorrem links e botões; Enter e Espaço os acionam.
+- O primeiro Tab de cada página mostra **Pular para o conteúdo**, que leva direto ao texto principal. O segundo mostra **Relatar problema de acessibilidade**, que traz para o contato desta página.
+- O item em foco ganha um contorno na cor de destaque, igual em todo o site e bem visível nos dois temas.
+- Nem o cabeçalho fixo nem o aviso de cookies encobrem o item em foco: a página rola para mantê-lo à vista.
+- A busca, o menu do celular e as preferências de cookies abrem como janelas que fecham com Esc e devolvem o foco ao botão que as abriu.
+- Blocos de código e tabelas largas recebem foco, para que as setas do teclado rolem o conteúdo na horizontal.
+
+## Leitores de tela
+
+- Cada página informa seu idioma (português, inglês ou francês), e os nomes dos idiomas no seletor são marcados no próprio idioma, para que a pronúncia saia correta.
+- As páginas têm regiões identificadas (cabeçalho, navegação, conteúdo principal e rodapé) e títulos em ordem, o que permite pular de seção em seção.
+- Imagens que transmitem informação têm texto alternativo; ícones e ilustrações decorativas são ignorados.
+- Links que abrem outra aba avisam isso; a seta ↗ que aparece ao lado deles é só visual.
+- Botões sem texto visível, como os do carrossel de projetos, têm nome acessível. Nos demais controles, o nome começa pelo texto que aparece na tela, o que ajuda quem usa comando de voz.
+
+## Leitura e visual
+
+- O texto principal tem contraste de 13,12:1 no tema claro e 14,95:1 no escuro. Entre os pares de cores medidos, o menor contraste é 5,34:1, acima do mínimo de 4,5:1 da WCAG.
+- Há tema claro e escuro. Até você escolher um, o site segue a preferência do sistema.
+- Se o sistema pedir menos movimento, animações, transições e rolagem suave são desligadas.
+- O conteúdo se ajusta a telas de 320 px de largura sem rolagem lateral, o que equivale a ampliar a página em 400% num monitor comum.
+- Links dentro dos textos são sublinhados, sem depender só da cor.
+
+## Como o site é testado
+
+A última revisão, em 17 de novembro de 2026, incluiu:
+
+- verificação automática com [axe-core](https://github.com/dequelabs/axe-core) em todas as páginas, nos temas claro e escuro, com os critérios A e AA das WCAG 2.0 a 2.2;
+- navegação completa pelo teclado em páginas representativas, em telas de computador e de celular, com e sem o aviso de cookies;
+- conferência de todas as páginas em tela de 320 px de largura.
+
+Ferramentas automáticas encontram só parte dos problemas. Por isso, o relato de quem usa o site faz tanta diferença.
+
+## Limitações conhecidas
+
+- **Comentários:** a área de comentários usa o [Giscus](https://giscus.app/), carregado de outro site, e exige conta no GitHub. A acessibilidade dessa parte depende desses serviços. Se preferir, comente por e-mail.
+- **Diagramas dos artigos:** o texto alternativo resume cada diagrama, e o artigo explica o mesmo conteúdo em texto. Detalhes visuais finos podem ficar sem descrição.
+- **Citações numeradas:** alguns artigos indicam as fontes com links numerados. A lista completa, com nomes descritivos, fica no fim de cada artigo.
+- **Leitores de tela:** ainda não testei o site de forma sistemática com NVDA, JAWS, VoiceOver ou TalkBack.
+
+<h2 id="contato">Como relatar um problema</h2>
+
+Se algo dificultar seu acesso, escreva para [marcopicanco@live.com](mailto:marcopicanco@live.com?subject=Acessibilidade) com o assunto “Acessibilidade”. Ajuda contar:
+
+- o endereço da página;
+- o que você tentava fazer e o que aconteceu;
+- o navegador e, se usar, a tecnologia assistiva (leitor de tela, ampliador, comando de voz).
+
+Se precisar de algum conteúdo em outro formato, como texto simples, peça no mesmo e-mail. Analiso cada relato, e esta página é atualizada sempre que algo muda.

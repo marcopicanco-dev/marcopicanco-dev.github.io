@@ -69,12 +69,12 @@ const locales = (Object.keys(LOCALE_INFO) as LanguageKeys[]).map((code) => ({
               href={getAlternatePath(Astro.url.pathname, locale.code)}
               hreflang={locale.code}
               lang={locale.code}
-              aria-label={locale.name}
               aria-current={isCurrent ? 'true' : undefined}
               title={locale.name}
             >
               {flag}
               <span>{locale.flagLabel}</span>
+              <span class="sr-only">, {locale.name}</span>
             </a>
           ) : (
             <span

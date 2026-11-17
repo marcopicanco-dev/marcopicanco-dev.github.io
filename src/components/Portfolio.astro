@@ -3,6 +3,7 @@ import Base from '@/layouts/Base.astro'
 import { Image } from 'astro:assets'
 import { CONTACT_EMAIL, GITHUB_REPO_URL, LINKEDIN_URL } from '@/config'
 import profilePhoto from '@/assets/profile/perfil-linkedin.png'
+import NewTabNote from '@/components/NewTabNote.astro'
 import ProjectCarousel from '@/components/ProjectCarousel.astro'
 import { HOME } from '@/i18n/pages/home'
 import { formatMessage, getLang, localizePath } from '@/i18n/utils'
@@ -85,13 +86,14 @@ const services = c.services.items.map((service, index) => ({
         <div class="hero-footnote">
           <span>{c.hero.footnote}</span><div>
             <a href={GITHUB_REPO_URL} target="_blank" rel="noopener noreferrer"
-              >GitHub ↗</a
+              >GitHub <span aria-hidden="true">↗</span><NewTabNote /></a
             ><a
               href={LINKEDIN_URL}
               target="_blank"
               rel="noopener noreferrer"
               data-analytics-contact="linkedin"
-              data-analytics-location="hero">LinkedIn ↗</a
+              data-analytics-location="hero"
+              >LinkedIn <span aria-hidden="true">↗</span><NewTabNote /></a
             >
           </div>
         </div>
@@ -170,7 +172,8 @@ const services = c.services.items.map((service, index) => ({
               href={GITHUB_REPO_URL}
               target="_blank"
               rel="noopener noreferrer"
-              >{c.projects.githubCta} <span aria-hidden="true">↗</span></a
+              >{c.projects.githubCta}
+              <span aria-hidden="true">↗</span><NewTabNote /></a
             >
           </div>
           <ProjectCarousel />
@@ -330,7 +333,8 @@ const services = c.services.items.map((service, index) => ({
                 rel="noopener noreferrer"
                 data-analytics-contact="linkedin"
                 data-analytics-location="contact"
-                >{c.contact.linkedinCta} <span aria-hidden="true">↗</span></a
+                >{c.contact.linkedinCta}
+                <span aria-hidden="true">↗</span><NewTabNote /></a
               >
             </div>
           </div><a

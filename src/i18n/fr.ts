@@ -4,7 +4,10 @@ import { type UiStrings } from '@/i18n/pt'
 export const fr: UiStrings = {
   'site.description':
     'Création de sites, d’applications web et d’intégrations. Découvrez le travail de Marco Picanço et ses articles sur le logiciel et la technologie.',
+  'a11y.shortcuts': 'Raccourcis',
   'a11y.skipToContent': 'Aller au contenu',
+  'a11y.reportProblem': 'Signaler un problème d’accessibilité',
+  'a11y.newTab': 's’ouvre dans un nouvel onglet',
 
   'nav.main': 'Navigation principale',
   'nav.homeLabel': '{name} — accueil',
@@ -32,9 +35,10 @@ export const fr: UiStrings = {
   'footer.taglineLine2': 'Des relations bien entretenues.',
   'footer.links': 'Liens du pied de page',
   'footer.email': 'E-mail',
-  'footer.legal': 'Confidentialité et conditions',
+  'footer.legal': 'Confidentialité, conditions et accessibilité',
   'footer.privacy': 'Confidentialité',
   'footer.terms': 'Conditions d’utilisation',
+  'footer.accessibility': 'Accessibilité',
 
   'cookies.preferences': 'Préférences de cookies',
   'cookies.bannerTitle': 'Cookies et confidentialité',
@@ -89,7 +93,7 @@ export const fr: UiStrings = {
   'archive.count.other': '{count} articles publiés',
   'archive.clearFilter': 'Effacer le filtre ×',
   'archive.featured': 'Articles à la une',
-  'archive.readLabel': 'Lire : {title}',
+  'archive.readLabel': 'Lire l’article : {title}',
   'archive.readArticle': 'Lire l’article',
   'archive.more': 'Plus d’articles',
   'archive.empty': 'Aucun article n’a encore été publié en français.',
