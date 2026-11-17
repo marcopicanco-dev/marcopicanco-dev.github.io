@@ -226,7 +226,7 @@ vetorial; o README usa a exportação em PNG para facilitar a visualização.
 
 ## Desenvolvimento
 
-Use Node.js 22.22.2 ou uma versão compatível indicada em `package.json`, com npm 12.2 ou superior. O CI utiliza as versões de `.nvmrc` e `packageManager`.
+Use Node.js 22.23.4 ou uma versão compatível indicada em `package.json` (o Astro exige no mínimo essa versão), com npm 12.2 ou superior. O CI utiliza as versões de `.nvmrc` e `packageManager`.
 
 ```sh
 nvm install
