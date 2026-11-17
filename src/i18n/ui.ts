@@ -14,7 +14,11 @@ export type UiKey = keyof UiStrings
 
 type LocaleInfo = {
   htmlLang: string
+  // English and French target every reader of the language, not one country.
+  hreflang: string
   ogLocale: string
+  // Sharing image in public/, with the headline in this language.
+  ogImage: string
   flagLabel: string
   name: string
   // Flip to true once the language has its pages under /<code>/; until then
@@ -25,24 +29,30 @@ type LocaleInfo = {
 export const LOCALE_INFO: Record<LanguageKeys, LocaleInfo> = {
   pt: {
     htmlLang: 'pt-BR',
+    hreflang: 'pt-BR',
     ogLocale: 'pt_BR',
+    ogImage: 'og.png',
     flagLabel: 'Br',
     name: 'Português (Brasil)',
     published: true,
   },
   en: {
     htmlLang: 'en-US',
+    hreflang: 'en',
     ogLocale: 'en_US',
+    ogImage: 'og-en.png',
     flagLabel: 'En',
     name: 'English (US)',
-    published: false,
+    published: true,
   },
   fr: {
     htmlLang: 'fr-FR',
+    hreflang: 'fr',
     ogLocale: 'fr_FR',
+    ogImage: 'og-fr.png',
     flagLabel: 'Fr',
     name: 'Français (France)',
-    published: false,
+    published: true,
   },
 }
 

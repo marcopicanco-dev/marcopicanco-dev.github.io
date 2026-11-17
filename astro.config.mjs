@@ -80,6 +80,12 @@ export default defineConfig({
   },
   integrations: [
     sitemap({
+      // Links each page to its versions in the other languages. Untranslated
+      // posts and per-language tags simply have no alternates.
+      i18n: {
+        defaultLocale: 'pt',
+        locales: { pt: 'pt-BR', en: 'en', fr: 'fr' },
+      },
       filter: (page) =>
         ![
           '/portfolio/',

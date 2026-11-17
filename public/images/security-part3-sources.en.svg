@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 560" role="img" aria-labelledby="title desc">
+  <title id="title">Sources used in the validation</title>
+  <desc id="desc">Visual table listing SecurityHeaders.com, Cloudflare docs, Scott Helme, MDN HTTP Observatory and curl as the sources and tools used.</desc>
+  <rect width="1100" height="560" fill="#282a36"/>
+  <text x="70" y="72" fill="#f8f8f2" font-family="Karla, Arial, sans-serif" font-size="34" font-weight="700">Sources, tools and evidence</text>
+  <text x="70" y="108" fill="#d7d5ee" font-family="Karla, Arial, sans-serif" font-size="18">The fix was guided by a scanner, documentation and automated tests.</text>
+
+  <g transform="translate(70 155)" font-family="Karla, Arial, sans-serif">
+    <rect width="960" height="330" rx="16" fill="#21222c" stroke="#6272a4" stroke-opacity="0.35"/>
+    <g font-size="18">
+      <text x="34" y="56" fill="#8be9fd" font-weight="700">Source</text>
+      <text x="370" y="56" fill="#8be9fd" font-weight="700">Role in the process</text>
+      <text x="770" y="56" fill="#8be9fd" font-weight="700">Evidence</text>
+    </g>
+    <g stroke="#6272a4" stroke-opacity="0.28">
+      <path d="M0 82H960"/>
+      <path d="M0 142H960"/>
+      <path d="M0 202H960"/>
+      <path d="M0 262H960"/>
+    </g>
+    <g font-size="17">
+      <text x="34" y="120" fill="#f8f8f2">SecurityHeaders.com</text>
+      <text x="370" y="120" fill="#d7d5ee">external scanner</text>
+      <text x="770" y="120" fill="#50fa7b">Referrer-Policy</text>
+
+      <text x="34" y="180" fill="#f8f8f2">Cloudflare Docs</text>
+      <text x="370" y="180" fill="#d7d5ee">Response Header Transform Rules</text>
+      <text x="770" y="180" fill="#50fa7b">Set static</text>
+
+      <text x="34" y="240" fill="#f8f8f2">Scott Helme</text>
+      <text x="370" y="240" fill="#d7d5ee">Referrer-Policy concept</text>
+      <text x="770" y="240" fill="#50fa7b">strict-origin...</text>
+
+      <text x="34" y="300" fill="#f8f8f2">curl + Node fetch</text>
+      <text x="370" y="300" fill="#d7d5ee">reproducible validation</text>
+      <text x="770" y="300" fill="#50fa7b">post-deploy CI</text>
+    </g>
+  </g>
+</svg>

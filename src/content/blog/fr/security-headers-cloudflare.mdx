@@ -1,0 +1,108 @@
+---
+title: 'Corriger les en-têtes de sécurité d’un site statique sur GitHub Pages avec Cloudflare'
+description: 'Comment j’ai analysé un rapport de sécurité de mon blog, découvert les limites de GitHub Pages pour les en-têtes HTTP et résolu le problème avec des balises meta et Cloudflare.'
+date: '2026-07-23'
+publishedAt: '2026-07-23T09:00:00-03:00'
+series: 'Corriger les en-têtes de sécurité d’un site statique sur GitHub Pages avec Cloudflare'
+seriesLabel: 'ce qui se règle dans le code et ce qui exige un proxy'
+tags: ['Sécurité', 'Cloudflare', 'DNS']
+---
+
+Après avoir vu passer une avalanche d’actualités sur la `cyber security`, j’ai décidé de tester mon propre site, qui est d’ailleurs très simple : une application statique hébergée sur GitHub Pages. J’ai lancé un scanner de sécurité et le résultat est revenu plein d’alertes : il manquait `Content-Security-Policy`, `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy` et `Permissions-Policy`. Un `Access-Control-Allow-Origin: *` est aussi apparu.
+
+Avant d’ajouter des en-têtes à tout-va, j’ai dû comprendre une limite sur laquelle beaucoup de gens butent en hébergeant un site statique (SSG) : **GitHub Pages ne permet pas de configurer des en-têtes HTTP personnalisés**. Il n’y a pas de fichier `_headers` comme chez Netlify, ni de contrôle du serveur. Ce que GitHub sert, c’est ce que le visiteur reçoit. Et maintenant ?
+
+Cela a divisé le problème en deux parties.
+
+## Première partie : qu’est-ce qui se règle dans le code ?
+
+Après quelques recherches, j’ai vu que `Content-Security-Policy` et `Referrer-Policy` ont un équivalent via `<meta>` dans le `<head>` du HTML, ce qui permet de les appliquer directement dans le build du site.
+
+J’ai ajouté ceci dans le layout racine (`Base.astro`) :
+
+```html
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<meta
+  http-equiv="Content-Security-Policy"
+  content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'"
+/>
+```
+
+Deux réserves importantes :
+
+- Une CSP passée par `<meta>` **ignore la directive `frame-ancestors`**, qui est justement celle qui protège contre le clickjacking. Elle ne fonctionne que comme véritable en-tête HTTP.
+- Le compilateur d’Astro produit le HTML avec des styles inline, tandis que son runtime d’hydratation injecte des `<style>` pour l’interactivité. Sans serveur, impossible de générer un nonce par requête, j’ai donc dû autoriser `'unsafe-inline'` dans les deux, sinon la recherche, le changement de thème et le menu mobile cassent.
+
+Mise à jour après la migration : dans la partie 3, cette décision a été revue. Le `script-src 'unsafe-inline'` a été retiré et remplacé par des hashes générés par Astro 7. L’exception restante est plus limitée : `style-src-attr 'unsafe-inline'`, utilisée par les attributs `style=""` des blocs de code.
+
+Avant de conclure, j’ai fait des tests supplémentaires : j’ai généré le build de production, inspecté les interactions via le protocole CDP dans Chrome Headless et surveillé la console pendant les parcours critiques (recherche, changement de thème, menu mobile et navigation entre les articles). Le premier passage a révélé un vrai blocage : les articles du blog chargent des polices Google Fonts via `@import`, et ma CSP initiale n’autorisait pas ce domaine. Comme j’avais pris ce thème gratuit d’Astro et que je le personnalisais au fur et à mesure, je n’avais même pas remarqué ce petit détail. J’ai donc ajusté `style-src` et `font-src` pour inclure `fonts.googleapis.com`/`fonts.gstatic.com`, et l’erreur a disparu. Plus tard, je comprendrais que je devais mettre à jour le thème, mais ce sujet viendra plus loin.
+
+## Deuxième partie : qu’est-ce qui ne se règle qu’avec un proxy devant ?
+
+`X-Frame-Options`, `X-Content-Type-Options` et `Permissions-Policy` **n’existent que comme en-têtes HTTP** : aucune balise meta équivalente n’est respectée par les navigateurs. Comme GitHub Pages ne les expose pas, la solution a été de placer le domaine derrière **Cloudflare** (offre gratuite, évidemment !) et d’utiliser une **Transform Rule → Response Header Transform Rule** pour injecter les en-têtes dans la réponse avant qu’elle n’arrive au visiteur :
+
+| En-tête                        | Valeur                                                         |
+| ------------------------------ | -------------------------------------------------------------- |
+| `X-Frame-Options`              | `SAMEORIGIN`                                                   |
+| `X-Content-Type-Options`       | `nosniff`                                                      |
+| `Permissions-Policy`           | `geolocation=(), microphone=(), camera=(), payment=(), usb=()` |
+| `Access-Control-Allow-Origin`  | `https://www.marcopicanco.com`                                 |
+| `Cross-Origin-Opener-Policy`   | `same-origin`                                                  |
+| `Cross-Origin-Resource-Policy` | `same-origin`                                                  |
+
+![Diagramme montrant que CSP et Referrer-Policy sont traités via une balise meta dans le HTML, tandis que X-Frame-Options, X-Content-Type-Options, Permissions-Policy et CORS n’existent que comme en-têtes HTTP et sont donc traités en périphérie, par Cloudflare](/images/security-headers-scope.fr.svg)
+
+Avec Cloudflare devant, j’en ai aussi profité pour renforcer TLS : `Always Use HTTPS`, `Automatic HTTPS Rewrites` et HSTS. Pour HSTS, j’y suis allé doucement : avant de cocher `includeSubDomains`, j’ai vérifié avec `dig`/`host` qu’aucun sous-domaine n’était encore sans HTTPS, car ce réglage est **difficile à annuler** (le navigateur garde la politique pendant des mois) et le préchargement sur `hstspreload.org` est pratiquement un aller simple. Donc, TRÈS GRANDE PRUDENCE.
+
+## Le piège : configurer Cloudflare ne suffit pas pour être protégé
+
+C’est là que se cache un détail très important. Après avoir créé la Transform Rule avec tous les en-têtes, j’ai testé le site en production pour confirmer, et les en-têtes de réponse étaient **identiques à ceux du rapport initial** : `server: GitHub.com`, `via: 1.1 varnish`, `x-fastly-request-id`, aucun `cf-ray`, aucun des en-têtes configurés. Rien n’avait changé.
+
+La raison : j’avais configuré la règle dans mon compte Cloudflare, mais le **domaine n’avait jamais été délégué à Cloudflare**. Les serveurs de noms étaient encore ceux du registrar par défaut (Google Domains, aujourd’hui Squarespace Domains), qui pointaient directement vers GitHub Pages. Autrement dit, le trafic réel des visiteurs ne passait jamais par Cloudflare : la règle existait, mais ne servait à rien. J’ai lancé :
+
+```bash
+dig +short NS marcopicanco.com
+```
+
+Et j’ai confirmé : serveurs de noms de Squarespace, pas de Cloudflare. Aucun effet concret de tout ce que j’avais configuré jusque-là.
+
+La correction a consisté à remplacer les serveurs de noms dans le panneau du registrar (Squarespace → **Serveurs de noms du domaine**) par les deux que Cloudflare avait attribués lors de l’ajout du domaine (quelque chose comme `xxxx.ns.cloudflare.com` et `yyyy.ns.cloudflare.com`). Après l’enregistrement, Squarespace a prévenu que la propagation pouvait prendre jusqu’à 48 h. En pratique, `dig +short NS marcopicanco.com` affichait déjà les nouveaux serveurs de noms en quelques minutes.
+
+Même avec le DNS propagé, il restait une étape : interroger directement une IP de Cloudflare pour ce domaine renvoyait une erreur de handshake TLS (`SSL routines::sslv3 alert handshake failure`). Cloudflare détecte le changement de serveurs de noms périodiquement, pas instantanément, et c’est seulement ensuite qu’il émet le certificat SSL (Universal SSL) du domaine. Tant que ce certificat n’est pas prêt, la connexion HTTPS n’aboutit même pas. La vraie séquence d’attente a donc été : propagation DNS → détection de la zone par Cloudflare → émission du certificat → et seulement alors les en-têtes ont pris effet.
+
+![Diagramme comparant le flux réseau avant et après : avant, le visiteur allait directement vers GitHub Pages parce que les serveurs de noms appartenaient encore au registrar et que Cloudflare était hors du chemin ; après, avec les serveurs de noms pointant vers Cloudflare, le trafic passe par la périphérie et reçoit les en-têtes de sécurité avant d’arriver à GitHub Pages](/images/security-dns-before-after.fr.svg)
+
+La leçon : **après avoir configuré n’importe quelle protection en périphérie (Cloudflare, WAF, CDN), validez toujours directement sur l’URL de production**. Des en-têtes configurés dans un tableau de bord ne valent rien tant que le trafic n’y passe pas réellement. Une règle « prête » qui n’est jamais appliquée est pire que pas de règle du tout.
+
+## Boucler les autres détails
+
+Comme le site est personnel et que je m’en sers pour apprendre, j’ai rapidement fait un balayage léger et non destructif dessus : j’ai essayé d’accéder à `.git/config`, `.env`, `package.json`, `astro.config.mjs` et à d’autres fichiers souvent exposés par oubli. Tous ont renvoyé 404, comme prévu (seul `dist/` est publié). Certificat TLS valide, TLS 1.2/1.3 qui répondent normalement.
+
+Deux choses qui n’existaient pas et qui sont de bonnes pratiques pour n’importe quel site, sans lien direct avec le rapport initial :
+
+- **`robots.txt`** : correction de l’erreur de route (404) sur GitHub Pages par l’ajout du fichier, configuré pour autoriser l’indexation de tout le site.
+- **`security.txt`** ([RFC 9116](https://www.rfc-editor.org/rfc/rfc9116)) : le fichier standard (`/.well-known/security.txt`) qui indique à quiconque trouve une vulnérabilité comment la signaler, sans devoir chercher mon contact. Je l’ai fait pointer vers mon LinkedIn.
+
+## Dépendances et automatisation
+
+J’ai lancé `npm audit` et des vulnérabilités sont apparues dans des paquets transitifs d’Astro (rollup, sharp, prismjs, yaml). J’ai essayé `npm audit fix`, qui les a « corrigées » en faisant passer Astro de la v4 à la v7 d’un coup, ce qui a cassé le build (`ViewTransitions` n’existe plus dans la nouvelle API). Annulé sur-le-champ. Une mise à jour de version majeure n’est pas un correctif de sécurité, c’est une migration, et je la ferai tranquillement, à un autre moment, en testant chaque partie. (Oui, elle sera faite, dans la partie 2 de cet article.)
+
+Ce qui est désormais automatisé pour ne plus l’oublier : un `.github/dependabot.yml` avec une vérification hebdomadaire de `npm` et de `github-actions`, plus les alertes de sécurité de Dependabot activées sur le dépôt. Ainsi, à la prochaine vulnérabilité, j’aurai une alerte (ou une PR) au lieu de le découvrir seulement en relançant le scanner.
+
+## Récapitulatif
+
+| Élément                                | Où il a été traité                         |
+| -------------------------------------- | ------------------------------------------ |
+| Content-Security-Policy                | `<meta>` dans le HTML                      |
+| Referrer-Policy                        | `<meta>` dans le HTML                      |
+| X-Frame-Options                        | Cloudflare (Transform Rule)                |
+| X-Content-Type-Options                 | Cloudflare (Transform Rule)                |
+| Permissions-Policy                     | Cloudflare (Transform Rule)                |
+| Access-Control-Allow-Origin trop large | Cloudflare (Transform Rule)                |
+| HSTS                                   | Cloudflare (Edge Certificates)             |
+| Délégation DNS à Cloudflare            | Serveurs de noms changés chez le registrar |
+| robots.txt / security.txt              | Nouveaux fichiers dans `public/`           |
+
+Un site statique sur GitHub Pages est excellent pour son coût nul et sa simplicité, mais il faut savoir où s’arrête ce que le code règle seul et où commence ce qui exige une couche réseau devant. Et, surtout, **tester directement sur l’URL de production** avant de considérer le problème réglé. 🔒
+
+À la prochaine !!!

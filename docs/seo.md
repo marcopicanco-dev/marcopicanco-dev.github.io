@@ -15,6 +15,9 @@ Console, sem estimativa de volume ou promessa de posição.
 - Sitemap automático: `sitemap-index.xml` aponta para `sitemap-0.xml`, que lista
   as páginas canônicas e os artigos gerados pelo Astro.
 - `robots.txt` e o cabeçalho HTML anunciam o sitemap.
+- O site tem versões em inglês (`/en/`) e francês (`/fr/`). Cada página traz
+  `hreflang` para as versões que existem e `x-default` para o português, e o
+  sitemap repete essas ligações. Detalhes em [i18n.md](i18n.md).
 - `/portfolio/`, `/pt/` e `/sr/` continuam acessíveis, com a página inicial como
   URL canônica. Essas cópias ficam fora do sitemap, pois hoje exibem o mesmo
   conteúdo em português.

@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 620" role="img" aria-labelledby="title desc">
+  <title id="title">Matrix of covered security tests</title>
+  <desc id="desc">Visual table of the automated protections: safe external links, raw HTML blocking, dynamic execution blocking, inline handler blocking, CSP and dependency audit.</desc>
+  <rect width="1100" height="620" fill="#282a36"/>
+  <text x="70" y="72" fill="#f8f8f2" font-family="Karla, Arial, sans-serif" font-size="34" font-weight="700">Automated coverage after part 2</text>
+  <text x="70" y="108" fill="#d7d5ee" font-family="Karla, Arial, sans-serif" font-size="18">The goal is to stop simple regressions before deploy.</text>
+
+  <g transform="translate(70 150)">
+    <rect width="960" height="390" rx="14" fill="#21222c" stroke="#6272a4" stroke-opacity="0.35"/>
+    <g font-family="Karla, Arial, sans-serif" font-size="18">
+      <text x="34" y="52" fill="#8be9fd" font-weight="700">Test</text>
+      <text x="520" y="52" fill="#8be9fd" font-weight="700">Risk reduced</text>
+      <text x="850" y="52" fill="#8be9fd" font-weight="700">Status</text>
+    </g>
+    <g stroke="#6272a4" stroke-opacity="0.28">
+      <path d="M0 78H960"/>
+      <path d="M0 138H960"/>
+      <path d="M0 198H960"/>
+      <path d="M0 258H960"/>
+      <path d="M0 318H960"/>
+    </g>
+    <g font-family="Karla, Arial, sans-serif" font-size="17">
+      <text x="34" y="116" fill="#f8f8f2">target=_blank requires a safe rel</text>
+      <text x="520" y="116" fill="#d7d5ee">tabnabbing / window.opener</text>
+      <text x="850" y="116" fill="#50fa7b" font-weight="700">passed</text>
+
+      <text x="34" y="176" fill="#f8f8f2">blocks set:html / is:raw</text>
+      <text x="520" y="176" fill="#d7d5ee">XSS via unsanitized HTML</text>
+      <text x="850" y="176" fill="#50fa7b" font-weight="700">passed</text>
+
+      <text x="34" y="236" fill="#f8f8f2">blocks eval / new Function</text>
+      <text x="520" y="236" fill="#d7d5ee">dynamic code execution</text>
+      <text x="850" y="236" fill="#50fa7b" font-weight="700">passed</text>
+
+      <text x="34" y="296" fill="#f8f8f2">blocks inline handlers</text>
+      <text x="520" y="296" fill="#d7d5ee">weak CSP and XSS surface</text>
+      <text x="850" y="296" fill="#50fa7b" font-weight="700">passed</text>
+
+      <text x="34" y="356" fill="#f8f8f2">checks CSP and Referrer-Policy</text>
+      <text x="520" y="356" fill="#d7d5ee">regression in the root layout</text>
+      <text x="850" y="356" fill="#50fa7b" font-weight="700">passed</text>
+    </g>
+  </g>
+</svg>

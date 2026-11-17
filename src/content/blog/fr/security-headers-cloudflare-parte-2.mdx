@@ -1,0 +1,431 @@
+---
+title: 'Corriger les en-têtes de sécurité d’un site statique sur GitHub Pages avec Cloudflare - Partie 2'
+description: 'Audit des dépendances, migration vers Astro 7, correction des API supprimées et tests de sécurité automatisés.'
+date: '2026-07-23'
+publishedAt: '2026-07-23T10:00:00-03:00'
+series: 'Corriger les en-têtes de sécurité d’un site statique sur GitHub Pages avec Cloudflare'
+seriesLabel: 'dépendances, migration et tests'
+heroImage: '/images/security-part2-upgrade-map.fr.svg'
+heroImageAlt: 'Carte de la migration sûre vers Astro 7, en passant par le diagnostic, la mise à jour, les changements de code et la validation'
+tags: ['Sécurité', 'Astro', 'CI/CD']
+---
+
+Dans la première partie de cet article, j’ai traité la partie la plus visible du problème : les en-têtes de sécurité d’un site statique hébergé sur GitHub Pages, avec Cloudflare comme couche de périphérie pour appliquer ce que GitHub Pages ne permet pas de configurer directement.
+
+Mais la sécurité ne s’arrête pas à l’en-tête HTTP. Une fois la périphérie protégée, il restait à regarder l’intérieur du projet : des dépendances anciennes, des API supprimées, un build qui casse après une mise à jour et de petits motifs de code qui pourraient devenir des régressions de sécurité à l’avenir.
+
+Cette partie 2 correspond exactement à cette étape : transformer la frayeur du `npm audit` en une migration maîtrisée vers la dernière version d’Astro.
+
+## Contexte : analyser la sécurité d’un site statique
+
+Plus habitué aux applications Rails, mes premières idées venaient d’une analyse en boîte blanche classique, avec des outils courants dans les projets Ruby/Rails, comme Brakeman et des specs RSpec dédiées à l’autorisation des routes.
+
+Sauf que ce blog n’est pas en Rails. C’est un projet Astro statique. Pas d’ActiveRecord, pas de contrôleur, pas d’authentification et pas d’API RESTful dans le dépôt. C’est là que les recherches ont commencé :
+
+| Dans une application Rails                         | Dans ce projet Astro                                        |
+| -------------------------------------------------- | ----------------------------------------------------------- |
+| Brakeman                                           | `npm audit`, ESLint, TypeScript et tests en boîte blanche   |
+| Injection SQL dans ActiveRecord                    | Dépendances vulnérables et HTML non sûr                     |
+| Contournement de l’authentification sur les routes | Régressions dans les liens, la CSP, les scripts et le rendu |
+| Specs d’autorisation                               | Specs de sécurité sur le code source                        |
+
+## Premier diagnostic : npm audit
+
+J’ai commencé par la commande la plus simple :
+
+```bash
+npm audit --audit-level=moderate
+```
+
+Pourquoi utiliser cette commande ?
+
+Parce qu’elle interroge la base d’avis de sécurité de npm et la croise avec l’arbre réel du `package-lock.json`. `--audit-level=moderate` fait échouer la commande dès qu’il y a une vulnérabilité modérée ou plus grave, ce qui est utile pour la CI.
+
+Le résultat initial a été :
+
+```text
+28 vulnerabilities (2 low, 8 moderate, 18 high)
+```
+
+L’essentiel venait de dépendances transitives de l’ancienne stack : `astro`, `esbuild`, `rollup`, `sharp`, `postcss`, `prismjs`, `yaml`, `devalue` et consorts.
+
+![Capture de style terminal montrant l’évolution de npm audit : d’abord 28 vulnérabilités, puis la migration et enfin zéro vulnérabilité](/images/security-part2-audit-migration.fr.svg)
+
+Dans la première partie, j’avais mentionné que `npm audit fix` avait tenté de changer la version majeure d’Astro et que cela ne devait pas être traité comme une correction automatique. Cette fois, la mise à jour était voulue : je l’ai traitée comme une migration de framework, pas comme « juste mettre à jour un paquet ».
+
+## La commande dangereuse : npm audit fix --force
+
+La commande utilisée a été :
+
+```bash
+npm audit fix --force
+```
+
+Pourquoi l’utiliser ?
+
+Parce que l’audit indiquait des corrections disponibles, mais plusieurs exigeaient une mise à jour majeure. `--force` autorise npm à franchir les limites de SemVer et à installer des versions potentiellement incompatibles.
+
+Pourquoi est-ce dangereux ?
+
+Parce que npm lui-même prévient :
+
+```text
+npm warn using --force Recommended protections disabled.
+npm warn audit Updating astro to 7.1.3, which is a SemVer major change.
+```
+
+Cet avertissement est la partie la plus importante de la commande. Il ne veut pas dire « c’est bon, c’est sûr ». Il veut dire : « vous avez accepté de casser la compatibilité et vous devez maintenant vraiment migrer le projet ».
+
+Après le `--force`, l’audit a beaucoup baissé, mais il restait des vulnérabilités liées à `vite` et `esbuild` :
+
+```text
+2 vulnerabilities (1 moderate, 1 high)
+```
+
+À ce stade, la mise à jour était devenue un vrai sac de nœuds : `astro@7.1.3` était installé, mais certaines anciennes intégrations tiraient encore des versions vulnérables ou incompatibles.
+
+## Confirmer la dernière version d’Astro
+
+Avant de continuer, j’ai vérifié la dernière version publiée sur npm :
+
+```bash
+npm view astro version
+```
+
+Résultat :
+
+```text
+7.1.3
+```
+
+Autrement dit : oui, le projet a été migré vers la dernière version d’Astro disponible à ce moment-là.
+
+Pourquoi est-ce important pour la sécurité ?
+
+Un framework ancien accumule deux catégories de risques :
+
+- des vulnérabilités connues dans les dépendances directes ou transitives ;
+- des API anciennes et dépréciées qui fonctionnent jusqu’au jour où elles disparaissent.
+
+Dans ce projet, les deux scénarios se sont produits : la version précédente d’Astro dépendait de paquets vulnérables dans la chaîne de dépendances, et la migration vers Astro 7 a révélé l’usage d’API déjà abandonnées.
+
+## Aligner l’arbre des dépendances
+
+Après le `audit fix --force`, j’ai vérifié l’arbre :
+
+```bash
+npm ls astro @astrojs/mdx @astrojs/react @astrojs/tailwind vite esbuild
+```
+
+Cette commande est utile parce que le problème n’est pas toujours dans le paquet direct. Parfois la racine semble à jour, mais une peer dependency ou un paquet transitif bloque encore une version vulnérable.
+
+Le principal conflit était celui-ci :
+
+```text
+@astrojs/tailwind@5.1.5
+peer astro "^3.0.0 || ^4.0.0 || ^5.0.0"
+```
+
+Comme le projet était désormais sur `astro@7.1.3`, cette ancienne intégration n’avait plus de sens. La documentation d’Astro elle-même marque `@astrojs/tailwind` comme dépréciée et recommande de passer par le pipeline de styles pour Tailwind.
+
+J’ai supprimé l’intégration :
+
+```bash
+npm uninstall @astrojs/tailwind
+```
+
+Et mis à jour les paquets qui devaient suivre la mise à jour :
+
+```bash
+npm install @astrojs/react@^6.0.1 @astrojs/check@^0.9.9 autoprefixer@^10.5.4
+npm install --save-dev vite@^8.1.5
+```
+
+Ajouter `vite@8.1.5` directement au projet a résolu la peer dependency qui obligeait encore npm à garder une ancienne copie de Vite au premier niveau. Après cela, l’audit est revenu propre :
+
+```bash
+npm audit --audit-level=moderate
+```
+
+```text
+found 0 vulnerabilities
+```
+
+## Tailwind sans @astrojs/tailwind
+
+En supprimant l’ancienne intégration, j’ai dû rendre explicite ce qu’elle faisait en coulisses : brancher Tailwind sur le pipeline CSS.
+
+J’ai créé un CSS d’entrée :
+
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+Et je l’ai importé dans le layout de base :
+
+```astro
+import '@/styling/tailwind.css'
+```
+
+J’ai aussi ajouté un `postcss.config.cjs` :
+
+```js
+module.exports = {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  },
+}
+```
+
+Pourquoi avoir fait cela ?
+
+Parce que j’ai préféré conserver Tailwind 3, qui faisait déjà partie de la stack du projet, plutôt que de mener deux grosses migrations en même temps : Astro 7 et Tailwind 4. La sécurité, c’est aussi réduire les variables. On stabilise d’abord le framework, puis on migre le design system si cela a du sens.
+
+## Les vraies ruptures d’Astro 7
+
+Après avoir aligné les paquets, j’ai lancé :
+
+```bash
+npm run build
+```
+
+Et la première vraie rupture est apparue :
+
+```text
+[MISSING_EXPORT] "ViewTransitions" is not exported by "\0astro:transitions".
+```
+
+La correction a consisté à remplacer :
+
+```astro
+import {ViewTransitions} from 'astro:transitions'
+
+<ViewTransitions />
+```
+
+par :
+
+```astro
+import {ClientRouter} from 'astro:transitions'
+
+<ClientRouter />
+```
+
+D’après le guide officiel de mise à jour d’Astro, `ViewTransitions` a été renommé `ClientRouter`. L’idée est de rendre plus clair que ce composant active le routage côté client, et pas seulement l’API native de view transitions du navigateur.
+
+Une autre rupture concernait `Astro.glob`. Dans le nouvel Astro, il a disparu de l’API. Le remplacement a consisté à centraliser le chargement des articles dans `src/utils/blog.ts` avec `import.meta.glob` :
+
+```ts
+const blogPostModules = import.meta.glob<BlogPostModule>(
+  '/src/content/blog/*.mdx',
+  {
+    eager: true,
+  },
+)
+
+export const getBlogPosts = () => Object.values(blogPostModules)
+```
+
+Pourquoi centraliser ?
+
+Parce qu’il y avait auparavant des `Astro.glob` à plusieurs endroits : le menu, la recherche, la page du blog et la page dynamique des articles. Si la façon de charger le contenu change à nouveau, il y a désormais un point principal à modifier.
+
+![Carte visuelle montrant la séquence de la migration : diagnostic, mise à jour, changements de code et validation](/images/security-part2-upgrade-map.fr.svg)
+
+## TypeScript, ESLint et l’avertissement caché
+
+Après la mise à jour, TypeScript a aussi dû suivre le nouveau tsconfig d’Astro :
+
+```bash
+npm install typescript@^6.0.3
+```
+
+Avec TypeScript 6, ESLint a commencé à signaler que `@typescript-eslint` était obsolète :
+
+```text
+WARNING: You are currently running a version of TypeScript which is not officially supported by @typescript-eslint/typescript-estree.
+```
+
+Ce genre d’avertissement ne doit pas être ignoré. Un lint cassé ou un parser obsolète signifie qu’une partie de l’analyse fonctionne hors de sa plage prise en charge.
+
+J’ai mis à jour :
+
+```bash
+npm install --save-dev @typescript-eslint/eslint-plugin@^8.65.0 @typescript-eslint/parser@^8.65.0
+```
+
+Ensuite, j’ai lancé :
+
+```bash
+npm run lint
+```
+
+Résultat :
+
+```text
+> eslint .
+```
+
+Aucune erreur. Aucun avertissement de TypeScript incompatible.
+
+J’ai aussi dû réécrire un passage de `ThemeSwitcher.astro`. Le build acceptait le TypeScript dans le `<script>`, mais le parser d’ESLint butait sur certains appels génériques répartis sur plusieurs lignes. La solution a été de garder le typage, mais de découper les chaînes en variables locales :
+
+```ts
+const switchers = document.querySelectorAll<HTMLElement>('.theme-switcher')
+
+switchers.forEach((root) => {
+  if (root.dataset.bound === 'true') return
+  root.dataset.bound = 'true'
+})
+```
+
+Le code est devenu plus lisible et compatible avec les deux outils : `astro check` et ESLint.
+
+## Des tests de sécurité sur le code
+
+Le plus important pour moi était de ne pas en rester à un nettoyage ponctuel. J’ai créé un script de test avec `node:test`, sans ajouter de nouveau framework :
+
+```bash
+npm run security:test
+```
+
+Le test parcourt les fichiers de `src` et de `public` et cherche des motifs que je ne veux pas voir revenir dans le projet.
+
+La commande globale est devenue :
+
+```bash
+npm run security
+```
+
+Elle exécute :
+
+```bash
+npm run typecheck
+npm run security:test
+npm run security:audit
+```
+
+Résultat final :
+
+```text
+# tests 6
+# pass 6
+
+found 0 vulnerabilities
+```
+
+![Matrice visuelle listant les tests automatisés couverts : liens externes sûrs, blocage du HTML brut, blocage de l’exécution dynamique, blocage des handlers inline, CSP et Referrer-Policy](/images/security-part2-test-coverage.fr.svg)
+
+Aujourd’hui, le site est couvert par ces tests automatisés :
+
+| Test                                                                                           | Ce qu’il évite                                                     |
+| ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `target="_blank"` exige `rel="noopener noreferrer"`                                            | Le tabnabbing et l’accès indu via `window.opener`                  |
+| Blocage de `set:html`, `is:raw`, `dangerouslySetInnerHTML` et `innerHTML=`                     | Les régressions avec du HTML brut et le risque de XSS              |
+| Blocage de `eval()` et `new Function()`                                                        | L’exécution dynamique de code                                      |
+| Blocage des handlers inline dans le markup, comme `onerror=`                                   | Une surface XSS courante et une CSP plus faible                    |
+| Vérification de la CSP dans `astro.config.mjs` et de la Referrer-Policy dans le layout de base | La suppression accidentelle des politiques du `<head>` et du build |
+| `npm audit --audit-level=moderate`                                                             | Les dépendances avec des vulnérabilités modérées ou plus graves    |
+| `tsc --noEmit`                                                                                 | Les incompatibilités de types après des mises à jour               |
+
+En plus, le build final garantit que les pages statiques sont toujours générées correctement :
+
+```bash
+npm run build
+```
+
+```text
+Result (28 files):
+- 0 errors
+- 0 warnings
+- 0 hints
+
+10 page(s) built
+```
+
+## Pourquoi migrer vers la dernière version d’Astro ?
+
+Migrer un framework demande du travail. Ici, des API ont cassé, et il a fallu ajuster Tailwind, TypeScript, ESLint et le chargement des articles. La question honnête est donc : pourquoi le faire ?
+
+Parce que rester sur une ancienne version crée une dette invisible. Le site continue de s’afficher, mais la base perd peu à peu le soutien des outils autour. L’audit commence à signaler des vulnérabilités dans des paquets transitifs. Les intégrations sont dépréciées. Les anciennes API fonctionnent par compatibilité jusqu’à leur suppression.
+
+Dans mon cas, la migration a apporté trois gains clairs :
+
+- l’arbre des dépendances est passé de vulnérable à `found 0 vulnerabilities` ;
+- les anciennes API ont été remplacées par des API actuelles pendant la migration (`ClientRouter` et `import.meta.glob`) ;
+- le projet a gagné des tests de sécurité qui tournent en local et peuvent passer en CI.
+
+Autrement dit, la migration n’a pas seulement consisté à « avoir un nouveau numéro dans le package.json ». Elle a réellement réduit le risque opérationnel.
+
+## Ce qui a été réglé
+
+| Domaine                   | Résultat                                                                                                   |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Dépendances               | `npm audit` à zéro                                                                                         |
+| Astro                     | migré vers `7.1.3`                                                                                         |
+| Vite/esbuild              | alignés sur des versions sans avis ouvert dans l’audit                                                     |
+| Tailwind                  | ancienne intégration incompatible supprimée ; pipeline explicite via PostCSS                               |
+| API supprimées            | `ViewTransitions` -> `ClientRouter` lors de la première stabilisation ; `Astro.glob` -> `import.meta.glob` |
+| TypeScript                | mis à jour et validant `tsc --noEmit`                                                                      |
+| ESLint                    | sans avertissement de TypeScript incompatible                                                              |
+| Sécurité en boîte blanche | tests automatisés dans `tests/security.test.mjs`                                                           |
+| Build                     | 10 pages générées avec 0 erreur, 0 avertissement et 0 suggestion                                           |
+
+## Prochaines étapes
+
+Cette série a couvert beaucoup de choses, mais il reste de bons points à tester dans une troisième étape.
+
+1. Valider les en-têtes directement en production après le déploiement.
+
+```bash
+curl -I https://www.marcopicanco.com
+```
+
+L’objectif est de confirmer que Cloudflare continue d’appliquer `X-Frame-Options`, `X-Content-Type-Options`, `Permissions-Policy`, `Cross-Origin-Opener-Policy`, `Cross-Origin-Resource-Policy` et HSTS.
+
+2. Lancer un scanner d’en-têtes externe.
+
+Des outils comme Security Headers, Mozilla Observatory ou OWASP ZAP en mode passif aident à vérifier le comportement réel dans le navigateur et en périphérie.
+
+3. Automatiser dans la CI.
+
+L’idéal est de créer un workflow qui lance :
+
+```bash
+npm ci
+npm run lint
+npm run security
+npm run build
+```
+
+Ainsi, une vulnérabilité de dépendance, une régression de la CSP ou un build cassé échouent avant le déploiement.
+
+4. Revoir la CSP tranquillement.
+
+À ce moment-là, `'unsafe-inline'` existait encore dans `script-src` et `style-src` à cause du runtime et des styles inline générés sur le site statique. La partie 3 s’est attaquée à ce point avec la CSP native d’Astro 7, des hashes générés au build et la commande `npm run security:csp`. `script-src` ne dépend plus de `unsafe-inline` ; l’exception restante est plus limitée, dans `style-src-attr`.
+
+5. Envisager les Content Collections.
+
+`import.meta.glob` a réglé la migration, mais la voie la plus structurée pour le contenu dans Astro, ce sont les Content Collections. Elles aideraient à valider plus solidement le frontmatter, les types et la structure des articles.
+
+6. Faire un balayage DAST non destructif.
+
+Après le déploiement, il vaut la peine de tester les routes connues, les fichiers sensibles, le cache, les redirections HTTP -> HTTPS, les en-têtes par type de ressource et le comportement de `www` par rapport au domaine racine.
+
+## Conclusion
+
+La partie 1 a fermé la porte côté périphérie : en-têtes, DNS et Cloudflare.
+
+La partie 2 a sécurisé une part importante de la maison de l’intérieur : dépendances, framework, build et tests automatisés.
+
+Le point principal est le suivant : la sécurité d’un site statique ne consiste pas à configurer un en-tête une fois puis à l’oublier. Il s’agit de garder la chaîne de dépendances à jour, de comprendre l’impact des mises à jour majeures, d’automatiser la détection des régressions et de valider en production. Le site peut être simple, mais la discipline doit être la même.
+
+Références utilisées pour cette migration :
+
+- [Astro: Upgrade to v5](https://docs.astro.build/en/guides/upgrade-to/v5/)
+- [Astro : `Astro.glob()` supprimé et l’alternative `import.meta.glob`](https://docs.astro.build/en/reference/errors/astro-glob-used-outside/)
+- [Astro : documentation de l’intégration Tailwind, marquée comme dépréciée](https://docs.astro.build/en/guides/integrations-guide/tailwind/)
+- [Astro : imports et `import.meta.glob`](https://docs.astro.build/en/guides/imports/)

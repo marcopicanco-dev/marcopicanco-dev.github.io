@@ -1,0 +1,322 @@
+---
+title: 'Corriger les en-têtes de sécurité d’un site statique sur GitHub Pages avec Cloudflare - Partie 4'
+description: 'Finaliser la configuration initiale : Cloudflare Security Insights, Pentest-Tools, security.txt, Bot Fight Mode, DNS, port 8443 et prochaines étapes.'
+date: '2026-07-25'
+publishedAt: '2026-07-25T12:00:00-03:00'
+series: 'Corriger les en-têtes de sécurité d’un site statique sur GitHub Pages avec Cloudflare'
+seriesLabel: 'scanners, DNS et prochaines étapes'
+tags: ['Sécurité', 'Cloudflare', 'DNS', 'CI/CD']
+---
+
+Dans les trois premières parties, je suis passé d’un rapport d’en-têtes sans aucune configuration à quelque chose de plus solide et sûr : Cloudflare devant GitHub Pages, une CSP à base de hashes, HSTS, des en-têtes de sécurité appliqués en périphérie, des dépendances à jour et des vérifications automatisées. Tout allait très bien.
+
+Sauf que la sécurité ne s’arrête JAMAIS quand le premier scanner passe au `green`. Après les premières corrections, j’ai lancé de nouvelles vérifications avec **Cloudflare Security Insights**, **Pentest-Tools Website Vulnerability Scanner Light**, **Probely/Snyk** et des tests manuels avec `curl` (rien de tel que le terminal pour ce genre d’analyse).
+
+Cette partie 4 clôt l’étape initiale : corriger ce qui relevait encore du réglage de base, séparer les faux positifs des risques réels et préparer le terrain pour explorer d’autres vulnérabilités plus sereinement. Après tout, la `cybersécurité` est un domaine nouveau pour moi, et j’utilise mon propre site comme terrain d’étude. Découvrir et étudier de nouveaux sujets a été un vrai plaisir.
+
+## Qu’est-ce que les scanners signalaient encore ?
+
+Même après les corrections des en-têtes, Cloudflare Security Insights listait encore quelques points :
+
+| Insight                       | Sévérité | Lecture pratique                                                           |
+| ----------------------------- | -------- | -------------------------------------------------------------------------- |
+| `Security.txt not configured` | Low      | réel : l’URL renvoyait encore `404` en production                          |
+| `Domains without HSTS`        | Moderate | déjà corrigé en production ; le scan était en retard                       |
+| `Bot Fight Mode not enabled`  | Moderate | réglage recommandé dans Cloudflare                                         |
+| `Dangling A Record detected`  | Moderate | probable faux positif pour les enregistrements A officiels de GitHub Pages |
+| `Review unwanted AI crawlers` | Low      | facultatif : activer AI Labyrinth si cela a du sens                        |
+
+Pentest-Tools a donné un résumé semblable, avec un risque global **Low** :
+
+| Constat                                     | Interprétation                                                                  |
+| ------------------------------------------- | ------------------------------------------------------------------------------- |
+| CSP non sûre à cause de `script-src 'self'` | risque faible sur ce site, car il n’y a ni envoi de fichiers ni JSONP           |
+| HSTS absent sur `/cdn-cgi/content`          | endpoint interne de Cloudflare qui renvoie `404` ; traité comme un faux positif |
+| `robots.txt` trouvé                         | normal ; le fichier n’expose pas de chemins sensibles                           |
+| Technologies identifiées                    | informatif ; Astro/GitHub Pages/Cloudflare sont attendus                        |
+| `security.txt` absent                       | réel ; il fallait corriger                                                      |
+
+Cette étape a été utile pour une raison : elle a montré que toutes les alertes ne méritent pas la même énergie. Certaines étaient de vraies corrections. D’autres n’étaient que du bruit de scanner. Le travail consistait à classer avant de toucher à quoi que ce soit. Et là, nouvelle longue pause pour étudier et comprendre comment ces alertes fonctionnent.
+
+## `security.txt` : quand le fichier existe mais que la production ne le sert pas
+
+Le premier vrai problème était le `security.txt`.
+
+Et à quoi sert ce fichier ? En gros, à indiquer un canal de contact officiel au cas où quelqu’un trouverait une vulnérabilité sur le site. C’est une convention normalisée par la RFC 9116. Mais qu’est-ce que c’est ? Oui, moi non plus je n’en avais aucune idée. Cette norme a été définie par l’IETF (Internet Engineering Task Force), la principale organisation internationale ouverte chargée de développer et de promouvoir les standards techniques qui font fonctionner Internet. Elle définit des protocoles que nous utilisons tous les jours, comme HTTP (le web), TCP/IP (la transmission de données) et SMTP (l’e-mail). L’IETF a publié la RFC 9116 en avril 2022.
+
+L’objectif était de créer un moyen rapide et universel pour que les entreprises et les sites indiquent leurs canaux officiels de contact en matière de sécurité. Ainsi, si un hacker éthique ou un chercheur en sécurité trouve une faille critique sur le site d’une entreprise, il sait exactement où envoyer son rapport (ce qui évite que la faille soit vendue au marché noir ou exposée publiquement avant d’être corrigée).
+
+Ceci étant éclairci, continuons !
+
+Dans le dépôt, le fichier existait déjà ici :
+
+```text
+public/.well-known/security.txt
+```
+
+Mais la production répondait :
+
+```bash
+curl -I https://www.marcopicanco.com/.well-known/security.txt
+```
+
+```text
+HTTP/2 404
+```
+
+Autrement dit : il ne suffisait pas que le fichier existe dans le projet. Ce qui comptait, c’était que l’URL publique fonctionne.
+
+Pour tenter de résoudre le problème, j’ai ajouté un `.nojekyll` dans `public/`, afin que la sortie publiée contienne :
+
+```text
+dist/.nojekyll
+dist/.well-known/security.txt
+```
+
+Malgré tout, pour rendre la solution plus explicite dans Astro, j’ai transformé `security.txt` en endpoint :
+
+```ts
+export function GET() {
+  return new Response(
+    [
+      'Contact: https://www.linkedin.com/in/marcopicanco/',
+      'Expires: 2027-07-23T00:00:00.000Z',
+      'Canonical: https://www.marcopicanco.com/.well-known/security.txt',
+      'Preferred-Languages: pt-BR, en',
+      '',
+    ].join('\n'),
+    {
+      headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
+      },
+    },
+  )
+}
+```
+
+Le nouveau fichier se trouve ici :
+
+```text
+src/pages/.well-known/security.txt.ts
+```
+
+Après le build, Astro a commencé à générer la route :
+
+```text
+/.well-known/security.txt
+```
+
+Une petite leçon sur les fichiers « bien connus » : `/.well-known/security.txt` est une convention publique, mais chaque hébergement a ses particularités. Le scanner se moque de savoir si le fichier est dans le dépôt ; il regarde seulement si l’URL répond.
+
+## HSTS : alerte en retard ou état réel
+
+Cloudflare Security Insights signalait encore :
+
+```text
+Domains without HSTS
+```
+
+Mais la production répondait déjà avec :
+
+```text
+strict-transport-security: max-age=31556952
+```
+
+Et HTTP redirigeait déjà vers HTTPS :
+
+```bash
+curl -I http://www.marcopicanco.com
+```
+
+```text
+HTTP/1.1 301 Moved Permanently
+Location: https://www.marcopicanco.com/
+```
+
+Ici, je n’ai pas touché au code. L’action a été de valider et d’attendre la mise à jour du scanner. Tous les tableaux de bord ne reflètent pas immédiatement l’état actuel, surtout quand le DNS, le CDN, le cache et la périphérie sont en jeu.
+
+Pour l’instant, j’ai gardé HSTS sans `includeSubDomains` et sans préchargement. C’est voulu. `includeSubDomains` peut casser des sous-domaines qui ne sont pas encore prêts pour HTTPS, et le préchargement demande encore plus de prudence, car il inscrit le domaine dans une liste utilisée par les navigateurs.
+
+## Port 8443 : ouvert, bruyant et inutile
+
+Un autre constat est apparu dans un scanner externe :
+
+```text
+400 The plain HTTP request was sent to HTTPS port
+http://www.marcopicanco.com:8443
+```
+
+Cela arrive quand quelqu’un essaie de parler HTTP en clair sur un port qui attend HTTPS. Le port `8443` est un port HTTPS alternatif courant, et dans mon cas c’était Cloudflare lui-même qui répondait.
+
+Même ainsi, si je n’utilise pas ce port, il n’a pas besoin d’être accessible. La correction a été de bloquer `8443` dans Cloudflare.
+
+Le risque concret n’était pas « quelqu’un qui entre par le message 400 ». Le risque, c’était d’augmenter la surface et le bruit :
+
+- des scanners qui découvrent un port alternatif ;
+- des tentatives de fingerprinting ;
+- des règles appliquées sur `443` mais oubliées sur un autre port ;
+- une confusion possible entre HTTP et HTTPS ;
+- des alertes inutiles dans les rapports.
+
+Bloquer ce que je n’utilise pas est un moyen simple de réduire la surface d’attaque.
+
+## Le DNS et l’alerte Dangling A Record
+
+Cloudflare a aussi signalé :
+
+```text
+Dangling A Record detected
+```
+
+Cela mérite de l’attention, car des enregistrements orphelins peuvent ouvrir la porte à une prise de contrôle quand le DNS pointe vers une ressource abandonnée. Mais dans mon cas, les enregistrements principaux étaient les quatre enregistrements A officiels de GitHub Pages :
+
+```text
+185.199.108.153
+185.199.109.153
+185.199.110.153
+185.199.111.153
+```
+
+Et `www` pointait vers :
+
+```text
+marcopicanco-dev.github.io
+```
+
+Un autre enregistrement est aussi apparu :
+
+```text
+_domainconnect.marcopicanco.com
+CNAME _domainconnect.domains.squarespace.com
+```
+
+Rien de suspect ici, car le domaine a été acheté chez Squarespace, qui le gère. Cet enregistrement a donc du sens pour l’intégration du registrar et ne doit pas être supprimé sans raison.
+
+Résultat : j’ai gardé les enregistrements, traité l’alerte comme un probable faux positif et l’ai laissée en observation. Si un jour un enregistrement A pointe vers un VPS éteint, un bucket supprimé ou un service que je ne contrôle plus, ce sera une action immédiate. Pour l’instant, ça reste.
+
+## Bot Fight Mode et AI Labyrinth
+
+Cloudflare a recommandé d’activer le Bot Fight Mode. Pour un portfolio statique, cela a du sens : il n’y a ni connexion, ni paiement, ni API sensible, ni parcours critique où un challenge occasionnel aurait un gros impact.
+
+L’action recommandée est :
+
+```text
+Cloudflare Dashboard
+Security
+Bots ou Security Settings
+Bot Fight Mode
+On
+```
+
+Il y avait aussi la suggestion de revoir les robots d’IA avec AI Labyrinth. Cette fonctionnalité tend des pièges aux robots qui ne respectent pas les directives d’exploration, surtout quand l’objectif est l’extraction automatisée de contenu. Si vous ne savez pas ce qu’est un crawler, pas de panique : on l’appelle aussi `spider, bot ou robot d’indexation`, c’est un programme automatisé qui parcourt Internet de façon systématique pour analyser et indexer le contenu des pages web. Et à quoi cela sert-il en pratique ?
+
+Les moteurs de recherche : Googlebot et Bingbot utilisent des crawlers pour cartographier tout Internet. Sans eux, les moteurs de recherche ne sauraient pas quels sites existent pour les afficher dans leurs résultats.
+
+Pour ce site, je le considère comme facultatif. Si l’objectif est de réduire l’aspiration agressive de contenu par des robots d’IA, l’activer a du sens. Si la priorité est la prévisibilité maximale de l’exploration et du SEO, mieux vaut tester tranquillement et suivre les événements dans Cloudflare.
+
+## Ajustement de la CI : quand la sécurité devient un blocage injustifié
+
+Pendant cette série de tests, GitHub Actions a commencé à échouer à l’étape :
+
+```bash
+npm run security
+```
+
+La raison : `npm audit` signalait des vulnérabilités transitives dans des dépendances de développement liées à ESLint :
+
+```text
+brace-expansion
+minimatch
+eslint
+eslint-plugin-jsx-a11y
+```
+
+Ces dépendances ne font pas partie du site statique publié. Les fichiers publics sont le HTML, le CSS, le JS et les assets générés dans `dist/`.
+
+J’ai donc ajusté le script :
+
+```json
+"security:audit": "npm audit --audit-level=moderate --omit=dev"
+```
+
+Cela ne veut pas dire ignorer les dépendances de développement pour toujours. Cela veut dire que le déploiement ne doit pas être bloqué par une dépendance de lint qui ne va jamais en production. La mise à jour d’ESLint et de ses plugins peut se faire séparément, avec une migration de configuration si nécessaire.
+
+J’ai aussi gardé la validation des en-têtes après déploiement comme preuve, mais sans bloquer le déploiement en cas d’incohérence temporaire du cache :
+
+```yaml
+continue-on-error: true
+```
+
+C’est un équilibre. Je veux savoir quand la production ne semble pas correcte, mais je ne veux pas transformer une vérification externe sensible au cache en blocage du déploiement.
+
+## Ce qui a été fait jusqu’ici
+
+Récapitulatif des corrections et des décisions de cette étape :
+
+| Élément                        | Action menée                                                                      |
+| ------------------------------ | --------------------------------------------------------------------------------- |
+| `security.txt`                 | endpoint Astro créé sur `/.well-known/security.txt`                               |
+| `.well-known` sur GitHub Pages | `.nojekyll` conservé dans la sortie publiée du build                              |
+| HSTS                           | validé en production avec `curl` ; alerte du scanner traitée comme un retard      |
+| HTTP -> HTTPS                  | validé avec un `301` vers HTTPS                                                   |
+| port `8443`                    | bloqué dans Cloudflare                                                            |
+| DNS orphelin                   | enregistrements comparés avec GitHub Pages et Squarespace ; probable faux positif |
+| Bot Fight Mode                 | activation recommandée dans Cloudflare                                            |
+| AI Labyrinth                   | recommandé en option pour réduire les robots d’IA                                 |
+| `npm audit` dans la CI         | ajusté à `--omit=dev` pour le contrôle de production                              |
+| validation après déploiement   | conservée comme preuve, avec `continue-on-error`                                  |
+| Pentest-Tools                  | rapport analysé et classé entre risque réel et bruit                              |
+
+## Comment j’aborderai les prochaines vulnérabilités
+
+Maintenant que la base initiale est mieux organisée, je peux sortir du monde des en-têtes et commencer à explorer des vulnérabilités précises avec méthode.
+
+Ma feuille de route pour les prochaines parties :
+
+1. Vérifier si le constat est reproductible avec `curl`, le navigateur ou un script simple.
+2. Déterminer si le problème vient du code, du build, de GitHub Pages, de Cloudflare ou du scanner.
+3. Corriger au point le plus restreint possible.
+4. Créer un test ou une checklist pour éviter les régressions.
+5. Documenter des preuves avant/après.
+
+Quelques sujets qui valent la peine d’être explorés :
+
+- la CSP restante : réduire ou supprimer `style-src-attr 'unsafe-inline'` ;
+- les en-têtes par type de fichier : HTML, JS, CSS, images, 404 et endpoints Cloudflare ;
+- l’exposition de fichiers sensibles ;
+- le cache et le comportement des pages 404 ;
+- des scanners DAST passifs, comme OWASP ZAP ;
+- des règles WAF simples pour un site statique ;
+- l’automatisation de la CSP en périphérie sans copier les hashes à la main ;
+- une future mise à jour d’ESLint pour supprimer les vulnérabilités transitives de développement.
+
+## Conclusion
+
+La partie 4 portait moins sur « ajouter un en-tête de plus » que sur la maturité opérationnelle. J’ai dû étudier davantage pour comprendre quelles décisions prendre et, surtout, pourquoi.
+
+Le site était déjà bien meilleur qu’au départ, mais les scanners ont montré ce qui arrive toujours en sécurité : après la première correction, apparaissent des détails de configuration, des faux positifs, du bruit lié au CDN, des vérifications fragiles et des décisions qui demandent du contexte.
+
+Le point principal de cette étape a été de faire le tri :
+
+- le risque réel qui doit être corrigé ;
+- la bonne recommandation, mais facultative ;
+- l’alerte en retard ;
+- le faux positif acceptable ;
+- la vérification utile, mais trop fragile pour bloquer un déploiement.
+
+Avec cela, la phase initiale est terminée. À partir d’ici, je peux explorer des vulnérabilités précises plus en profondeur.
+
+À la prochaine !!!
+
+## Sources
+
+- Rapport local : `PentestTools-WebsiteScanner-report.pdf`, généré par Pentest-Tools Website Vulnerability Scanner Light le 25/07/2026.
+- Rapports locaux : exports CSV de Cloudflare Security Insights du 24/07/2026 et du 25/07/2026.
+- [RFC 9116: A File Format to Aid in Security Vulnerability Disclosure](https://www.rfc-editor.org/info/rfc9116/)
+- [security.txt](https://securitytxt.org/)
+- [Cloudflare Docs: Bot Fight Mode](https://developers.cloudflare.com/bots/get-started/bot-fight-mode/)
+- [Cloudflare Docs: AI Labyrinth](https://developers.cloudflare.com/bots/additional-configurations/ai-labyrinth/)
+- [GitHub Docs: Managing a custom domain for your GitHub Pages site](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site)
+- [GitHub Docs: Troubleshooting custom domains and GitHub Pages](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/troubleshooting-custom-domains-and-github-pages)
+- [Pentest-Tools Website Vulnerability Scanner](https://pentest-tools.com/website-vulnerability-scanning/website-scanner)
+- [A File Format to Aid in Security Vulnerability Disclosure](https://datatracker.ietf.org/doc/rfc9116/)

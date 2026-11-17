@@ -28,9 +28,8 @@ export const GISCUS = {
 }
 // comments on blog posts, stored in that repository's GitHub Discussions
 
-export const OG_IMAGE = 'og.png'
-// enter name of the og image file you put inside public folder
-// image should be 1200 X 630 pixels
+// The sharing image (1200 × 630, in public/) is set per language in
+// src/i18n/ui.ts as ogImage.
 
 export const LIGHT_MODE_CODE_BLOCK_THEME: ThemeObjectOrShikiThemeName =
   'dracula'

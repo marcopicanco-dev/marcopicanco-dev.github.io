@@ -1,0 +1,224 @@
+---
+title: 'Jekyll vs Astro : quel générateur de sites statiques a le plus de sens en 2026 ?'
+description: 'Jekyll ou Astro ? Comparez l’architecture, les performances, l’intégration avec GitHub Pages et les cas d’usage pour choisir un générateur de sites statiques.'
+date: '2026-06-10'
+heroImage: '/images/jekyll-vs-astro.png'
+heroImageAlt: 'Illustration d’un combat entre Jekyll et Astro dans une arène, comparant des générateurs de sites statiques.'
+tags: ['Astro', 'Performance']
+---
+
+## Jekyll vs Astro : quel générateur de sites statiques a le plus de sens en 2026 ?
+
+L’écosystème du développement web a évolué rapidement ces dernières années. Même si les générateurs de sites statiques traditionnels (**SSG — Static Site Generators**) restent extrêmement pertinents pour les blogs, la documentation, les landing pages et les portails de contenu, de nouvelles approches sont apparues pour répondre aux exigences de performance, d’expérience développeur et d’intégration avec les frameworks modernes.
+
+Dans ce paysage, deux noms se distinguent pour des raisons différentes : **Jekyll**, l’un des pionniers du mouvement Jamstack, et **Astro**, l’une des solutions les plus innovantes du moment.
+
+Mais alors, lequel choisir pour votre prochain projet ?
+
+Dans cet article, nous allons analyser les principales caractéristiques de chaque outil, ses points forts, ses limites et les cas où chacun se démarque.
+
+---
+
+## Qu’est-ce que Jekyll ?
+
+**Jekyll** est un générateur de sites statiques écrit en Ruby et créé par Tom Preston-Werner, l’un des fondateurs de GitHub.
+
+Pendant de nombreuses années, il a été pratiquement la référence pour les blogs statiques, notamment parce que GitHub Pages le prend en charge nativement.
+
+Sa proposition est simple : transformer des fichiers Markdown, du HTML et des templates en pages statiques prêtes à être publiées.
+
+La structure d’un projet Jekyll est généralement très directe :
+
+- `_posts/`
+- `_layouts/`
+- `_includes/`
+- `_assets/`
+- `_config.yml`
+
+---
+
+## Principaux avantages de Jekyll
+
+Simplicité
+
+Jekyll a une courbe d’apprentissage relativement douce pour qui veut créer des blogs, de la documentation ou des sites vitrines sans composants complexes.
+
+Son fonctionnement est prévisible et éprouvé.
+
+Un écosystème bien établi
+
+Après plus de dix ans d’existence, l’outil dispose :
+
+- D’un grand nombre de thèmes ;
+- De plugins stables ;
+- D’une documentation abondante ;
+- D’une communauté bien établie.
+
+## L’intégration avec GitHub Pages (peut-être son plus grand avantage)
+
+Il est possible d’héberger gratuitement un site Jekyll directement sur GitHub Pages, pratiquement sans configuration supplémentaire.
+
+Pour les projets personnels et les blogs techniques, cela reste extrêmement attrayant.
+
+## Excellent pour le contenu statique
+
+Quand l’accent est mis sur :
+
+- Des articles ;
+- De la documentation ;
+- Des portfolios ;
+- Des sites vitrines simples.
+
+Jekyll reste une solution robuste et fiable.
+
+---
+
+## Les limites de Jekyll
+
+- La dépendance à Ruby
+- Beaucoup de développeurs modernes travaillent presque exclusivement avec JavaScript, TypeScript et Node.js.
+
+- Introduire Ruby dans un environnement majoritairement JavaScript peut augmenter la complexité opérationnelle.
+
+## Des builds plus lents sur les gros projets
+
+À mesure que le nombre de pages augmente, le temps de compilation a tendance à croître fortement.
+
+Cela peut nuire à la productivité sur les projets de grande taille.
+
+## Peu d’intégration avec les frameworks modernes
+
+Même s’il existe des solutions de contournement, intégrer React, Vue ou Svelte n’est pas aussi naturel qu’avec les outils plus récents.
+
+---
+
+## Qu’est-ce qu’Astro ?
+
+Astro est une plateforme moderne centrée sur la création de sites extrêmement rapides.
+
+Lancé en 2021, il a vite gagné en popularité en introduisant un concept innovant appelé Islands Architecture.
+
+L’idée est simple :
+
+Au lieu d’envoyer de grandes quantités de JavaScript au navigateur, seuls les composants interactifs sont hydratés.
+
+Le reste de la page est livré en HTML statique pur.
+
+En pratique, cela réduit fortement :
+
+- Le temps de chargement ;
+- La consommation de ressources ;
+- La taille du bundle JavaScript.
+- Principaux avantages d’Astro
+- Des performances exceptionnelles
+
+## C’est son principal atout.
+
+### Astro génère des pages extrêmement légères, en réduisant la quantité de JavaScript envoyée au client.
+
+Résultat :
+
+- De meilleurs Core Web Vitals ;
+- Un meilleur SEO ;
+- Une meilleure expérience utilisateur.
+- Agnostique vis-à-vis des frameworks
+
+## Astro permet d’utiliser simultanément :
+
+- React ;
+- Vue ;
+- Svelte ;
+- SolidJS ;
+- Preact.
+
+On peut même combiner des composants de frameworks différents dans un même projet.
+
+Une telle flexibilité est rare.
+
+Une excellente expérience de développement
+
+## L’écosystème moderne basé sur Vite offre :
+
+- Un rechargement à chaud extrêmement rapide ;
+- Un build optimisé ;
+- La prise en charge native de TypeScript ;
+- Des intégrations simplifiées.
+- Content Collections
+
+L’une des fonctionnalités les plus appréciées d’Astro.
+
+Elle permet de modéliser le contenu avec une validation de schéma en TypeScript, ce qui réduit les erreurs et renforce la sécurité pendant le build.
+
+Un écosystème en croissance rapide
+
+Astro reçoit des mises à jour fréquentes et attire une communauté de plus en plus large.
+
+## De nombreuses entreprises l’adoptent déjà pour :
+
+- Des blogs d’entreprise ;
+- Des portails de contenu ;
+- De la documentation ;
+- Des sites marketing.
+- Les limites d’Astro
+- Un écosystème moins mature
+
+Même s’il évolue rapidement, il n’a pas encore la maturité historique de Jekyll.
+
+Certaines solutions demandent plus de configuration.
+
+Une courbe d’apprentissage plus raide
+
+Des concepts comme :
+
+- L’Islands Architecture ;
+- Les intégrations ;
+- Le rendu hybride ;
+- Les composants.
+
+Peuvent demander un temps d’adaptation aux développeurs habitués aux SSG traditionnels.
+
+Une évolution rapide
+
+La vitesse d’évolution d’Astro est un atout, mais elle peut aussi entraîner des changements fréquents d’une version à l’autre.
+
+Les équipes qui privilégient une stabilité maximale peuvent y voir un point de vigilance.
+
+## Quand choisir Jekyll ?
+
+Jekyll reste une excellente option quand :
+
+- Le projet est essentiellement un blog ;
+- L’équipe utilise déjà Ruby ;
+- Le déploiement se fera sur GitHub Pages ;
+- La simplicité compte plus que les fonctionnalités modernes ;
+- Le site a peu besoin d’interactivité.
+- Quand choisir Astro ?
+
+## Astro est généralement le meilleur choix quand :
+
+- La performance est une priorité ;
+- Le projet utilise React, Vue ou Svelte ;
+- Des composants interactifs sont nécessaires ;
+- L’équipe travaille avec JavaScript ou TypeScript ;
+- Le site doit grandir dans le temps sans dégrader l’expérience utilisateur.
+
+## Comparatif final
+
+| Critère                     | Jekyll                         | Astro                              |
+| --------------------------- | ------------------------------ | ---------------------------------- |
+| Langage de base             | Ruby                           | JavaScript / TypeScript            |
+| Année de lancement          | 2008                           | 2021                               |
+| Courbe d’apprentissage      | Faible                         | Moyenne                            |
+| Performance                 | Bonne                          | Excellente                         |
+| Vitesse de build            | Moyenne                        | Élevée                             |
+| GitHub Pages                | Prise en charge native         | Nécessite une configuration        |
+| React/Vue/Svelte            | Limité                         | Natif                              |
+| SEO                         | Excellent                      | Excellent                          |
+| JavaScript envoyé au client | Faible                         | Très faible                        |
+| Évolutivité du projet       | Moyenne                        | Élevée                             |
+| Écosystème                  | Mature                         | En croissance rapide               |
+| Meilleur usage              | Blogs et documentation simples | Sites modernes et très performants |
+
+---
+
+### Cela dit, on part sur `Astro`. À la prochaine !!! 🚀 🚀 🚀

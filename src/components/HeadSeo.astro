@@ -1,7 +1,8 @@
 ---
-import { SITE, TWITTER_USERNAME, OG_IMAGE } from '@/config'
+import { DEFAULT_LANGUAGE_CODE, SITE, TWITTER_USERNAME } from '@/config'
 import { type Frontmatter } from '@/types'
 import { LOCALE_INFO } from '@/i18n/ui'
+import { getAlternateLinks } from '@/i18n/alternates'
 import { getLang, getTranslations, localizePath } from '@/i18n/utils'
 import { getCanonicalUrl } from '@/utils/seo'
 
@@ -21,7 +22,17 @@ const formattedContentTitle = frontmatter?.title
   : SITE.title
 
 const imageAlt = frontmatter?.heroImageAlt ?? SITE.title
-const imageUrl = new URL(frontmatter?.heroImage ?? OG_IMAGE, Astro.site)
+const imageUrl = new URL(
+  frontmatter?.heroImage ?? LOCALE_INFO[lang].ogImage,
+  Astro.site,
+)
+
+// Other language versions of this page; a single entry means there are none.
+const alternates = getAlternateLinks(Astro.url.pathname)
+const hasAlternates = alternates.length > 1
+const defaultAlternate = alternates.find(
+  (alternate) => alternate.lang === DEFAULT_LANGUAGE_CODE,
+)
 
 const ogType = type ?? 'website'
 const description = frontmatter?.description ?? t('site.description')
@@ -31,6 +42,25 @@ const description = frontmatter?.description ?? t('site.description')
 <title>{formattedContentTitle}</title>
 <link rel="canonical" href={canonicalUrl} />
 <link rel="sitemap" href="/sitemap-index.xml" />
+{
+  hasAlternates &&
+    alternates.map((alternate) => (
+      <link
+        rel="alternate"
+        hreflang={LOCALE_INFO[alternate.lang].hreflang}
+        href={new URL(alternate.path, Astro.site)}
+      />
+    ))
+}
+{
+  hasAlternates && defaultAlternate && (
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href={new URL(defaultAlternate.path, Astro.site)}
+    />
+  )
+}
 <meta name="description" content={description} />
 <meta property="og:description" content={description} />
 
@@ -39,6 +69,16 @@ const description = frontmatter?.description ?? t('site.description')
 <meta property="og:type" content={ogType} />
 <meta property="og:url" content={canonicalUrl} />
 <meta property="og:locale" content={LOCALE_INFO[lang].ogLocale} />
+{
+  alternates
+    .filter((alternate) => alternate.lang !== lang)
+    .map((alternate) => (
+      <meta
+        property="og:locale:alternate"
+        content={LOCALE_INFO[alternate.lang].ogLocale}
+      />
+    ))
+}
 <meta property="og:image" content={imageUrl} />
 <meta property="og:image:alt" content={imageAlt} />
 <meta property="og:site_name" content={SITE.title} />
