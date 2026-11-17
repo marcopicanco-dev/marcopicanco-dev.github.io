@@ -17,9 +17,15 @@ const t = getTranslations(lang)
 
 const canonicalUrl = getCanonicalUrl(Astro.url.pathname, Astro.site)
 
-const formattedContentTitle = frontmatter?.title
-  ? frontmatter.title + ' - ' + SITE.title
-  : SITE.title
+const withSiteName = (title?: string) =>
+  title ? title + ' - ' + SITE.title : SITE.title
+
+// Search results show about 60 characters, so long titles can set a shorter
+// seoTitle. Social cards have more room and keep the full title.
+const formattedContentTitle = withSiteName(
+  frontmatter?.seoTitle ?? frontmatter?.title,
+)
+const socialTitle = withSiteName(frontmatter?.title)
 
 const imageAlt = frontmatter?.heroImageAlt ?? SITE.title
 const imageUrl = new URL(
@@ -65,7 +71,7 @@ const description = frontmatter?.description ?? t('site.description')
 <meta property="og:description" content={description} />
 
 <!-- OpenGraph Tags -->
-<meta property="og:title" content={formattedContentTitle} />
+<meta property="og:title" content={socialTitle} />
 <meta property="og:type" content={ogType} />
 <meta property="og:url" content={canonicalUrl} />
 <meta property="og:locale" content={LOCALE_INFO[lang].ogLocale} />
@@ -103,7 +109,7 @@ const description = frontmatter?.description ?? t('site.description')
 <!-- Twitter Tags -->
 <meta name="twitter:card" content="summary_large_image" />
 {TWITTER_USERNAME && <meta name="twitter:site" content={TWITTER_USERNAME} />}
-<meta name="twitter:title" content={formattedContentTitle} />
+<meta name="twitter:title" content={socialTitle} />
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={imageUrl} />
 <meta name="twitter:image:alt" content={imageAlt} />

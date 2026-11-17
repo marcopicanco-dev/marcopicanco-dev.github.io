@@ -7,6 +7,7 @@ export type Frontmatter = {
   layout: string
   file: string
   date?: string
+  seoTitle?: string
   heroImage?: string
   heroImageAlt?: string
   tags?: string[]

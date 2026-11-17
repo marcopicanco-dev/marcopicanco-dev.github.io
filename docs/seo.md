@@ -18,11 +18,15 @@ Console, sem estimativa de volume ou promessa de posição.
 - O site tem versões em inglês (`/en/`) e francês (`/fr/`). Cada página traz
   `hreflang` para as versões que existem e `x-default` para o português, e o
   sitemap repete essas ligações. Detalhes em [i18n.md](i18n.md).
-- `/portfolio/`, `/pt/` e `/sr/` continuam acessíveis, com a página inicial como
-  URL canônica. Essas cópias ficam fora do sitemap, pois hoje exibem o mesmo
-  conteúdo em português.
+- `/portfolio/`, `/pt/` e `/sr/` redirecionam para a página inicial com meta
+  refresh imediato, que o Google trata como redirecionamento permanente. Elas
+  ficam fora do sitemap.
 - Títulos específicos para a inicial, Sobre e blog; descrições dos dois artigos
   iniciais revisadas conforme o conteúdo existente.
+- Quando o título de um artigo é longo demais para o resultado de busca, o
+  frontmatter pode trazer `seoTitle`, usado apenas no `<title>`. O h1 e os
+  cartões de redes sociais mantêm `title`. A série de headers de segurança usa
+  esse campo para que o número da parte apareça antes do corte.
 - Os artigos usam sua própria imagem de capa nos metadados de compartilhamento,
   com alternativa para a imagem geral do site.
 - Artigos têm marcação `BlogPosting`, com título, descrição, autor, data visível
@@ -41,6 +45,28 @@ Referências: [sitemaps no Astro](https://docs.astro.build/en/guides/integration
 [URLs canônicas](https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls),
 [artigos](https://developers.google.com/search/docs/appearance/structured-data/article)
 e [páginas de perfil](https://developers.google.com/search/docs/appearance/structured-data/profile-page).
+
+## Guia de SEO do Google: como o site atende
+
+Revisão feita em novembro de 2026 com base no
+[guia de introdução](https://developers.google.com/search/docs/fundamentals/seo-starter-guide).
+
+| Recomendação do guia                         | Situação no site                                                                                    |
+| -------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| Google encontra o conteúdo                   | Sitemap, `robots.txt` liberado e links internos entre artigos, tags e séries.                       |
+| Google vê a página como o visitante          | CSS e JavaScript públicos; idioma pela URL, sem redirecionar por localização.                       |
+| URLs descritivas                             | Caminhos com palavras do título. Traduções mantêm o caminho português com o prefixo do idioma.      |
+| Uma URL por conteúdo                         | Canonical em todas as páginas; URLs antigas redirecionam e ficam fora do sitemap.                   |
+| Conteúdo fácil de ler e organizado           | Artigos divididos em seções com subtítulos reais, nas três línguas.                                 |
+| Links com texto descritivo                   | Nenhum link "clique aqui"; comentários ficam no iframe do Giscus, fora das páginas do site.         |
+| Títulos únicos, claros e concisos            | Nenhum título repetido; `seoTitle` encurta os títulos longos da série.                              |
+| Meta description única de uma ou duas frases | Uma descrição própria por página e idioma.                                                          |
+| Imagens perto do texto, com `alt` descritivo | Capas e diagramas com `alt`; logotipos decorativos usam `alt` vazio ao lado do nome da instituição. |
+| Sem intersticiais que atrapalhem a leitura   | Só o aviso de cookies, que responde a uma obrigação legal.                                          |
+| Não focar em meta keywords                   | O site não usa a tag `keywords`.                                                                    |
+
+Fica fora do código: divulgar os artigos (GitHub, LinkedIn, comunidades) e
+acompanhar o Search Console por algumas semanas antes de avaliar uma mudança.
 
 ## Configurar o Google Search Console
 

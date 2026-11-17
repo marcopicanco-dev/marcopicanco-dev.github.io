@@ -25,6 +25,8 @@ This text brings together a roadmap for anyone who wants to make the most of the
 
 The settings suggested here need to be adapted to your site. Features and limits were checked against the official documentation on October 20, 2026.
 
+## What the Free plan offers
+
 In my case, hosting stays on GitHub Pages; after all, it does its job well. Cloudflare acts as the authoritative DNS and as a reverse proxy for the proxied web records. It is on this pass through Cloudflare’s network that caching, attack mitigation and header changes come in. [5](https://developers.cloudflare.com/fundamentals/manage-domains/add-site/) [6](https://developers.cloudflare.com/dns/proxy-status/)
 
 The free plan provides a great foundation:
@@ -43,6 +45,8 @@ The free plan provides a great foundation:
 
 These limits belong to different products. The five WAF rules, for example, are not the ten Transform Rules. Additional products have their own conditions and should be evaluated separately. [7](https://www.cloudflare.com/plans/free/) [8](https://developers.cloudflare.com/waf/get-started/) [9](https://developers.cloudflare.com/waf/custom-rules/) [10](https://developers.cloudflare.com/waf/rate-limiting-rules/) [11](https://developers.cloudflare.com/rules/transform/)
 
+## First steps
+
 To get started, I followed this sequence:
 
 1. **Create the account and choose Free.** Add the main domain (`marcopicanco.com`, in my case) and protect access to the account with two-factor authentication (extremely important) and recovery codes. Don’t slip up here.
@@ -53,6 +57,8 @@ To get started, I followed this sequence:
 6. **Validate certificates and HTTPS.** Check both the certificate presented to the visitor and HTTPS on the origin host. [5](https://developers.cloudflare.com/fundamentals/manage-domains/add-site/) [6](https://developers.cloudflare.com/dns/proxy-status/) [12](https://developers.cloudflare.com/ssl/origin-configuration/ssl-modes/full-strict/)
 
 That proxy point was one of my first lessons. In my first setup, I had created rules in the dashboard while the domain still used the previous nameservers. The rules existed, but traffic never went through them. I told that story in the first part of the series mentioned above. [1](https://www.marcopicanco.com/en/2026-07-23-corrigindo-headers-de-seguranca-em-um-site-estatico-no-github-pages-com-cloudflare/)
+
+## Validating from the terminal
 
 Today, I start validating from the terminal:
 
@@ -77,9 +83,13 @@ In PowerShell, the `.exe` in `curl.exe` matters: in Windows PowerShell, `curl` i
 
 I also test internal pages and the site’s flows in the browser. A successful `HEAD` on the home page does not check every page or that the scripts work.
 
+## HTTPS and certificates
+
 For TLS, I consider both connections: browser to Cloudflare and Cloudflare to the host. Under **SSL/TLS → Overview**, the **Full (strict)** option requires HTTPS at the origin with a valid certificate for the hostname in use. It is the setting the documentation recommends whenever those requirements are met. On GitHub Pages, the origin certificate is managed by the hosting service itself. [12](https://developers.cloudflare.com/ssl/origin-configuration/ssl-modes/full-strict/)
 
 After validating HTTPS, **Always Use HTTPS** redirects HTTP requests. HSTS can come at a later stage, once the domains involved already work correctly over HTTPS. On my site, I documented the decision to keep `includeSubDomains` and preload out of this initial setup. These are choices that affect how browsers behave in the future and deserve a planned rollout. [4](https://www.marcopicanco.com/en/2026-07-25-corrigindo-headers-de-seguranca-em-um-site-estatico-no-github-pages-com-cloudflare-parte-4/) [13](https://developers.cloudflare.com/ssl/edge-certificates/additional-options/always-use-https/) [14](https://developers.cloudflare.com/ssl/edge-certificates/additional-options/http-strict-transport-security/)
+
+## Security headers
 
 Headers were the setting that motivated this article. In the dashboard, I go to **Rules → Overview → Create rule → Response Header Transform Rule** and create a rule for the site’s hostnames. The **Set static** operation lets you define the name and value of each header. [15](https://developers.cloudflare.com/rules/transform/response-header-modification/create-dashboard/)
 
@@ -98,6 +108,8 @@ In the third part of the series, I showed a data-entry mistake that turned into 
 
 The **Content Security Policy**, or CSP, requires more care. It needs to reflect the scripts, styles, fonts and connections the pages use. In my project, the hashes generated at build time are part of that policy. A code change may also require updating the header applied in Cloudflare. That synchronization needs to take into account the published pages and how the interactions work. [3](https://www.marcopicanco.com/en/2026-07-23-corrigindo-headers-de-seguranca-em-um-site-estatico-no-github-pages-com-cloudflare-parte-3/)
 
+## WAF, bots and rate limiting
+
 For traffic protection, the **Free Managed Ruleset** is deployed by default on Free plan zones. It is a subset of the broader managed ruleset. The attack score and advanced bot management features advertised for other plans have different availability. [8](https://developers.cloudflare.com/waf/get-started/)
 
 For custom rules, I start with clear situations that fit the application. On an Astro site without WordPress, for example, I can consider a rule that blocks paths such as `/wp-login.php` and `/xmlrpc.php`. Under **Security**, I look for the option to create a custom rule, select the **URI Path** field, the exact paths and the **Block** action, restricting the rule to the desired hostnames. Then I monitor the events to see what was affected. [9](https://developers.cloudflare.com/waf/custom-rules/)
@@ -108,6 +120,8 @@ Before leaving it on, I test browsing, search, link previews and monitoring tool
 
 **Rate limiting** can be useful when a route needs protection against too many requests. On Free there is one rule, counting per IP, with 10-second counting and mitigation periods in the documentation I checked. For a portfolio without a login or its own API, I prefer to observe the traffic first and identify a concrete need. Applying a low limit to the whole site can hurt legitimate visitors and crawlers. This feature is also not an exact cap on origin usage. [10](https://developers.cloudflare.com/waf/rate-limiting-rules/)
 
+## Cache and performance
+
 For performance, the CDN helps deliver eligible content from Cloudflare’s network. But it is important to know the default behavior: **HTML and JSON are not cached automatically**. Eligible files, such as CSS, JavaScript and images, are treated differently. [17](https://developers.cloudflare.com/cache/concepts/default-cache-behavior/)
 
 When I checked the home page of my domain, the HTML responded with `cf-cache-status: DYNAMIC`. That result is consistent with a page that was not served from Cloudflare’s cache for that request. On its own, it does not show that caching for the other files is wrong.
@@ -115,6 +129,8 @@ When I checked the home page of my domain, the HTML responded with `cf-cache-sta
 I started with the default behavior and measured the results. A Cache Rule for static HTML can be evaluated later, with a defined expiration time and purge after each deploy. If the site evolves into an application with a login, personalized responses will need their own strategy.
 
 Build optimizations remain relevant: properly sized images, well-chosen fonts and only the JavaScript each interaction needs. A CDN does not remove the time the browser spends running code. Features that rewrite scripts, such as Rocket Loader, also need to be tested with the CSP and with the existing functionality. [18](https://developers.cloudflare.com/speed/optimization/content/rocket-loader/)
+
+## Metrics and Web Analytics
 
 To track metrics, I separate three questions:
 
@@ -155,6 +171,8 @@ For my portfolio, these are the metrics I find most useful to track:
 
 Core Web Vitals help turn a feeling of slowness into an investigation by page and element. On a small blog, it is also important to look at how much data is available before reading a fluctuation as a trend. Blockers and script failures can leave some visits out of the collection. [24](https://developers.cloudflare.com/web-analytics/data-metrics/core-web-vitals/)
 
+## SEO and Search Console
+
 The connection to **SEO** comes through this care for the experience. Cloudflare can help with asset delivery, HTTPS and traffic protection. Google states that Core Web Vitals are used by its ranking systems, but good results on these metrics do not guarantee top positions. Relevant content and a good overall experience remain essential. [25](https://developers.google.com/search/docs/appearance/page-experience)
 
 On my site, the public check also found a canonical URL on the home page, `robots.txt` and a sitemap index. These elements need to stay consistent with the published URLs. It is still worth reviewing redirects between HTTP and HTTPS and between the domain with and without `www`, preserving the paths and parameters you need.
@@ -167,6 +185,8 @@ To get started with Search Console, I added a **Domain** property, entered the d
 
 Bot control needs to respect that goal. Aggressive rules can block legitimate crawlers. Before concluding that a protection improved the site, I also check its impact on access to the content.
 
+## Ongoing monitoring
+
 Suggestions for keeping control ongoing and effective:
 
 - After each deploy, check headers, links, interactions and analytics loading.
@@ -176,20 +196,24 @@ Suggestions for keeping control ongoing and effective:
 
 For availability, I add a periodic external check of the URL. A lack of visits in analytics does not, on its own, tell you whether the site went down.
 
+## Conclusion
+
 Using Cloudflare Free expanded what I can configure around static hosting. The most useful lesson was understanding how DNS, proxy, certificates, headers, cache and the browser relate to each other, and checking each change at the point where it takes effect.
 
 That kind of follow-up is what gives the dashboard its value: observe a signal, form a hypothesis, change a setting and check the result. The site stays simple; the decisions become better grounded.
 
 ---
 
-**Articles that led to this text**
+## Sources
+
+### Articles that led to this text
 
 1. [Fixing security headers on a static site on GitHub Pages with Cloudflare](https://www.marcopicanco.com/en/2026-07-23-corrigindo-headers-de-seguranca-em-um-site-estatico-no-github-pages-com-cloudflare/).
 2. [Part 2 — dependencies, migration and tests](https://www.marcopicanco.com/en/2026-07-23-corrigindo-headers-de-seguranca-em-um-site-estatico-no-github-pages-com-cloudflare-parte-2/).
 3. [Part 3 — headers and validation in production](https://www.marcopicanco.com/en/2026-07-23-corrigindo-headers-de-seguranca-em-um-site-estatico-no-github-pages-com-cloudflare-parte-3/).
 4. [Part 4 — scanners, DNS and next steps](https://www.marcopicanco.com/en/2026-07-25-corrigindo-headers-de-seguranca-em-um-site-estatico-no-github-pages-com-cloudflare-parte-4/).
 
-**Documentation consulted**
+### Documentation consulted
 
 5. [Cloudflare — Onboard a domain](https://developers.cloudflare.com/fundamentals/manage-domains/add-site/).
 6. [Cloudflare — Proxy status](https://developers.cloudflare.com/dns/proxy-status/).

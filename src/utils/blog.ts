@@ -8,6 +8,9 @@ import { isLanguage, localizePath } from '@/i18n/utils'
 // src/content/blog/<lang>/ with the same file name and keep its URL slug.
 type BlogSourceFrontmatter = {
   title: string
+  // Optional shorter <title> for search results when `title` is too long to
+  // stay readable there; the page heading and social cards keep `title`.
+  seoTitle?: string
   description: string
   date: string
   slug?: string
